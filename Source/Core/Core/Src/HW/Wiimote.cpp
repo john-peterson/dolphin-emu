@@ -6,6 +6,8 @@
 #include "WiimoteEmu/WiimoteEmu.h"
 #include "Movie.h"
 
+#include "ConfigManager.h"
+#include "ConfigManager.h"
 #include "ControllerInterface/ControllerInterface.h"
 
 #include "../../InputCommon/Src/InputConfig.h"
@@ -45,6 +47,8 @@ void Initialize(void* const hwnd)
 	g_controller_interface.Initialize();
 
 	g_plugin.LoadConfig();
+	// override
+	g_plugin.LoadConfig(SConfig::GetInstance().m_LocalCoreStartupParameter.m_strGameIni,"Wii");
 
 	WiimoteReal::Initialize();
 	

@@ -48,7 +48,25 @@ bool InputPlugin::LoadConfig()
 		controllers[0]->LoadDefaults(g_controller_interface);
 		controllers[0]->UpdateReferences(g_controller_interface);
 		return false;
+	}	
+}
+
+bool InputPlugin::LoadConfig(std::string ini, std::string sec)
+{
+	IniFile inifile;
+	if (inifile.Load(ini))
+	{
+		std::vector< ControllerEmu* >::const_iterator
+			i = controllers.begin(),
+			e = controllers.end();
+		for (; i!=e; ++i)
+		{
+			// load settings from ini
+			(*i)->LoadConfig(inifile.GetOrCreateSection(sec.c_str()));
+		}
+		return true;
 	}
+	return false;
 }
 
 void InputPlugin::SaveConfig()

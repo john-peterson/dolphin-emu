@@ -18,7 +18,8 @@ WiimoteConfigDiag::WiimoteConfigDiag(wxWindow* const parent, InputPlugin& plugin
 	, m_plugin(plugin)
 {
 	wxBoxSizer* const main_sizer = new wxBoxSizer(wxVERTICAL);
-
+	// load settings, overwrite overridden settings
+	m_plugin.LoadConfig();
 
 	// "Wiimotes" controls
 	wxStaticText* wiimote_label[4];
@@ -271,6 +272,9 @@ void WiimoteConfigDiag::Save(wxCommandEvent& event)
 	UpdateWiimoteStatus();
 
 	inifile.Save(ini_filename);
+
+	// restore overridden settings
+	m_plugin.LoadConfig(SConfig::GetInstance().m_LocalCoreStartupParameter.m_strGameIni, "Wii");
 
 	event.Skip();
 }

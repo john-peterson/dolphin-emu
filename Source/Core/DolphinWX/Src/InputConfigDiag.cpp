@@ -193,6 +193,8 @@ void InputConfigDialog::UpdateControlReferences()
 void InputConfigDialog::ClickSave(wxCommandEvent& event)
 {
 	m_plugin.SaveConfig();
+	// enable override again
+	m_plugin.LoadConfig(SConfig::GetInstance().m_LocalCoreStartupParameter.m_strGameIni,"Wii");
 	event.Skip();
 }
 

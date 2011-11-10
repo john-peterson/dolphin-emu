@@ -73,6 +73,7 @@ private:
 	wxCheckBox *VBeam, *FastDiscSpeed, *BlockMerging, *DSPHLE;
 	// Wii
 	wxCheckBox *EnableProgressiveScan, *EnableWideScreen, *DisableWiimoteSpeaker;
+	wxTextCtrl *IRCenter, *IRWidth, *IRHeight;
 	// Video
 	wxCheckBox *UseZTPSpeedupHack, *PHackEnable, *UseBBox;
 	wxButton *PHSettings;

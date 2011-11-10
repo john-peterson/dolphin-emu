@@ -39,6 +39,7 @@
 #include <sstream>
 #include <vector>
 
+#include "ConfigManager.h"
 #include "ControllerInterface/ControllerInterface.h"
 #include "ControllerEmu.h"
 #include "InputConfig.h"
