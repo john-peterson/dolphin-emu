@@ -188,7 +188,6 @@ bool MouseOver(HWND hwnd)
 // called by windows
 bool UpdateInput(LPARAM lParam)
 {
-	//write("UpdateInput %d\n", m_devices->size());
 	size_t ok_count = 0;
 	std::vector<ControllerInterface::Device*>::const_iterator
 		d = m_devices->begin(),
@@ -200,9 +199,7 @@ bool UpdateInput(LPARAM lParam)
 }
 
 Mouse::~Mouse() {
-	write("~Mouse()\n");
 	unregister_raw_mouse(hwnd);
-	//destroy_raw_mouse();
 	bHasBeenInitialized = 0;
 	rawinput_active = false;
 }
@@ -216,10 +213,10 @@ Mouse::Mouse(int _hid, char _guid[512])
 	
 	// buttons
 	for (u8 i = 0; i < MAX_RAW_MOUSE_BUTTONS; ++i)
-		AddInput(new Button(i, m_state_in.button[i]));
+		AddInput(new Button(i, m_state_in.button[i], this));
 	// cursor
 	for (unsigned int i=0; i<4; ++i)
-		AddInput(new Cursor(!!(i&2), (&m_state_in.cursor.x)[i/2], !!(i&1)));
+		AddInput(new Cursor(!!(i&2), (&m_state_in.cursor.x)[i/2], !!(i&1), this));
 }
 void Mouse::DetectDevice() {
 	int done;
@@ -249,10 +246,12 @@ std::string Mouse::GetSource() const { return "RInput"; }
 
 ControlState Mouse::Button::GetState() const
 {
+	m_parent->_UpdateOutput();
 	return (m_button != 0);
 }
 ControlState Mouse::Cursor::GetState() const
 {
+	m_parent->_UpdateOutput();
 	return std::max(0.0f, ControlState(m_axis) / (m_positive ? 1.0f : -1.0f));
 }
 
@@ -268,7 +267,7 @@ std::string Mouse::Cursor::GetName() const
 	return tmpstr;
 }
 
-bool Mouse::UpdateOutput()
+bool Mouse::_UpdateOutput()
 {
 	if(!MouseOver(hwnd)) return false;
 
@@ -328,8 +327,7 @@ bool Mouse::UpdateOutput()
 
 bool Mouse::UpdateInput(LPARAM lParam)
 {
-	add_to_raw_mouse_x_and_y((HRAWINPUT)lParam);
-	UpdateOutput();
+	add_to_raw_mouse_x_and_y((HRAWINPUT)lParam);	
 	return true;
 }
 

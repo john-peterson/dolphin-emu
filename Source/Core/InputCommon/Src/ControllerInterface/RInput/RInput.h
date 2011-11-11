@@ -29,7 +29,8 @@ public:
 
 	bool UpdateInput() { return false; };
 	bool UpdateInput(LPARAM lParam);
-	bool UpdateOutput();
+	bool UpdateOutput() { return false; };
+	bool _UpdateOutput();
 
 	std::string GetName() const;
 	int GetId() const;
@@ -51,11 +52,12 @@ private:
 	{
 	public:
 		std::string GetName() const;
-		Button(u8 index, const int& button) : m_index(index), m_button(button) {}
+		Button(u8 index, const int& button, Mouse *parent) : m_index(index), m_button(button), m_parent(parent) {}
 		ControlState GetState() const;
 	private:
 		const u8 m_index;
 		const int& m_button;
+		Mouse* m_parent;
 	};
 
 	class Cursor : public Input
@@ -63,12 +65,13 @@ private:
 	public:
 		std::string GetName() const;
 		bool IsDetectable() { return true; }
-		Cursor(u8 index, const float& axis, const bool positive) : m_index(index), m_axis(axis), m_positive(positive) {}
+		Cursor(u8 index, const float& axis, const bool positive, Mouse *parent) : m_index(index), m_axis(axis), m_positive(positive), m_parent(parent)  {}
 		ControlState GetState() const;
 	private:
 		const u8 m_index;
 		const float& m_axis;
 		const bool m_positive;
+		Mouse* m_parent;
 	};
 
 	State m_state_in;
