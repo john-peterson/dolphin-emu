@@ -323,9 +323,6 @@ void CISOProperties::CreateGUIControls(bool IsWad)
 	EnableWideScreen = new wxCheckBox(m_GameConfig, ID_ENABLEWIDESCREEN, _("Enable WideScreen"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE|wxCHK_ALLOW_3RD_STATE_FOR_USER, wxDefaultValidator);
 	DisableWiimoteSpeaker = new wxCheckBox(m_GameConfig, ID_DISABLEWIIMOTESPEAKER, _("Alternate Wiimote Timing"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE|wxCHK_ALLOW_3RD_STATE_FOR_USER, wxDefaultValidator);
 	DisableWiimoteSpeaker->SetToolTip(_("Mutes the Wiimote speaker. Fixes random disconnections on real wiimotes. No effect on emulated wiimotes."));
-	IRCenter = new wxTextCtrl(m_GameConfig, wxID_ANY, _(""), wxDefaultPosition, wxSize(50,-1));
-	IRWidth = new wxTextCtrl(m_GameConfig, wxID_ANY, _(""), wxDefaultPosition, wxSize(50,-1));
-	IRHeight = new wxTextCtrl(m_GameConfig, wxID_ANY, _(""), wxDefaultPosition, wxSize(50,-1));
 
 	// Video
 	UseBBox = new wxCheckBox(m_GameConfig, ID_USE_BBOX, _("Enable Bounding Box Calculation"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE|wxCHK_ALLOW_3RD_STATE_FOR_USER);
@@ -368,26 +365,17 @@ void CISOProperties::CreateGUIControls(bool IsWad)
 	sbCoreOverrides->Add(DSPHLE, 0, wxLEFT, 5);
 
 	wxStaticBoxSizer * const sbWiiOverrides =
-		new wxStaticBoxSizer(wxHORIZONTAL, m_GameConfig, _("Wii Console"));
-	wxBoxSizer* const wiiSizerLeft = new wxBoxSizer(wxVERTICAL);
-	wxGridSizer* const wiiSizerRight = new wxGridSizer(3, 2, 0, 0);
-	wiiSizerLeft->Add(EnableProgressiveScan, 0, wxALIGN_LEFT, 0);
-	wiiSizerLeft->Add(EnableWideScreen, 0, wxALIGN_LEFT, 0);
-	wiiSizerLeft->Add(DisableWiimoteSpeaker, 0, wxALIGN_LEFT, 0);
-	wiiSizerRight->Add(new wxStaticText(m_GameConfig, wxID_ANY, wxT("IR Center")), 0, wxRIGHT|wxEXPAND|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
-	wiiSizerRight->Add(IRCenter, 0, wxALIGN_RIGHT, 0);
-	wiiSizerRight->Add(new wxStaticText(m_GameConfig, wxID_ANY, wxT("IR Width")), 0, wxRIGHT|wxEXPAND|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
-	wiiSizerRight->Add(IRWidth, 0, wxALIGN_RIGHT, 0);
-	wiiSizerRight->Add(new wxStaticText(m_GameConfig, wxID_ANY, wxT("IR Height")), 0, wxRIGHT|wxEXPAND|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
-	wiiSizerRight->Add(IRHeight, 0, wxALIGN_RIGHT, 0);
-	sbWiiOverrides->Add(wiiSizerLeft, 3, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-	sbWiiOverrides->Add(wiiSizerRight, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+	new wxStaticBoxSizer(wxVERTICAL, m_GameConfig, _("Wii Console"));
+	sbWiiOverrides->Add(EnableProgressiveScan, 0, wxLEFT, 5);
+	sbWiiOverrides->Add(EnableWideScreen, 0, wxLEFT, 5);
+	sbWiiOverrides->Add(DisableWiimoteSpeaker, 0, wxLEFT, 5);
+	if (!DiscIO::IsVolumeWiiDisc(OpenISO) && !DiscIO::IsVolumeWadFile(OpenISO))
+		sbWiiOverrides->ShowItems(false);
 	// Progressive Scan is not used by Dolphin itself, and changing it on a per-game
 	// basis would have the side-effect of changing the SysConf, making this setting
 	// rather useless.
 	EnableProgressiveScan->Disable();
-	if (!DiscIO::IsVolumeWiiDisc(OpenISO) && !DiscIO::IsVolumeWadFile(OpenISO))
-		sbWiiOverrides->ShowItems(false);
+
 	wxStaticBoxSizer * const sbVideoOverrides =
 		new wxStaticBoxSizer(wxVERTICAL, m_GameConfig, _("Video"));
 	sbVideoOverrides->Add(UseBBox, 0, wxLEFT, 5);
@@ -907,10 +895,6 @@ void CISOProperties::LoadGameConfig()
 	else
 		DisableWiimoteSpeaker->Set3StateValue(wxCHK_UNDETERMINED);
 
-	if (GameIni.Get("Wii", "IR/Center", &iTemp)) IRCenter->SetValue(wxString::Format(wxT("%d"),iTemp)); else IRCenter->SetValue(_T(""));
-	if (GameIni.Get("Wii", "IR/Width", &iTemp)) IRWidth->SetValue(wxString::Format(wxT("%d"),iTemp)); else IRWidth->SetValue(_T(""));
-	if (GameIni.Get("Wii", "IR/Height", &iTemp)) IRHeight->SetValue(wxString::Format(wxT("%d"),iTemp)); else IRHeight->SetValue(_T(""));
-
 	if (GameIni.Get("Video", "UseBBox", &bTemp))
 		UseBBox->Set3StateValue((wxCheckBoxState)bTemp);
 	else
@@ -949,8 +933,6 @@ void CISOProperties::LoadGameConfig()
 
 bool CISOProperties::SaveGameConfig()
 {
-	int iTemp;
-
 	if (CPUThread->Get3StateValue() == wxCHK_UNDETERMINED)
 		GameIni.DeleteKey("Core", "CPUThread");
 	else
@@ -1010,10 +992,6 @@ bool CISOProperties::SaveGameConfig()
 		GameIni.DeleteKey("Wii", "DisableWiimoteSpeaker");
 	else
 		GameIni.Set("Wii", "DisableWiimoteSpeaker", DisableWiimoteSpeaker->Get3StateValue());
-
-	if (IRCenter->GetValue() == _T("")) GameIni.DeleteKey("Wii", "IR/Center"); else { IRCenter->GetValue().ToLong((long*)&iTemp); GameIni.Set("Wii", "IR/Center", iTemp); }
-	if (IRWidth->GetValue() == _T("")) GameIni.DeleteKey("Wii", "IR/Width"); else { IRWidth->GetValue().ToLong((long*)&iTemp); GameIni.Set("Wii", "IR/Width", iTemp); }
-	if (IRHeight->GetValue() == _T("")) GameIni.DeleteKey("Wii", "IR/Height"); else { IRHeight->GetValue().ToLong((long*)&iTemp); GameIni.Set("Wii", "IR/Height", iTemp); }
 
 	if (UseBBox->Get3StateValue() == wxCHK_UNDETERMINED)
 		GameIni.DeleteKey("Video", "UseBBox");
