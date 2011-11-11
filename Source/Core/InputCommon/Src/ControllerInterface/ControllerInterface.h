@@ -109,6 +109,7 @@ public:
 		virtual int GetId() const = 0;
 		virtual std::string GetSource() const = 0;
 		virtual bool UpdateInput() = 0;
+		virtual bool UpdateInput(LPARAM lParam) = 0;
 		virtual bool UpdateOutput() = 0;
 
 		virtual void ClearInputState();

@@ -107,6 +107,7 @@ private:
 
 public:
 	bool UpdateInput();
+	bool UpdateInput(LPARAM lParam) { return false; };
 	bool UpdateOutput();
 
 	Joystick(SDL_Joystick* const joystick, const int sdl_index, const unsigned int index);
