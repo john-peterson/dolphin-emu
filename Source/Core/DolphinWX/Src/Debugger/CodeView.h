@@ -60,6 +60,7 @@ public:
 	{
 		curAddress = addr;
 		selection = addr;
+		debugger->showJitResults(selection);
 		Refresh();
 	}
 
