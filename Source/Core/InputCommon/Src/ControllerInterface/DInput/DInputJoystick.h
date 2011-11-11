@@ -89,6 +89,7 @@ private:
 
 public:
 	bool UpdateInput();
+	bool UpdateInput(LPARAM lParam) { return false; };
 	bool UpdateOutput();
 
 	void ClearInputState();

@@ -88,6 +88,7 @@ private:
 
 public:
 	bool UpdateInput();
+	bool UpdateInput(LPARAM lParam) { return false; };
 	bool UpdateOutput();
 
 	KeyboardMouse(const LPDIRECTINPUTDEVICE8 kb_device, const LPDIRECTINPUTDEVICE8 mo_device);

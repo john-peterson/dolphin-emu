@@ -1,5 +1,5 @@
 #include "ControllerInterface.h"
-
+	#include "RInput/RInput.h"
 #ifdef CIFACE_USE_XINPUT
 	#include "XInput/XInput.h"
 #endif
@@ -35,6 +35,7 @@ void ControllerInterface::Initialize()
 #ifdef CIFACE_USE_DINPUT
 	ciface::DInput::Init(m_devices, (HWND)m_hwnd);
 #endif
+	ciface::RInput::Init(m_devices, (HWND)m_hwnd);
 #ifdef CIFACE_USE_XINPUT
 	ciface::XInput::Init(m_devices);
 #endif
