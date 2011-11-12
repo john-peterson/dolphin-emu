@@ -308,9 +308,9 @@ bool Mouse::_UpdateOutput()
 	// sync cursor
 	if(!(mouse_x == last_mouse_x && mouse_y == last_mouse_y)) {
 		// force default cursor
-		ShowCursor(1);		
+		ShowCursor(1);
 		// windowed mode adjustments
-		if(r.top != 0) {
+		if(r.top != 0 && !SConfig::GetInstance().m_LocalCoreStartupParameter.bRenderToMain) {
 			r.top += 32;
 			r.top += 0;
 			r.left += 4;
