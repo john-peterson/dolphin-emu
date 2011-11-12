@@ -1,6 +1,7 @@
 #ifndef _CIFACE_RINPUT_H_
 #define _CIFACE_RINPUT_H_
 
+#include "../../Core/Src/ConfigManager.h"
 #include "../ControllerInterface.h"
 #include <windows.h>
 
