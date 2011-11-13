@@ -143,13 +143,13 @@ void SetHWND(HWND _hwnd)
 {
 	// restore old wndproc pointer
 	if(pOldWinProc) {
-		SetWindowLong(hwnd, GWL_WNDPROC, (long)pOldWinProc);
+		SetWindowLongPtr(hwnd, GWLP_WNDPROC, (long)pOldWinProc);
 		write("old %d %d\n", hwnd, pOldWinProc);
 	}
 	// update pointer
 	hwnd = _hwnd;
-	pOldWinProc = (WNDPROC)GetWindowLong(hwnd, GWL_WNDPROC);
-	SetWindowLong(hwnd, GWL_WNDPROC, (long)RWndproc);
+	pOldWinProc = (WNDPROC)GetWindowLongPtr(hwnd, GWLP_WNDPROC);
+	SetWindowLongPtr(hwnd, GWLP_WNDPROC, (long)RWndproc);
 	write("new %d %d\n", hwnd, pOldWinProc);
 }
 
@@ -207,7 +207,7 @@ Mouse::Mouse(int _hid, char _guid[512])
 {
 	hid = _hid;
 	mouse_x = 0; mouse_y = 0;
-	mouse_sensitivity = 15;
+	mouse_sensitivity = 30;
 	ZeroMemory(&m_state_in, sizeof(m_state_in));
 	strcpy(guid, _guid);
 	
