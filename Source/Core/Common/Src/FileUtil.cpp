@@ -334,13 +334,19 @@ u64 GetSize(const std::string &filename)
 		WARN_LOG(COMMON, "GetSize: failed %s: is a directory", filename.c_str());
 		return 0;
 	}
+	#ifdef _WIN32
+		LARGE_INTEGER liFileSize;
+		liFileSize.LowPart = GetCompressedFileSize(filename.c_str(), (LPDWORD)&liFileSize.HighPart);
+		return liFileSize.QuadPart;
+	#else
 	struct stat64 buf;
 	if (stat64(filename.c_str(), &buf) == 0)
 	{
 		DEBUG_LOG(COMMON, "GetSize: %s: %lld",
 				filename.c_str(), (long long)buf.st_size);
-		return buf.st_size;
+		return buf.st_blocks*st_blksize;
 	}
+	#endif
 
 	ERROR_LOG(COMMON, "GetSize: Stat failed %s: %s",
 			filename.c_str(), GetLastErrorMsg());
