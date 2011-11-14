@@ -241,7 +241,7 @@ else:
         else:
             print "Can't build prof without oprofile, disabling"
 
-    tarname = 'dolphin-' + env['svnrev']
+    tarname = 'dolphin-' + env['gitrev']
     env['TARFLAGS'] = '-cj'
     env['TARSUFFIX'] = '.tar.bz2'
 
