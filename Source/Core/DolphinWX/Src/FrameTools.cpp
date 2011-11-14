@@ -1227,8 +1227,8 @@ void CFrame::OnConfigWiimote(wxCommandEvent& WXUNUSED (event))
 		Wiimote::Initialize(GetHandle());
 #endif
 	}
-	WiimoteConfigDiag m_ConfigFrame(this, *wiimote_plugin, wxString::Format(_("Dolphin Wiimote Configuration%s%s"), Core::IsRunning() ? _(" - ") : _(""),
-		Core::IsRunning() ? wxString(SConfig::GetInstance().m_LocalCoreStartupParameter.m_strName.c_str(), wxConvUTF8) : _("")));
+	WiimoteConfigDiag m_ConfigFrame(this, *wiimote_plugin, wxString::Format(_("Dolphin Wiimote Configuration%s%s"), (Core::IsRunning() ? _(" - ") : _("")),
+		(Core::IsRunning() ? wxString(SConfig::GetInstance().m_LocalCoreStartupParameter.m_strName.c_str(), wxConvUTF8).c_str() : _(""))));
 	m_ConfigFrame.ShowModal();
 	m_ConfigFrame.Destroy();
 	if (!was_init)				// if game isn't running

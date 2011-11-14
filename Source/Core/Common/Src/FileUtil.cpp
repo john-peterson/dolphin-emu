@@ -342,9 +342,9 @@ u64 GetSize(const std::string &filename)
 	struct stat64 buf;
 	if (stat64(filename.c_str(), &buf) == 0)
 	{
-		DEBUG_LOG(COMMON, "GetSize: %s: %lld",
-				filename.c_str(), (long long)buf.st_size);
-		return buf.st_blocks*st_blksize;
+		DEBUG_LOG(COMMON, "GetSize: %s: %lld %lld",
+				filename.c_str(), (long long)buf.st_size, (long long)buf.st_blocks*buf.st_blksize);
+		return buf.st_blocks*buf.st_blksize;
 	}
 	#endif
 
