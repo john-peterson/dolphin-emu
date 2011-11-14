@@ -47,8 +47,8 @@
 
 #include "VideoBackendBase.h"
 
-#include <shellapi.h>
 #include <wx/datetime.h> // wxWidgets
+#include <wx/stdpaths.h>
 
 // Resources
 
@@ -500,11 +500,8 @@ void CFrame::OnRestart(wxCommandEvent& WXUNUSED (event))
 		return;
 	}
 	// Get exe name and restart
-	#ifdef _WIN32
-		TCHAR szPath[MAX_PATH*8+1];
-		DWORD n = GetModuleFileName(NULL, szPath, sizeof(szPath)/sizeof(wchar_t));
-		ShellExecute(NULL, L"open", szPath, UseDebugger ? L"" : L"-d", NULL, SW_SHOW);
-	#endif
+	wxStandardPaths pth;
+	wxExecute(wxString::Format(_("%s%s"),pth.GetExecutablePath().c_str(),(UseDebugger ? _("") : _(" -d"))));
 	Close(true);
 }
 

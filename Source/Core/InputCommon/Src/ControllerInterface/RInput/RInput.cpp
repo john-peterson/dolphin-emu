@@ -1,6 +1,7 @@
 // Code partially copied from nuvee pcsx2 guncon plugin
-#include <windows.h>
-#include <stdio.h>
+#include "../ControllerInterface.h"
+
+#ifdef CIFACE_USE_RINPUT
 
 #include "RInput.h"
 
@@ -755,3 +756,5 @@ void reset_raw_mouse_data(int mousenum)
 
 }
 }
+
+#endif
