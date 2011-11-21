@@ -35,18 +35,9 @@
 #include "WxUtils.h"
 #include "Main.h"
 
-#include "../resources/Flag_Europe.xpm"
-#include "../resources/Flag_France.xpm"
-#include "../resources/Flag_Italy.xpm"
-#include "../resources/Flag_Japan.xpm"
-#include "../resources/Flag_USA.xpm"
-#include "../resources/Flag_Taiwan.xpm"
-#include "../resources/Flag_Korea.xpm"
-#include "../resources/Flag_Unknown.xpm"
-#include "../resources/Platform_Wad.xpm"
-#include "../resources/Platform_Wii.xpm"
-#include "../resources/Platform_Gamecube.xpm"
-#include "../resources/rating_gamelist.h"
+#include "../resources/flag.h"
+#include "../resources/platform.h"
+#include "../resources/rating.h"
 
 size_t CGameListCtrl::m_currentItem = 0;
 size_t CGameListCtrl::m_numberItem = 0;
@@ -192,31 +183,31 @@ void CGameListCtrl::InitBitmaps()
 
 	m_FlagImageIndex.resize(DiscIO::IVolume::NUMBER_OF_COUNTRIES);
 	m_FlagImageIndex[DiscIO::IVolume::COUNTRY_EUROPE] =
-		m_imageListSmall->Add(wxBitmap(Flag_Europe_xpm), wxNullBitmap);
+		m_imageListSmall->Add(wxGetBitmapFromMemory(Flag_Europe_png), wxNullBitmap);
 	m_FlagImageIndex[DiscIO::IVolume::COUNTRY_FRANCE] =
-		m_imageListSmall->Add(wxBitmap(Flag_France_xpm), wxNullBitmap);
+		m_imageListSmall->Add(wxGetBitmapFromMemory(Flag_France_png), wxNullBitmap);
 	m_FlagImageIndex[DiscIO::IVolume::COUNTRY_USA] =
-		m_imageListSmall->Add(wxBitmap(Flag_USA_xpm), wxNullBitmap);
+		m_imageListSmall->Add(wxGetBitmapFromMemory(Flag_USA_png), wxNullBitmap);
 	m_FlagImageIndex[DiscIO::IVolume::COUNTRY_JAPAN] =
-		m_imageListSmall->Add(wxBitmap(Flag_Japan_xpm), wxNullBitmap);
+		m_imageListSmall->Add(wxGetBitmapFromMemory(Flag_Japan_png), wxNullBitmap);
 	m_FlagImageIndex[DiscIO::IVolume::COUNTRY_KOREA] =
-		m_imageListSmall->Add(wxBitmap(Flag_Korea_xpm), wxNullBitmap);
+		m_imageListSmall->Add(wxGetBitmapFromMemory(Flag_Korea_png), wxNullBitmap);
 	m_FlagImageIndex[DiscIO::IVolume::COUNTRY_ITALY] =
-		m_imageListSmall->Add(wxBitmap(Flag_Italy_xpm), wxNullBitmap);
+		m_imageListSmall->Add(wxGetBitmapFromMemory(Flag_Italy_png), wxNullBitmap);
 	m_FlagImageIndex[DiscIO::IVolume::COUNTRY_TAIWAN] =
-		m_imageListSmall->Add(wxBitmap(Flag_Taiwan_xpm), wxNullBitmap);
+		m_imageListSmall->Add(wxGetBitmapFromMemory(Flag_Taiwan_png), wxNullBitmap);
 	m_FlagImageIndex[DiscIO::IVolume::COUNTRY_SDK] =
-		m_imageListSmall->Add(wxBitmap(Flag_Unknown_xpm), wxNullBitmap);
+		m_imageListSmall->Add(wxGetBitmapFromMemory(Flag_Unknown_png), wxNullBitmap);
 	m_FlagImageIndex[DiscIO::IVolume::COUNTRY_UNKNOWN] =
-		m_imageListSmall->Add(wxBitmap(Flag_Unknown_xpm), wxNullBitmap);
+		m_imageListSmall->Add(wxGetBitmapFromMemory(Flag_Unknown_png), wxNullBitmap);
 
 	m_PlatformImageIndex.resize(3);
 	m_PlatformImageIndex[0] =
-		m_imageListSmall->Add(wxBitmap(Platform_Gamecube_xpm), wxNullBitmap);
+		m_imageListSmall->Add(wxGetBitmapFromMemory(gc_png), wxNullBitmap);
 	m_PlatformImageIndex[1] =
-		m_imageListSmall->Add(wxBitmap(Platform_Wii_xpm), wxNullBitmap);
+		m_imageListSmall->Add(wxGetBitmapFromMemory(wii_png), wxNullBitmap);
 	m_PlatformImageIndex[2] =
-		m_imageListSmall->Add(wxBitmap(Platform_Wad_xpm), wxNullBitmap);
+		m_imageListSmall->Add(wxGetBitmapFromMemory(wad_png), wxNullBitmap);
 
 	m_EmuStateImageIndex.resize(6);
 	m_EmuStateImageIndex[0] =
@@ -287,6 +278,7 @@ void CGameListCtrl::Update()
 		InitBitmaps();
 
 		// add columns
+		InsertColumn(0,wxEmptyString,0,0);
 		InsertColumn(COLUMN_PLATFORM, _T(""));
 		InsertColumn(COLUMN_BANNER, _("Banner"));
 		InsertColumn(COLUMN_TITLE, _("Title"));
@@ -315,6 +307,7 @@ void CGameListCtrl::Update()
 			if (m_ISOFiles[i]->IsCompressed())
 				SetItemTextColour(i, wxColour(0xFF0000));
 		}
+		SetBackgroundColor();
 
 		// Sort items by Title
 		wxListEvent event;
@@ -402,9 +395,11 @@ void CGameListCtrl::OnPaintDrawImages(wxPaintEvent& event)
 		top_item = GetTopItem(),
 		bottom_item = std::min(top_item + GetCountPerPage() + 2, (long)GetItemCount());
 
-	int flagOffset = GetColumnWidth(0) + GetColumnWidth(1) +
-		GetColumnWidth(2) + GetColumnWidth(3);
-	int stateOffset = flagOffset + GetColumnWidth(4) + GetColumnWidth(5);
+	int platformOffset = GetColumnWidth(0);
+	int bannerOffset = platformOffset + GetColumnWidth(1);
+	int flagOffset = bannerOffset + GetColumnWidth(2) +
+		GetColumnWidth(3) + GetColumnWidth(4);
+	int stateOffset = flagOffset + GetColumnWidth(5) + GetColumnWidth(6);
 
 	// Only redraw shown lines
 	for (long i = top_item; i != bottom_item; ++i)
@@ -417,6 +412,8 @@ void CGameListCtrl::OnPaintDrawImages(wxPaintEvent& event)
 
 			m_imageListSmall->Draw(m_PlatformImageIndex[rISOFile.GetPlatform()],
 					dc, itemRect.GetX()+3, itemY);
+			dc.DrawBitmap(rISOFile.GetImage(),
+					bannerOffset, itemY);
 			m_imageListSmall->Draw(m_FlagImageIndex[rISOFile.GetCountry()],
 					dc, flagOffset, itemY);
 			m_imageListSmall->Draw(m_EmuStateImageIndex[rISOFile.GetEmuState()],
@@ -459,13 +456,12 @@ void CGameListCtrl::InsertItemInReportView(long _Index)
 #else
 	long ItemIndex = InsertItem(_Index, wxEmptyString, -1);
 #endif
-
-	if (rISOFile.GetImage().IsOk())
-		ImageIndex = m_imageListSmall->Add(rISOFile.GetImage());
-
+#ifndef _WIN32
 	// Set the game's banner in the second column
+	if (rISOFile.GetImage().IsOk())
+		ImageIndex = m_imageListSmall->Add(rISOFile.GetImage());	
 	SetItemColumnImage(_Index, COLUMN_BANNER, ImageIndex);
-
+#endif
 	if (rISOFile.GetPlatform() != GameListItem::WII_WAD)
 	{
 		std::string company;
@@ -530,9 +526,6 @@ void CGameListCtrl::InsertItemInReportView(long _Index)
 
 	// File size
 	SetItem(_Index, COLUMN_SIZE, NiceSizeFormat(rISOFile.GetFileSize()), -1);
-
-	// Background color
-	SetBackgroundColor();
 
 	// Item data
 	SetItemData(_Index, ItemIndex);
@@ -1350,5 +1343,3 @@ void CGameListCtrl::UnselectAll()
 	}
 
 }
-
-

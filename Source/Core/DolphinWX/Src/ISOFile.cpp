@@ -34,7 +34,7 @@
 #include "FileSearch.h"
 #include "CompressedBlob.h"
 #include "ChunkFile.h"
-#include "../resources/no_banner.cpp"
+#include "../resources/empty_banner.h"
 
 #define CACHE_REVISION 0x10B
 
@@ -143,9 +143,10 @@ GameListItem::GameListItem(const std::string& _rFileName)
 	else
 	{
 		// default banner
-		wxMemoryInputStream istream(no_banner_png, sizeof no_banner_png);
-		wxImage iNoBanner(istream, wxBITMAP_TYPE_PNG);
-		m_Image = iNoBanner;
+		//wxMemoryInputStream istream(no_banner_png, sizeof no_banner_png);
+		//wxImage iNoBanner(istream, wxBITMAP_TYPE_PNG);
+		m_Image = wxImage(wxMemoryInputStream(empty_banner_png, sizeof empty_banner_png), wxBITMAP_TYPE_PNG);
+		//m_Image = iNoBanner;
 	}
 }
 

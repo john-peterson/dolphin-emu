@@ -57,7 +57,7 @@ public:
 
 	enum
 	{
-		COLUMN_PLATFORM = 0,
+		COLUMN_PLATFORM = 1,
 		COLUMN_BANNER,
 		COLUMN_TITLE,
 		COLUMN_NOTES,
@@ -71,6 +71,7 @@ private:
 
 	std::vector<int> m_FlagImageIndex;
 	std::vector<int> m_PlatformImageIndex;
+	//std::vector<int> m_BannerImageIndex;
 	std::vector<int> m_EmuStateImageIndex;
 	std::vector<GameListItem*> m_ISOFiles;
 
