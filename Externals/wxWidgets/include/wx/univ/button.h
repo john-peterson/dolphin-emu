@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     15.08.00
-// RCS-ID:      $Id: button.h 41227 2006-09-14 19:36:47Z VZ $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_UNIV_BUTTON_H_
 #define _WX_UNIV_BUTTON_H_
 
-class WXDLLEXPORT wxInputHandler;
+class WXDLLIMPEXP_FWD_CORE wxInputHandler;
 
 #include "wx/bitmap.h"
 
@@ -20,16 +20,16 @@ class WXDLLEXPORT wxInputHandler;
 // the actions supported by this control
 // ----------------------------------------------------------------------------
 
-#define wxACTION_BUTTON_TOGGLE  _T("toggle")    // press/release the button
-#define wxACTION_BUTTON_PRESS   _T("press")     // press the button
-#define wxACTION_BUTTON_RELEASE _T("release")   // release the button
-#define wxACTION_BUTTON_CLICK   _T("click")     // generate button click event
+#define wxACTION_BUTTON_TOGGLE  wxT("toggle")    // press/release the button
+#define wxACTION_BUTTON_PRESS   wxT("press")     // press the button
+#define wxACTION_BUTTON_RELEASE wxT("release")   // release the button
+#define wxACTION_BUTTON_CLICK   wxT("click")     // generate button click event
 
 // ----------------------------------------------------------------------------
 // wxButton: a push button
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxButton : public wxButtonBase
+class WXDLLIMPEXP_CORE wxButton : public wxButtonBase
 {
 public:
     wxButton() { Init(); }
@@ -87,9 +87,7 @@ public:
 
     virtual ~wxButton();
 
-    virtual void SetImageLabel(const wxBitmap& bitmap);
-    virtual void SetImageMargins(wxCoord x, wxCoord y);
-    virtual void SetDefault();
+    virtual wxWindow *SetDefault();
 
     virtual bool IsPressed() const { return m_isPressed; }
     virtual bool IsDefault() const { return m_isDefault; }
@@ -118,6 +116,9 @@ protected:
 
     virtual bool DoDrawBackground(wxDC& dc);
     virtual void DoDraw(wxControlRenderer *renderer);
+
+    virtual void DoSetBitmap(const wxBitmap& bitmap, State which);
+    virtual void DoSetBitmapMargins(wxCoord x, wxCoord y);
 
     // common part of all ctors
     void Init();

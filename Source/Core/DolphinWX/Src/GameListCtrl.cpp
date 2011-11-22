@@ -720,7 +720,7 @@ const GameListItem *CGameListCtrl::GetISO(size_t index) const
 
 CGameListCtrl *caller;
 #if wxCHECK_VERSION(2, 9, 0)
-int wxCALLBACK wxListCompare(long item1, long item2, wxIntPtr sortData)
+int wxCALLBACK wxListCompare(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
 #else
 int wxCALLBACK wxListCompare(long item1, long item2, long sortData)
 #endif
@@ -774,12 +774,10 @@ void CGameListCtrl::OnKeyPress(wxListEvent& event)
 		bleh.SetMask(wxLIST_MASK_TEXT);
 		GetItem(bleh);
 
-		wxString text = bleh.GetText();
-
 #ifdef __WXGTK__
-		if (text.MakeLower()[0] == event.GetKeyCode())
+		if (wxString(bleh.GetText()).MakeLower().GetChar(0) == event.GetKeyCode())
 #else
-		if (text.MakeUpper()[0] == event.GetKeyCode())
+		if (wxString(bleh.GetText()).MakeUpper().GetChar(0) == event.GetKeyCode())
 #endif
 		{
 			if (lastKey == event.GetKeyCode() && Loop < sLoop)

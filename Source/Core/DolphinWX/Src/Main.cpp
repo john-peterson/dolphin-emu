@@ -115,37 +115,37 @@ bool DolphinApp::OnInit()
 	wxCmdLineEntryDesc cmdLineDesc[] =
 	{
 		{
-			wxCMD_LINE_SWITCH, wxS("h"), wxS("help"),
+			wxCMD_LINE_SWITCH, _("h"), _("help"),
 			_("Show this help message"),
 			wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP
 		},
 		{
-			wxCMD_LINE_SWITCH, wxS("d"), wxS("debugger"),
+			wxCMD_LINE_SWITCH, _("d"), _("debugger"),
 			_("Opens the debugger"),
 			wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
 		},
 		{
-			wxCMD_LINE_SWITCH, wxS("l"), wxS("logger"),
+			wxCMD_LINE_SWITCH, _("l"), _("logger"),
 			_("Opens the logger"),
 			wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
 		},
 		{
-			wxCMD_LINE_OPTION, wxS("e"), wxS("exec"),
+			wxCMD_LINE_OPTION,_("e"),_("exec"),
 			_("Loads the specified file (DOL,ELF,GCM,ISO,WAD)"),
 			wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL
 		},
 		{
-			wxCMD_LINE_SWITCH, wxS("b"), wxS("batch"),
+			wxCMD_LINE_SWITCH,_("b"),_("batch"),
 			_("Exit Dolphin with emulator"),
 			wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
 		},
 		{
-			wxCMD_LINE_OPTION, wxS("V"), wxS("video_backend"),
+			wxCMD_LINE_OPTION,_("V"),_("video_backend"),
 			_("Specify a video backend"),
 			wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL
 		},
 		{
-			wxCMD_LINE_OPTION, wxS("A"), wxS("audio_emulation"),
+			wxCMD_LINE_OPTION,_("A"),_("audio_emulation"),
 			_("Low level (LLE) or high level (HLE) audio"),
 			wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL
 		},
