@@ -114,7 +114,7 @@ private:
 	static NetPlayDiag* npd;
 };
 
-DECLARE_EVENT_TYPE(wxEVT_THREAD, -1)
+//DECLARE_EVENT_TYPE(wxEVT_THREAD, -1)
 
 class ChangeGameDiag : public wxDialog
 {
