@@ -44,24 +44,9 @@ void SetGenerationMode(const BPCmd &bp)
 	g_renderer->SetGenerationMode();
 }
 
-void SetScissor()
+void SetScissor(const BPCmd &bp)
 {
-	const int xoff = bpmem.scissorOffset.x * 2 - 342;
-	const int yoff = bpmem.scissorOffset.y * 2 - 342;
-
-	EFBRectangle rc (bpmem.scissorTL.x - xoff - 342, bpmem.scissorTL.y - yoff - 342,
-					bpmem.scissorBR.x - xoff - 341, bpmem.scissorBR.y - yoff - 341);
-
-	if (rc.left < 0) rc.left = 0;
-	if (rc.top < 0) rc.top = 0;
-	if (rc.right > EFB_WIDTH) rc.right = EFB_WIDTH;
-	if (rc.bottom > EFB_HEIGHT) rc.bottom = EFB_HEIGHT;
-
-	if (rc.left > rc.right) rc.right = rc.left;
-	if (rc.top > rc.bottom) rc.bottom = rc.top;
-
-	TargetRectangle trc = g_renderer->ConvertEFBRectangle(rc);
-	g_renderer->SetScissorRect(trc);
+	g_renderer->SetScissorRect();
 }
 
 void SetLineWidth(const BPCmd &bp)

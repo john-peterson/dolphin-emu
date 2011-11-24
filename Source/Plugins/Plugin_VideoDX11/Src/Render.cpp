@@ -42,7 +42,6 @@
 #include "Movie.h"
 #include "Television.h"
 #include "Host.h"
-#include "BPFunctions.h"
 #include "AVIDump.h"
 
 namespace DX11
@@ -455,9 +454,51 @@ bool Renderer::CheckForResize()
 	return false;
 }
 
-void Renderer::SetScissorRect(const TargetRectangle& rc)
+bool Renderer::SetScissorRect()
 {
-	D3D::context->RSSetScissorRects(1, rc.AsRECT());
+	TargetRectangle rc;
+	GetScissorRect(rc);
+
+	if (rc.left < 0) rc.left = 0;
+	if (rc.right < 0) rc.right = 0;
+	if (rc.top < 0) rc.top = 0;
+	if (rc.bottom < 0) rc.bottom = 0;
+
+	if (rc.left > EFB_WIDTH) rc.left = EFB_WIDTH;
+	if (rc.right > EFB_WIDTH) rc.right = EFB_WIDTH;
+	if (rc.top > EFB_HEIGHT) rc.top = EFB_HEIGHT;
+	if (rc.bottom > EFB_HEIGHT) rc.bottom = EFB_HEIGHT;
+
+	rc.left = EFBToScaledX(rc.left);
+	rc.right = EFBToScaledX(rc.right);
+	rc.top = EFBToScaledY(rc.top);
+	rc.bottom = EFBToScaledY(rc.bottom);
+
+	if (rc.left > rc.right)
+	{
+		int temp = rc.right;
+		rc.right = rc.left;
+		rc.left = temp;
+	}
+	if (rc.top > rc.bottom)
+	{
+		int temp = rc.bottom;
+		rc.bottom = rc.top;
+		rc.top = temp;
+	}
+
+	if (rc.right >= rc.left && rc.bottom >= rc.top)
+	{
+		D3D::context->RSSetScissorRects(1, rc.AsRECT());
+		return true;
+	}
+	else
+	{
+		//WARN_LOG(VIDEO, "Bad scissor rectangle: %i %i %i %i", rc.left, rc.top, rc.right, rc.bottom);
+		*rc.AsRECT() = CD3D11_RECT(0.f, 0.f, s_target_width, s_target_height);
+		D3D::context->RSSetScissorRects(1, rc.AsRECT());
+		return false;
+	}
 }
 
 void Renderer::SetColorMask()
@@ -1206,7 +1247,7 @@ void Renderer::RestoreAPIState()
 	D3D::stateman->PopDepthState();
 	D3D::stateman->PopRasterizerState();
 	VertexShaderManager::SetViewportChanged();
-	BPFunctions::SetScissor();
+	SetScissorRect();
 }
 
 void Renderer::ApplyState(bool bUseDstAlpha)

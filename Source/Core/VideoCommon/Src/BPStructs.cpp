@@ -164,7 +164,7 @@ void BPWritten(const BPCmd& bp)
 	case BPMEM_SCISSORTL: // Scissor Rectable Top, Left
 	case BPMEM_SCISSORBR: // Scissor Rectable Bottom, Right
 	case BPMEM_SCISSOROFFSET: // Scissor Offset
-		SetScissor();
+		SetScissor(bp);
 		break;
 	case BPMEM_LINEPTWIDTH: // Line Width
 		SetLineWidth(bp);

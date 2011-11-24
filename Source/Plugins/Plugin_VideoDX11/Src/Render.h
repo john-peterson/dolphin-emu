@@ -15,7 +15,7 @@ public:
 
 	void SetColorMask();
 	void SetBlendMode(bool forceUpdate);
-	void SetScissorRect(const TargetRectangle& rc);
+	bool SetScissorRect();
 	void SetGenerationMode();
 	void SetDepthMode();
 	void SetLogicOpMode();

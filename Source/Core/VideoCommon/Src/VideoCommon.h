@@ -64,7 +64,8 @@ void HandleGLError();
 // This structure should only be used to represent a rectangle in EFB
 // coordinates, where the origin is at the upper left and the frame dimensions
 // are 640 x 528.
-typedef MathUtil::Rectangle<int> EFBRectangle;
+struct EFBRectangle : public MathUtil::Rectangle<int>
+{};
 
 // This structure should only be used to represent a rectangle in standard target
 // coordinates, where the origin is at the lower left and the frame dimensions
