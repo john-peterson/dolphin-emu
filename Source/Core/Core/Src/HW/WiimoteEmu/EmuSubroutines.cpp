@@ -551,7 +551,7 @@ void Wiimote::ReadData(const wm_read_data* const rd)
 			{
 				// encrypt
 				if (0xaa == m_reg_ext.encryption) {
-					wiimote_encrypt(&m_ext_key, block, 0, (u8)size);
+					wiimote_encrypt(&m_ext_key, block, address&0xffff, (u8)size);
 				}
 			}
 		}
