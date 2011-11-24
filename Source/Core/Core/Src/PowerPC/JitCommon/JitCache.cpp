@@ -71,7 +71,7 @@ bool JitBlock::ContainsAddress(u32 em_address)
 
 	void JitBlockCache::Init()
 	{
-		MAX_NUM_BLOCKS = 65536*2;
+		MAX_NUM_BLOCKS = 65536*8;
 
 #if defined USE_OPROFILE && USE_OPROFILE
 		agent = op_open_agent();

@@ -30,7 +30,16 @@ void GenericLog(LogTypes::LOG_LEVELS level, LogTypes::LOG_TYPE type,
 	va_start(args, fmt);
 	if (LogManager::GetInstance())
 		LogManager::GetInstance()->Log(level, type,
-			file, line, fmt, args);
+			file, line, true, fmt, args);
+	va_end(args);
+}
+void SimpleLog(LogTypes::LOG_LEVELS level, LogTypes::LOG_TYPE type, const char* fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	if (LogManager::GetInstance())
+		LogManager::GetInstance()->Log(level, type,
+			"", 0, false, fmt, args);
 	va_end(args);
 }
 
@@ -110,7 +119,7 @@ LogManager::~LogManager()
 }
 
 void LogManager::Log(LogTypes::LOG_LEVELS level, LogTypes::LOG_TYPE type, 
-	const char *file, int line, const char *format, va_list args)
+	const char *file, int line, bool _file, const char *format, va_list args)
 {
 	char temp[MAX_MSGLEN];
 	char msg[MAX_MSGLEN * 2];
@@ -122,10 +131,15 @@ void LogManager::Log(LogTypes::LOG_LEVELS level, LogTypes::LOG_TYPE type,
 	CharArrayFromFormatV(temp, MAX_MSGLEN, format, args);
 
 	static const char level_to_char[7] = "-NEWID";
+	if (_file)
 	sprintf(msg, "%s %s:%u %c[%s]: %s\n",
 		Common::Timer::GetTimeFormatted().c_str(),
 		file, line, level_to_char[(int)level],
 		log->GetShortName(), temp);
+	else
+ 		sprintf(msg, "%s: %s\n",
+ 		Common::Timer::GetTimeFormatted().c_str(),
+ 		temp);
 
 	log->Trigger(level, msg);
 }

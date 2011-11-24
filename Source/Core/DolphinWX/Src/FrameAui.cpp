@@ -736,7 +736,7 @@ void CFrame::ResizeConsole()
 	if (!Win) return;
 
 	const int wxBorder = 2, Border = 4,
-		  MenuBar = 30, ScrollBar = 19;
+		  MenuBar = 0, ScrollBar = 19;
 
 	// Get the client size
 	int X = Win->GetSize().GetX();
@@ -1019,6 +1019,10 @@ wxFrame * CFrame::CreateParentFrame(wxWindowID Id, const wxString& Title,
 	Frame->SetSizer(m_MainSizer);
 	// Minimum frame size
 	Frame->SetMinSize(wxSize(200, 200));
+	if (Id == IDM_CONSOLEWINDOW_PARENT) {
+		Frame->SetSize(wxSize(960, 1040));
+		Frame->SetPosition(wxPoint(0, 0));
+	}
 	Frame->Show();
 	return Frame;
 }
