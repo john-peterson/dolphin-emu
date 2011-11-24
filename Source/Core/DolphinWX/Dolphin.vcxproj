@@ -143,22 +143,18 @@
     <PostBuildEventUseInBuild />
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>..\Common\Src;..\VideoCommon\Src;..\AudioCommon\Src;..\Core\Src;..\Core\Src\PowerPC\JitCommon;..\DebuggerWX\Src;..\..\..\Externals\Bochs_disasm;..\InputCommon\Src;..\DiscIO\Src;..\..\..\Externals\SFML\include;..\..\..\Externals\wxWidgets\include;..\..\..\Externals\CLRun\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
+    <ClCompile />
     <Link />
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>..\Common\Src;..\VideoCommon\Src;..\AudioCommon\Src;..\Core\Src;..\Core\Src\PowerPC\JitCommon;..\DebuggerWX\Src;..\..\..\Externals\Bochs_disasm;..\InputCommon\Src;..\DiscIO\Src;..\..\..\Externals\SFML\include;..\..\..\Externals\wxWidgets\include;..\..\..\Externals\CLRun\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
+    <ClCompile />
     <Link />
     <PostBuildEvent />
+    <ClCompile />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\Common\Src;..\VideoCommon\Src;..\AudioCommon\Src;..\Core\Src;..\Core\Src\PowerPC\JitCommon;..\DebuggerWX\Src;..\..\..\Externals\Bochs_disasm;..\InputCommon\Src;..\DiscIO\Src;..\..\..\Externals\SFML\include;..\..\..\Externals\wxWidgets\include;..\..\..\Externals\CLRun\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>
       </OpenMPSupport>
     </ClCompile>
@@ -166,15 +162,12 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugFast|Win32'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>..\Common\Src;..\VideoCommon\Src;..\AudioCommon\Src;..\Core\Src;..\Core\Src\PowerPC\JitCommon;..\DebuggerWX\Src;..\..\..\Externals\Bochs_disasm;..\InputCommon\Src;..\InputUICommon\Src;..\DiscIO\Src;..\..\..\Externals\SFML\include;..\..\..\Externals\wxWidgets\include;..\..\..\Externals\CLRun\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
+    <ClCompile />
     <Link />
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\Common\Src;..\VideoCommon\Src;..\AudioCommon\Src;..\Core\Src;..\Core\Src\PowerPC\JitCommon;..\DebuggerWX\Src;..\..\..\Externals\Bochs_disasm;..\InputCommon\Src;..\DiscIO\Src;..\..\..\Externals\SFML\include;..\..\..\Externals\wxWidgets\include;..\..\..\Externals\CLRun\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>
       </OpenMPSupport>
     </ClCompile>
@@ -182,9 +175,7 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugFast|x64'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>..\Common\Src;..\VideoCommon\Src;..\AudioCommon\Src;..\Core\Src;..\Core\Src\PowerPC\JitCommon;..\DebuggerWX\Src;..\..\..\Externals\Bochs_disasm;..\InputCommon\Src;..\InputUICommon\Src;..\DiscIO\Src;..\..\..\Externals\SFML\include;..\..\..\Externals\wxWidgets\include;..\..\..\Externals\CLRun\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
+    <ClCompile />
     <Link />
     <PostBuildEvent />
   </ItemDefinitionGroup>
