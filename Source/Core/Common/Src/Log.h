@@ -95,6 +95,7 @@ void GenericLog(LOGTYPES_LEVELS level, LOGTYPES_TYPE type,
 		__attribute__((format(printf, 5, 6)))
 #endif
 		;
+void SimpleLog(LOGTYPES_LEVELS level, LOGTYPES_TYPE type, const char *fmt, ...);
 
 #if defined LOGGING || defined _DEBUG || defined DEBUGFAST
 #define MAX_LOGLEVEL DEBUG_LEVEL
@@ -119,6 +120,9 @@ void GenericLog(LOGTYPES_LEVELS level, LOGTYPES_TYPE type,
 #define NOTICE_LOG(t,...) { GENERIC_LOG(LogTypes::t, LogTypes::LNOTICE, __VA_ARGS__) }
 #define INFO_LOG(t,...) { GENERIC_LOG(LogTypes::t, LogTypes::LINFO, __VA_ARGS__) }
 #define DEBUG_LOG(t,...) { GENERIC_LOG(LogTypes::t, LogTypes::LDEBUG, __VA_ARGS__) }
+#define SERROR_LOG(t,...) { SimpleLog(LogTypes::LERROR, LogTypes::t, __VA_ARGS__); }
+#define SWARN_LOG(t,...) { SimpleLog(LogTypes::LWARNING, LogTypes::t, __VA_ARGS__); }
+#define SNOTICE_LOG(t,...) { SimpleLog(LogTypes::LNOTICE, LogTypes::t, __VA_ARGS__); }
 
 #if MAX_LOGLEVEL >= DEBUG_LEVEL
 #define _dbg_assert_(_t_, _a_) \

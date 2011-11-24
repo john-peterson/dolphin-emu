@@ -341,7 +341,7 @@ CFrame::CFrame(wxFrame* parent,
 	if (SConfig::GetInstance().m_InterfaceConsole) Console->Open();
 
 	// Start debugging mazimized
-	if (UseDebugger) this->Maximize(true);
+	//if (UseDebugger) this->Maximize(true);
 	// Debugger class
 	if (UseDebugger)
 	{
