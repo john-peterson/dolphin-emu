@@ -34,8 +34,8 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 	bool SoundData = false;
 	bool DataReport = false;
 	static u8 zero16[16];	
-	static std::queue<u16> dataRep;
-	static u8 dataReply[2] = {0};
+	static std::queue<u32> dataRep;
+	static u8 dataReply[3] = {0};
 	static bool keyDown[0xff] = {false};
 	static bool keep_still = true;
 	bool Emu = wm;
@@ -83,7 +83,7 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 	case WM_REPORT_MODE: // 0x12
 		size = sizeof(wm_report_mode);
 		if (g_DebugComm) Name.append("WM_REPORT_MODE");
-		ERROR_LOG(CONSOLE, "WM_REPORT_MODE: 0x%02x", data[3]);
+		SERROR_LOG(CONSOLE, "WM_REPORT_MODE: 0x%02x", data[3]);
 		break;
 	case WM_IR_PIXEL_CLOCK: // 0x13
 		if (g_DebugComm) Name.append("WM_IR_PIXEL_CLOCK");
@@ -92,7 +92,7 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 	case WM_REQUEST_STATUS: // 0x15
 		size = sizeof(wm_request_status);
 		if (g_DebugComm) Name.append("WM_REQUEST_STATUS");
-		INFO_LOG(CONSOLE, "WM_REQUEST_STATUS: %s", ArrayToString(data, size+2, 0).c_str());
+		SNOTICE_LOG(CONSOLE, "WM_REQUEST_STATUS: %s", ArrayToString(data, size+2, 0).c_str());
 		break;
 	case WM_WRITE_DATA: {// 0x16
 		if (g_DebugComm) Name.append("W 0x16");
@@ -178,7 +178,7 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 			if (data[3] == 0xa4 || data[3] == 0xa6) {
 				//DEBUG_LOG(CONSOLE, "M+: %s", ArrayToString((u8*)&wm->m_reg_motion_plus, sizeof(wm->m_reg_motion_plus), 0, 30).c_str());
 				//DEBUG_LOG(CONSOLE, "M+: %s", ArrayToString((u8*)&wm->m_reg_motion_plus.ext_identifier, sizeof(wm->m_reg_motion_plus.ext_identifier), 0, 30).c_str());	
-				NOTICE_LOG(CONSOLE, "W[0x%02x 0x%02x|%d]: %s", data[3], region_offset,  wd->size, ArrayToString(wd->data, wd->size, 0).c_str());
+				SNOTICE_LOG(CONSOLE, "W[0x%02x 0x%02x|%d]: %s", data[3], region_offset,  wd->size, ArrayToString(wd->data, wd->size, 0).c_str());
 			}
 			break;
 		}
@@ -191,16 +191,18 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 		// data[2]: The address space 0, 1 or 2
 		// data[3]: The registry type
 		// data[5]: The registry offset
-		// data[7]: The number of bytes, 6 and 7 together	
-		dataRep.push(((data[2]>>1) << 8) + data[3]);
-		//INFO_LOG(CONSOLE, "push 0x%04x 0x%02x 0x%02x", dataRep.back(), data[2]>>1, data[3]);
+		// data[7]: The number of bytes, 6 and 7 together
 
 		wm_read_data* rd = (wm_read_data*)sr->data;
 		u32 address = swap24(rd->address);
-		u16 size = Common::swap16(rd->size);
+		u8 addressLO = address & 0xFFFF;
 		address &= 0xFEFFFF;
+		u16 size = Common::swap16(rd->size);		
 		u8 *const block = new u8[size];
 		void *region_ptr = NULL;
+
+		dataRep.push(((data[2]>>1)<<16) + ((data[3])<<8) + addressLO);
+		//SNOTICE_LOG(CONSOLE, "push 0x%06x 0x%02x 0x%02x", dataRep.back(), data[2]>>1, data[3], addressLO);
 		
 		switch(data[2]>>1)
 		{
@@ -211,8 +213,7 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 		case WM_SPACE_REGS1:
 		case WM_SPACE_REGS2:		
 			// ignore second byte for extension area
-			if (0xA4 == (address >> 16))
-				address &= 0xFF00FF;
+			if (address>>16 == 0xA4) address &= 0xFF00FF;
 			const u8 region_offset = (u8)address;
 			switch(data[3])
 			{
@@ -256,7 +257,7 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 		//INFO_LOG(CONSOLE, "WM_STATUS_REPORT: %s", ArrayToString(data, size+2, 0).c_str());
 		{
 			wm_status_report* pStatus = (wm_status_report*)(data + 2);
-			INFO_LOG(CONSOLE, ""
+			SERROR_LOG(CONSOLE, ""
 				"Statusreport extension: %i",
 				//"Speaker enabled: %i"
 				//"IR camera enabled: %i"
@@ -290,12 +291,18 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 		Name = "R_REPLY";
 		// data[4]: Size and error
 		// data[5, 6]: The registry offset
-		wm_read_data_reply* const rdr = (wm_read_data_reply*)(data + 2);
+
+		u8 data2[32];
+		memset(data2, 0, sizeof(data2));
+		memcpy(data2, data, Size);
+		wm_read_data_reply* const rdr = (wm_read_data_reply*)(data2 + 2);
+
 		bool decrypted = false;		
 		if(!dataRep.empty()) {
 			//INFO_LOG(CONSOLE, "pop 0x%04x", dataRep.front());
-			dataReply[0] = (dataRep.front()>>8)&0x00FF;
-			dataReply[1] = dataRep.front()&0x00FF;			
+			dataReply[0] = (dataRep.front()>>16)&0x00FF;
+			dataReply[1] = (dataRep.front()>>8)&0x00FF;
+			dataReply[2] = dataRep.front()&0x00FF;
 			dataRep.pop();			
 		}
 
@@ -324,18 +331,19 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 		if (!Emu && rdr->address>>8 == 0x40) {
 			memcpy(((u8*)&wm->m_reg_ext.encryption_key), rdr->data, rdr->size+1);
 			wiimote_gen_key(&wm->m_ext_key, wm->m_reg_ext.encryption_key);
-			INFO_LOG(CONSOLE, "Reading key: %s", ArrayToString(((u8*)&wm->m_ext_key), sizeof(wm->m_ext_key), 0, 30).c_str());
+			SNOTICE_LOG(CONSOLE, "Reading key: %s", ArrayToString(((u8*)&wm->m_ext_key), sizeof(wm->m_ext_key), 0, 30).c_str());
 		}
 		// decrypt
 		//if(((!wm->GetMotionPlusActive() && ((u8*)&wm->m_reg_ext)[0xf0] == 0xaa) || (wm->GetMotionPlusActive() && ((u8*)&wm->m_reg_motion_plus)[0xf0] == 0xaa)) && rdr->address>>8 < 0xf0) {
 		//if(((((u8*)&wm->m_reg_ext)[0xf0] == 0xaa) || ((u8*)&wm->m_reg_motion_plus)[0xf0] == 0xaa) && rdr->address>>8 < 0xf0) {
-		//if(((u8*)&wm->m_reg_ext)[0xf0] == 0xaa && rdr->address>>8 < 0xf0) {
-		//	WARN_LOG(CONSOLE, "key %s", ArrayToString(((u8*)&wm->m_ext_key), sizeof(wm->m_ext_key), 0, 30).c_str());
-		//	WARN_LOG(CONSOLE, "decrypt %s", ArrayToString(rdr->data, rdr->size+1, 0, 30).c_str());
-		//	wiimote_decrypt(&wm->m_ext_key, rdr->data, 0, rdr->size+1);
-		//	WARN_LOG(CONSOLE, "decrypt %s", ArrayToString(rdr->data, rdr->size+1, 0, 30).c_str());
-		//	decrypted = true;
-		//}
+		//if(!wm->GetMotionPlusActive() && ((u8*)&wm->m_reg_ext)[0xf0] == 0xaa && rdr->address>>8 < 0xf0) {
+		if(!wm->GetMotionPlusActive() && ((u8*)&wm->m_reg_ext)[0xf0] == 0xaa) {
+			//SWARN_LOG(CONSOLE, "key %s", ArrayToString(((u8*)&wm->m_ext_key), sizeof(wm->m_ext_key), 0, 30).c_str());
+			//SWARN_LOG(CONSOLE, "decrypt %s", ArrayToString(rdr->data, rdr->size+1, 0, 30).c_str());
+			wiimote_decrypt(&wm->m_ext_key, rdr->data, dataReply[2]&0xffff, rdr->size+1);
+			//SWARN_LOG(CONSOLE, "decrypt %s", ArrayToString(rdr->data, rdr->size+1, 0, 30).c_str());
+			decrypted = true;
+		}
 
 		// save data
 		if (!Emu && !rdr->error) {
@@ -354,7 +362,7 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 		{
 			//INFO_LOG(CONSOLE, "Extension ID: %s", ArrayToString(rdr->data, rdr->size+1).c_str());
 		}
-		// Show the Wiimote neutral values
+		// Show Wiimote neutral values
 		// The only difference between the Nunchuck and Wiimote that we go
 		//  after is calibration here is the offset in memory. If needed we can
 		//  check the preceding 0x17 request to.
@@ -369,7 +377,7 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 				//INFO_LOG(CONSOLE, "Cal_g.z: %i",  data[7 +12]);
 			}
 		}
-		// Show the Nunchuck neutral values
+		// Show Nunchuck neutral values
 		if(data[4] == 0xf0 && data[5] == 0x00 && (data[6] == 0x20 || data[6] == 0x30)) {
 			// Save the encrypted data
 			//TmpData = StringFromFormat("Read[%s] (enc): %s", (Emu ? "Emu" : "Real"), ArrayToString(data, size + 2, 0, 30).c_str()); 
@@ -411,7 +419,7 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 			//	INFO_LOG(CONSOLE, "Rt.Neutral %i\n\n", data[7 + 13]);
 			//}
 
-			// Save the values if they come from the real Wiimote
+			// Save values
 			if (!Emu) {
 				// Save the values from the Nunchuck
 				if(data[7 + 0] != 0xff)
@@ -437,9 +445,9 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 		}
 		if (dataReply[1] == 0xa4 || dataReply[1] == 0xa6) {
 			if(rdr->error == 7 || rdr->error == 8) {
-				WARN_LOG(CONSOLE, "R%s[0x%02x 0x%02x]: e-%d", decrypted?"*":"", dataReply[1], rdr->address>>8, rdr->error);
+				SWARN_LOG(CONSOLE, "R%s[0x%02x 0x%02x]: e-%d", decrypted?"*":"", dataReply[1], rdr->address>>8, rdr->error);
 			} else {
-				WARN_LOG(CONSOLE, "R%s[0x%02x 0x%02x|%d]: %s", decrypted?"*":"", dataReply[1], rdr->address>>8, rdr->size+1, ArrayToString(rdr->data, rdr->size+1, 0).c_str()); }
+				SWARN_LOG(CONSOLE, "R%s[0x%02x 0x%02x|%d]: %s", decrypted?"*":"", dataReply[1], rdr->address>>8, rdr->size+1, ArrayToString(rdr->data, rdr->size+1, 0).c_str()); }
 			}
 		}
 		break;
@@ -495,7 +503,7 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 
 	if (!DataReport && g_DebugComm)
 	{
-		DEBUG_LOG(CONSOLE, "Comm[%s] %s: %s", (Emu ? "E" : "R"), Name.c_str(), ArrayToString(data, size+2, 0).c_str()); //std::min(10,size+2)
+		SERROR_LOG(CONSOLE, "Comm[%s] %s: %s", (Emu ? "E" : "R"), Name.c_str(), ArrayToString(data, size+2, 0).c_str()); //std::min(10,size+2)
 	}
 	if (g_DebugSoundData && SoundData)
 	{
