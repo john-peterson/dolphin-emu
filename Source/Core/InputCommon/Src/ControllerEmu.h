@@ -457,9 +457,9 @@ public:
 				//std::string state = ""; for(int i=0; i<controls.size(); i++)
 				//	state += StringFromFormat("%0.2f ", controls[i]->control_ref->State(0, true));				
 				//SWARN_LOG(CONSOLE, "Cursor::GetState: size %d, state %s", controls.size(), state.c_str());				
-				float yy = controls[0]->control_ref->State(0, settings[C_SENSITIVITY]->value, true);
-				float xx = controls[2]->control_ref->State(0, settings[C_SENSITIVITY]->value, true);
-				float zz = controls[4]->control_ref->State(0, settings[C_SENSITIVITY]->value, true);
+				float yy = controls[0]->control_ref->State(0, true);
+				float xx = controls[2]->control_ref->State(0, true);
+				float zz = controls[4]->control_ref->State(0, true);
 				// settings
 				if (adjusted)
 				{
@@ -490,8 +490,8 @@ public:
 			}
 			else
 			{
-				float yy = controls[0]->control_ref->State(0, settings[C_SENSITIVITY]->value) - controls[1]->control_ref->State(0, settings[C_SENSITIVITY]->value);
-				float xx = controls[3]->control_ref->State(0, settings[C_SENSITIVITY]->value) - controls[2]->control_ref->State(0, settings[C_SENSITIVITY]->value);				
+				float yy = controls[0]->control_ref->State() - controls[1]->control_ref->State();
+				float xx = controls[3]->control_ref->State() - controls[2]->control_ref->State();				
 
 				// adjust cursor according to settings
 				if (adjusted)
