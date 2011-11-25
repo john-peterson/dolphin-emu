@@ -190,10 +190,16 @@ void InputConfigDialog::UpdateControlReferences()
 		(*i)->controller->UpdateReferences(g_controller_interface);
 }
 
-void InputConfigDialog::ClickSave(wxCommandEvent& event)
+void InputConfigDialog::Save(wxCommandEvent& event)
 {
 	m_plugin.SaveConfig();
 	Close();
+	event.Skip();
+}
+
+void InputConfigDialog::Apply(wxCommandEvent& event)
+{
+	m_plugin.SaveConfig();
 	event.Skip();
 }
 
@@ -981,13 +987,14 @@ InputConfigDialog::InputConfigDialog(wxWindow* const parent, InputPlugin& plugin
 	UpdateDeviceComboBox();
 	UpdateProfileComboBox();
 
-	Connect(wxID_OK, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InputConfigDialog::ClickSave));
+	Connect(wxID_OK, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InputConfigDialog::Save));
+	Connect(wxID_APPLY, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InputConfigDialog::Apply));
 	Connect(wxID_CANCEL, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InputConfigDialog::Cancel));
 	Connect(wxID_ANY, wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InputConfigDialog::OnClose));
 
 	wxBoxSizer* const szr = new wxBoxSizer(wxVERTICAL);
 	szr->Add(m_pad_notebook, 0, wxEXPAND|wxTOP|wxLEFT|wxRIGHT, 5);
-	szr->Add(CreateButtonSizer(wxOK | wxCANCEL | wxNO_DEFAULT), 0, wxEXPAND|wxALL, 5);
+	szr->Add(CreateButtonSizer(wxOK | wxAPPLY | wxCANCEL | wxNO_DEFAULT), 0, wxEXPAND|wxALL, 5);
 
 	SetSizerAndFit(szr);
 	Center();
