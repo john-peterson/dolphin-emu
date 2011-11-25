@@ -93,10 +93,7 @@ void IniFile::Section::Set(const char* key, const char* newValue)
 
 void IniFile::Section::Set(const char* key, const std::string& newValue, const std::string& defaultValue)
 {
-	if (newValue != defaultValue)
-		Set(key, newValue);
-	else
-		Delete(key);
+	Set(key, newValue);
 }
 
 bool IniFile::Section::Get(const char* key, std::string* value, const char* defaultValue)
