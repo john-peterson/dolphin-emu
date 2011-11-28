@@ -190,6 +190,17 @@ void InputConfigDialog::UpdateControlReferences()
 		(*i)->controller->UpdateReferences(g_controller_interface);
 }
 
+void InputConfigDialog::UpdateGUI()
+{
+	std::vector< GamepadPage* >::iterator i = m_padpages.begin(),
+		e = m_padpages.end();
+	for (; i != e; ++i)
+		(*i)->UpdateGUI();
+
+	SetTitle(_("Dolphin Emulated Wiimote Configuration") + (Core::IsRunning() ? (std::string(" - ") + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strName
+		+ " (" + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strRegion + ")") : std::string("")));
+}
+
 void InputConfigDialog::Save(wxCommandEvent& event)
 {
 	m_plugin.SaveConfig();
@@ -972,6 +983,7 @@ GamepadPage::GamepadPage(wxWindow* parent, InputPlugin& plugin, const unsigned i
 
 InputConfigDialog::InputConfigDialog(wxWindow* const parent, InputPlugin& plugin, const std::string& name, const int tab_num)
 	: wxDialog(parent, wxID_ANY, WXTSTR_FROM_CSTR(name.c_str()), wxPoint(128,-1), wxDefaultSize)
+	, m_parent(parent)
 	, m_plugin(plugin)
 {
 	m_pad_notebook = new wxNotebook(this, -1, wxDefaultPosition, wxDefaultSize, wxNB_DEFAULT);
@@ -1012,6 +1024,7 @@ InputConfigDialog::InputConfigDialog(wxWindow* const parent, InputPlugin& plugin
 void InputConfigDialog::OnClose(wxCloseEvent& event)
 {
 	m_update_timer->Stop();
-	Destroy();
+	Hide();
+	m_parent->Update();
 	event.Skip();
 }

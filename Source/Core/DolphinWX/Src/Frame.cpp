@@ -466,13 +466,12 @@ CFrame::~CFrame()
 	delete m_Mgr;
 }
 
-bool CFrame::RendererIsFullscreen()
-{
-	if (Core::GetState() == Core::CORE_RUN || Core::GetState() == Core::CORE_PAUSE)
-	{
-		return m_RenderFrame->IsFullScreen();
-	}
-	return false;
+void CFrame::Update() {
+	if (m_WiimoteConfigDiag)
+		if (!m_WiimoteConfigDiag->IsShown()) {
+			m_WiimoteConfigDiag->Destroy(); m_WiimoteConfigDiag = NULL;
+			if (!Core::IsRunning()) Wiimote::Shutdown();
+		}
 }
 
 void CFrame::OnQuit(wxCommandEvent& WXUNUSED (event))
@@ -493,8 +492,49 @@ void CFrame::OnRestart(wxCommandEvent& WXUNUSED (event))
 	Close(true);
 }
 
-// --------
+bool CFrame::RendererIsFullscreen()
+{
+	if (Core::GetState() == Core::CORE_RUN || Core::GetState() == Core::CORE_PAUSE)
+	{
+		return m_RenderFrame->IsFullScreen();
+	}
+	return false;
+}
+
 // Events
+
+void CFrame::OnClose(wxCloseEvent& event)
+{
+	if (Core::GetState() != Core::CORE_UNINITIALIZED)
+	{
+		DoStop();
+		if (Core::GetState() != Core::CORE_UNINITIALIZED)
+			return;
+		UpdateGUI();
+	}
+
+	//Stop Dolphin from saving the minimized Xpos and Ypos
+	if(main_frame->IsIconized())
+		main_frame->Iconize(false);
+
+	// Save GUI settings
+	if (g_pCodeWindow) SaveIniPerspectives();
+	// Close the log window now so that its settings are saved
+	else
+	{
+		m_LogWindow->Close();
+		m_LogWindow = NULL;
+	}
+	// Close open dialogs
+	if (m_WiimoteConfigDiag) m_WiimoteConfigDiag->Close();
+
+	// Uninit
+	m_Mgr->UnInit();
+
+	// Don't forget the skip or the window won't be destroyed
+	event.Skip();
+}
+
 void CFrame::OnActive(wxActivateEvent& event)
 {
 	if (Core::GetState() == Core::CORE_RUN || Core::GetState() == Core::CORE_PAUSE)
@@ -517,37 +557,6 @@ void CFrame::OnActive(wxActivateEvent& event)
 		}
 	}
 	event.Skip();
-}
-
-void CFrame::OnClose(wxCloseEvent& event)
-{
-	if (Core::GetState() != Core::CORE_UNINITIALIZED)
-	{
-		DoStop();
-		if (Core::GetState() != Core::CORE_UNINITIALIZED)
-			return;
-		UpdateGUI();
-	}
-
-	//Stop Dolphin from saving the minimized Xpos and Ypos
-	if(main_frame->IsIconized())
-		main_frame->Iconize(false);
-
-	// Don't forget the skip or the window won't be destroyed
-	event.Skip();
-
-	// Save GUI settings
-	if (g_pCodeWindow) SaveIniPerspectives();
-	// Close the log window now so that its settings are saved
-	else
-	{
-		m_LogWindow->Close();
-		m_LogWindow = NULL;
-	}
-
-
-	// Uninit
-	m_Mgr->UnInit();
 }
 
 // Post events
@@ -813,6 +822,8 @@ int GetCmdForHotkey(unsigned int key)
 
 	if (key == HK_FULLSCREEN)
 		return IDM_TOGGLE_FULLSCREEN;
+	if (key == HK_CAPTURE_MOUSE)
+		return IDM_CAPTURE_MOUSE;
 	if (key == HK_SCREENSHOT)
 		return IDM_SCREENSHOT;
 
@@ -877,6 +888,9 @@ void CFrame::OnKeyDown(wxKeyEvent& event)
 		// Toggle fullscreen
 		if (IsHotkey(event, HK_FULLSCREEN))
 			DoFullscreen(!RendererIsFullscreen());
+		// Capture mouse
+		if (IsHotkey(event, HK_CAPTURE_MOUSE))
+			CaptureMouse(event);
 		// Send Debugger keys to CodeWindow
 		else if (g_pCodeWindow && (event.GetKeyCode() >= WXK_F9 && event.GetKeyCode() <= WXK_F11))
  			event.Skip();
@@ -1035,6 +1049,20 @@ void CFrame::DoFullscreen(bool bF)
 	}
 	else
 		m_RenderFrame->Raise();
+}
+
+void CFrame::CaptureMouse(wxKeyEvent& event)
+{
+#ifdef _WIN32
+	RECT r;
+	GetClipCursor(&r);
+	if(GetSystemMetrics(SM_CXSCREEN) == r.right && GetSystemMetrics(SM_CYSCREEN) == r.bottom) {
+		if(m_RenderParent) GetWindowRect(m_RenderParent->GetHandle(), &r);
+		ClipCursor(&r);		
+	}
+	else
+		ClipCursor(NULL);
+#endif
 }
 
 const CGameListCtrl *CFrame::GetGameListCtrl() const
