@@ -2,7 +2,7 @@
 # Copyright (C) 2003-2011
 # This file is distributed under the same license as the dolphin-emu package.
 # Gpower2 <gpower2@yahoo.com>, 2011
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Dolphin Emu\n"
@@ -5005,8 +5005,8 @@ msgid "Threshold"
 msgstr "Κατώφλι"
 
 #: Source/Core/Core/Src/HW/WiimoteEmu/WiimoteEmu.cpp:266
-msgid "Rotate"
-msgstr "Πλάγιασμα"
+msgid "Tilt"
+msgstr ""
 
 #: Source/Core/DolphinWX/Src/MemcardManager.cpp:625
 #: Source/Core/DolphinWX/Src/GameListCtrl.cpp:256
@@ -5615,3 +5615,6 @@ msgstr "zNear Διόρθωση: "
 #: Source/Core/DolphinWX/Src/InputConfigDiag.cpp:497
 msgid "| OR"
 msgstr "| OR"
+
+#~ msgid "Rotate"
+#~ msgstr "Πλάγιασμα"

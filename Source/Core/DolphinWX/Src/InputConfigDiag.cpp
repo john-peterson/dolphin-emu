@@ -185,7 +185,7 @@ void InputConfigDialog::UpdateProfileComboBox(std::string fname)
 	{
 		(*i)->profile_cbox->Clear();
 		(*i)->profile_cbox->Append(strs);
-		(*i)->profile_cbox->SetValue(fname);
+		(*i)->profile_cbox->SetValue(WXSTR_FROM_STR(fname));
 	}
 }
 

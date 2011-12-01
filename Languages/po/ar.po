@@ -4807,8 +4807,8 @@ msgid "Threshold"
 msgstr "بداية"
 
 #: Source/Core/Core/Src/HW/WiimoteEmu/WiimoteEmu.cpp:266
-msgid "Rotate"
-msgstr "إمالة"
+msgid "Tilt"
+msgstr ""
 
 #: Source/Core/DolphinWX/Src/MemcardManager.cpp:625
 #: Source/Core/DolphinWX/Src/GameListCtrl.cpp:256
@@ -5547,6 +5547,9 @@ msgstr "أو"
 
 #~ msgid "Required for using the Japanese ROM font."
 #~ msgstr "اللازمة لاستعمال الخط القرص اليابانية."
+
+#~ msgid "Rotate"
+#~ msgstr "إمالة"
 
 #~ msgid "Safe"
 #~ msgstr "آمنة"

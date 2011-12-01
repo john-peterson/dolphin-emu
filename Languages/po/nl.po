@@ -2,7 +2,7 @@
 # Copyright (C) 2003-2011
 # This file is distributed under the same license as the dolphin-emu package.
 # MADCreations <http://www.dpro.freehosting.org>, 2011
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Dolphin Emu\n"
@@ -4992,8 +4992,8 @@ msgid "Threshold"
 msgstr "Drempelwaarde"
 
 #: Source/Core/Core/Src/HW/WiimoteEmu/WiimoteEmu.cpp:266
-msgid "Rotate"
-msgstr "Kantelen"
+msgid "Tilt"
+msgstr ""
 
 #: Source/Core/DolphinWX/Src/MemcardManager.cpp:625
 #: Source/Core/DolphinWX/Src/GameListCtrl.cpp:256
@@ -5917,6 +5917,9 @@ msgstr "| OF"
 
 #~ msgid "Required for using the Japanese ROM font."
 #~ msgstr "Nodig voor de Japanse ROM font."
+
+#~ msgid "Rotate"
+#~ msgstr "Kantelen"
 
 #~ msgid "Run"
 #~ msgstr "Start"
