@@ -2,7 +2,7 @@
 # Copyright (C) 2003-2011
 # This file is distributed under the same license as the dolphin-emu package.
 # Delirious <delirious@freemail.hu>, 2011
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Dolphin Emu\n"
@@ -4987,8 +4987,8 @@ msgid "Threshold"
 msgstr "Küszöbérték"
 
 #: Source/Core/Core/Src/HW/WiimoteEmu/WiimoteEmu.cpp:266
-msgid "Rotate"
-msgstr "Billentés"
+msgid "Tilt"
+msgstr ""
 
 #: Source/Core/DolphinWX/Src/MemcardManager.cpp:625
 #: Source/Core/DolphinWX/Src/GameListCtrl.cpp:256
@@ -6040,6 +6040,9 @@ msgstr "| VAGY"
 
 #~ msgid "Required for using the Japanese ROM font."
 #~ msgstr "A japán ROM betűtípusok használatához szükséges."
+
+#~ msgid "Rotate"
+#~ msgstr "Billentés"
 
 #~ msgid "Run"
 #~ msgstr "Futtatás"

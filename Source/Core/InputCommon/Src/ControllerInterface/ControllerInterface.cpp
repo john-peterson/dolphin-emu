@@ -114,7 +114,9 @@ void ControllerInterface::Shutdown()
 void ControllerInterface::SetHwnd( void* const hwnd )
 {
 	m_hwnd = hwnd;
+#ifdef CIFACE_USE_RINPUT
 	ciface::RInput::SetHWND((HWND)m_hwnd);
+#endif
 }
 
 //

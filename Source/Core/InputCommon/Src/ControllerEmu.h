@@ -576,7 +576,7 @@ public:
 		}
 
 		float							m_state[3], m_absolute[3], m_last[3];
-		std::vector<std::list<float>>	m_list;
+		std::vector<std::list<float> >	m_list;
 	};
 
 	class Extension : public ControlGroup

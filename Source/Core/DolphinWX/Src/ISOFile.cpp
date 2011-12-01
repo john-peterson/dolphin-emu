@@ -143,10 +143,8 @@ GameListItem::GameListItem(const std::string& _rFileName)
 	else
 	{
 		// default banner
-		//wxMemoryInputStream istream(no_banner_png, sizeof no_banner_png);
-		//wxImage iNoBanner(istream, wxBITMAP_TYPE_PNG);
-		m_Image = wxImage(wxMemoryInputStream(empty_banner_png, sizeof empty_banner_png), wxBITMAP_TYPE_PNG);
-		//m_Image = iNoBanner;
+		wxMemoryInputStream istream(empty_banner_png, sizeof(empty_banner_png));
+		m_Image = wxImage(istream, wxBITMAP_TYPE_PNG);
 	}
 }
 

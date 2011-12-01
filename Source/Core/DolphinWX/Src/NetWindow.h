@@ -113,9 +113,9 @@ private:
 
 	static NetPlayDiag* npd;
 };
-
-//DECLARE_EVENT_TYPE(wxEVT_THREAD, -1)
-
+#if !wxCHECK_VERSION(2, 9, 0)
+DECLARE_EVENT_TYPE(wxEVT_THREAD, -1)
+#endif
 class ChangeGameDiag : public wxDialog
 {
 public:
