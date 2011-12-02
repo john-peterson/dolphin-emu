@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.08.00
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: scrolbar.h 42716 2006-10-30 12:33:25Z VS $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_UNIV_SCROLBAR_H_
 #define _WX_UNIV_SCROLBAR_H_
 
-class WXDLLIMPEXP_FWD_CORE wxScrollTimer;
+class WXDLLEXPORT wxScrollTimer;
 
 #include "wx/univ/scrarrow.h"
 #include "wx/renderer.h"
@@ -22,23 +22,23 @@ class WXDLLIMPEXP_FWD_CORE wxScrollTimer;
 // ----------------------------------------------------------------------------
 
 // scroll the bar
-#define wxACTION_SCROLL_START       wxT("start")     // to the beginning
-#define wxACTION_SCROLL_END         wxT("end")       // to the end
-#define wxACTION_SCROLL_LINE_UP     wxT("lineup")    // one line up/left
-#define wxACTION_SCROLL_PAGE_UP     wxT("pageup")    // one page up/left
-#define wxACTION_SCROLL_LINE_DOWN   wxT("linedown")  // one line down/right
-#define wxACTION_SCROLL_PAGE_DOWN   wxT("pagedown")  // one page down/right
+#define wxACTION_SCROLL_START       _T("start")     // to the beginning
+#define wxACTION_SCROLL_END         _T("end")       // to the end
+#define wxACTION_SCROLL_LINE_UP     _T("lineup")    // one line up/left
+#define wxACTION_SCROLL_PAGE_UP     _T("pageup")    // one page up/left
+#define wxACTION_SCROLL_LINE_DOWN   _T("linedown")  // one line down/right
+#define wxACTION_SCROLL_PAGE_DOWN   _T("pagedown")  // one page down/right
 
 // the scrollbar thumb may be dragged
-#define wxACTION_SCROLL_THUMB_DRAG      wxT("thumbdrag")
-#define wxACTION_SCROLL_THUMB_MOVE      wxT("thumbmove")
-#define wxACTION_SCROLL_THUMB_RELEASE   wxT("thumbrelease")
+#define wxACTION_SCROLL_THUMB_DRAG      _T("thumbdrag")
+#define wxACTION_SCROLL_THUMB_MOVE      _T("thumbmove")
+#define wxACTION_SCROLL_THUMB_RELEASE   _T("thumbrelease")
 
 // ----------------------------------------------------------------------------
 // wxScrollBar
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxScrollBar : public wxScrollBarBase,
+class WXDLLEXPORT wxScrollBar : public wxScrollBarBase,
                                 public wxControlWithArrows
 {
 public:
@@ -192,7 +192,7 @@ private:
     // the object handling the arrows
     wxScrollArrows m_arrows;
 
-    friend WXDLLIMPEXP_CORE class wxControlRenderer; // for geometry methods
+    friend WXDLLEXPORT class wxControlRenderer; // for geometry methods
     friend class wxStdScrollBarInputHandler; // for geometry methods
 
     DECLARE_EVENT_TABLE()
@@ -203,7 +203,7 @@ private:
 // Standard scrollbar input handler which can be used as a base class
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxStdScrollBarInputHandler : public wxStdInputHandler
+class WXDLLEXPORT wxStdScrollBarInputHandler : public wxStdInputHandler
 {
 public:
     // constructor takes a renderer (used for scrollbar hit testing) and the

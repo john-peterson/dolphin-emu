@@ -1,20 +1,16 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        wx/msw/iniconf.h
+// Name:        include/wx/msw/iniconf.h
 // Purpose:     INI-file based wxConfigBase implementation
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     27.07.98
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: iniconf.h 28931 2004-08-27 18:59:37Z ABX $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef   _WX_MSW_INICONF_H_
-#define   _WX_MSW_INICONF_H_
-
-#include "wx/defs.h"
-
-#if wxUSE_CONFIG && wxUSE_INICONF
+#ifndef   _INICONF_H
+#define   _INICONF_H
 
 // ----------------------------------------------------------------------------
 // wxIniConfig is a wxConfig implementation which uses MS Windows INI files to
@@ -40,7 +36,7 @@
 // same as appname). The file name (strAppName parameter) may, in fact,
 // contain the full path to the file. If it doesn't, the file is searched for
 // in the Windows directory.
-class WXDLLIMPEXP_CORE wxIniConfig : public wxConfigBase
+class WXDLLEXPORT wxIniConfig : public wxConfigBase
 {
 public:
   // ctor & dtor
@@ -82,11 +78,9 @@ protected:
   // read/write
   bool DoReadString(const wxString& key, wxString *pStr) const;
   bool DoReadLong(const wxString& key, long *plResult) const;
-  bool DoReadBinary(const wxString& key, wxMemoryBuffer *buf) const;
 
   bool DoWriteString(const wxString& key, const wxString& szValue);
   bool DoWriteLong(const wxString& key, long lValue);
-  bool DoWriteBinary(const wxString& key, const wxMemoryBuffer& buf);
 
 private:
   // helpers
@@ -96,11 +90,6 @@ private:
   wxString m_strLocalFilename;  // name of the private INI file
   wxString m_strGroup,    // current group in appname.ini file
            m_strPath;     // the rest of the path (no trailing '_'!)
-
-  wxDECLARE_NO_COPY_CLASS(wxIniConfig);
-  DECLARE_ABSTRACT_CLASS(wxIniConfig)
 };
 
-#endif // wxUSE_CONFIG && wxUSE_INICONF
-
-#endif // _WX_MSW_INICONF_H_
+#endif  //_INICONF_H

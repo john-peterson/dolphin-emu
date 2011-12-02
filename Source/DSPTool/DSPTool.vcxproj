@@ -212,6 +212,12 @@
     <ClCompile Include="Src\DSPTool.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Externals\wxWidgets\build\msw\wx_base.vcxproj">
+      <Project>{1c8436c9-dbaf-42be-83bc-cf3ec9175abe}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Externals\wxWidgets\build\msw\wx_core.vcxproj">
+      <Project>{11f55366-12ec-4c44-a8cb-1d4e315d61ed}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Core\Common\Common.vcxproj">
       <Project>{c87a4178-44f6-49b2-b7aa-c79af1b8c534}</Project>
       <Private>true</Private>

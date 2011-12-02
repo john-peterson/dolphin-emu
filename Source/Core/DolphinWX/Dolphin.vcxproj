@@ -305,6 +305,18 @@
     <ProjectReference Include="..\..\..\Externals\SFML\build\vc2010\SFML_Network.vcxproj">
       <Project>{93d73454-2512-424e-9cda-4bb357fe13dd}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Externals\wxWidgets\build\msw\wx_adv.vcxproj">
+      <Project>{0e231fb1-f3c9-4724-accb-de8bcb3c089e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Externals\wxWidgets\build\msw\wx_aui.vcxproj">
+      <Project>{05c75041-d67d-4903-a362-8395a7b35c75}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Externals\wxWidgets\build\msw\wx_base.vcxproj">
+      <Project>{1c8436c9-dbaf-42be-83bc-cf3ec9175abe}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Externals\wxWidgets\build\msw\wx_core.vcxproj">
+      <Project>{11f55366-12ec-4c44-a8cb-1d4e315d61ed}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Externals\zlib\zlib.vcxproj">
       <Project>{3e1339f5-9311-4122-9442-369702e8fcad}</Project>
     </ProjectReference>

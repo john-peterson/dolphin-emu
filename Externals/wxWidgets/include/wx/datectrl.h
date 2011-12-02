@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2005-01-09
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: datectrl.h 37663 2006-02-21 22:14:31Z MR $
 // Copyright:   (c) 2005 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 #include "wx/control.h"         // the base class
 #include "wx/datetime.h"
 
-#define wxDatePickerCtrlNameStr wxT("datectrl")
+#define wxDatePickerCtrlNameStr _T("datectrl")
 
 // wxDatePickerCtrl styles
 enum

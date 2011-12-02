@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     10.09.00
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: toolbar.h 41227 2006-09-14 19:36:47Z VZ $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 
 #include "wx/button.h"      // for wxStdButtonInputHandler
 
-class WXDLLIMPEXP_FWD_CORE wxToolBarTool;
+class WXDLLEXPORT wxToolBarTool;
 
 // ----------------------------------------------------------------------------
 // the actions supported by this control
@@ -24,14 +24,14 @@ class WXDLLIMPEXP_FWD_CORE wxToolBarTool;
 #define wxACTION_TOOLBAR_PRESS   wxACTION_BUTTON_PRESS
 #define wxACTION_TOOLBAR_RELEASE wxACTION_BUTTON_RELEASE
 #define wxACTION_TOOLBAR_CLICK   wxACTION_BUTTON_CLICK
-#define wxACTION_TOOLBAR_ENTER   wxT("enter")     // highlight the tool
-#define wxACTION_TOOLBAR_LEAVE   wxT("leave")     // unhighlight the tool
+#define wxACTION_TOOLBAR_ENTER   _T("enter")     // highlight the tool
+#define wxACTION_TOOLBAR_LEAVE   _T("leave")     // unhighlight the tool
 
 // ----------------------------------------------------------------------------
 // wxToolBar
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxToolBar : public wxToolBarBase
+class WXDLLEXPORT wxToolBar : public wxToolBarBase
 {
 public:
     // construction/destruction
@@ -98,8 +98,7 @@ protected:
                                           wxObject *clientData,
                                           const wxString& shortHelp,
                                           const wxString& longHelp);
-    virtual wxToolBarToolBase *CreateTool(wxControl *control,
-                                          const wxString& label);
+    virtual wxToolBarToolBase *CreateTool(wxControl *control);
 
     virtual wxSize DoGetBestClientSize() const;
     virtual void DoSetSize(int x, int y,

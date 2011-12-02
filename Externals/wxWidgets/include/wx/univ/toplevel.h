@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/univ/toplevel.h
+// Name:        wx/toplevel.h
 // Purpose:     Top level window, abstraction of wxFrame and wxDialog
 // Author:      Vaclav Slavik
-// Id:          $Id$
+// Id:          $Id: toplevel.h 42664 2006-10-29 20:39:31Z VZ $
 // Copyright:   (c) 2001-2002 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -77,18 +77,18 @@ enum
 // the actions supported by this control
 // ----------------------------------------------------------------------------
 
-#define wxACTION_TOPLEVEL_ACTIVATE       wxT("activate")   // (de)activate the frame
-#define wxACTION_TOPLEVEL_BUTTON_PRESS   wxT("pressbtn")   // press titlebar btn
-#define wxACTION_TOPLEVEL_BUTTON_RELEASE wxT("releasebtn") // press titlebar btn
-#define wxACTION_TOPLEVEL_BUTTON_CLICK   wxT("clickbtn")   // press titlebar btn
-#define wxACTION_TOPLEVEL_MOVE           wxT("move")       // move the frame
-#define wxACTION_TOPLEVEL_RESIZE         wxT("resize")     // resize the frame
+#define wxACTION_TOPLEVEL_ACTIVATE       _T("activate")   // (de)activate the frame
+#define wxACTION_TOPLEVEL_BUTTON_PRESS   _T("pressbtn")   // press titlebar btn
+#define wxACTION_TOPLEVEL_BUTTON_RELEASE _T("releasebtn") // press titlebar btn
+#define wxACTION_TOPLEVEL_BUTTON_CLICK   _T("clickbtn")   // press titlebar btn
+#define wxACTION_TOPLEVEL_MOVE           _T("move")       // move the frame
+#define wxACTION_TOPLEVEL_RESIZE         _T("resize")     // resize the frame
 
 //-----------------------------------------------------------------------------
 // wxTopLevelWindow
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxTopLevelWindow : public wxTopLevelWindowNative,
+class WXDLLEXPORT wxTopLevelWindow : public wxTopLevelWindowNative,
                                      public wxInputConsumer
 {
 public:
@@ -130,6 +130,7 @@ public:
     // implement base class pure virtuals
     virtual bool ShowFullScreen(bool show, long style = wxFULLSCREEN_ALL);
     virtual wxPoint GetClientAreaOrigin() const;
+    virtual void SetIcon(const wxIcon& icon) { SetIcons( wxIconBundle( icon ) ); }
     virtual void SetIcons(const wxIconBundle& icons);
 
     // implementation from now on
@@ -153,7 +154,7 @@ public:
 
     virtual wxSize GetMinSize() const;
 
-    virtual wxWindow *GetInputWindow() const { return const_cast<wxTopLevelWindow*>(this); }
+    virtual wxWindow *GetInputWindow() const { return wx_const_cast(wxTopLevelWindow*, this); }
 
 protected:
     virtual void DoGetClientSize(int *width, int *height) const;

@@ -13,7 +13,6 @@ robocopy "$(SolutionDir)..\Data" "%TRG:~0,-1%" /s /xo
 echo Copying External .dlls
 robocopy "$(SolutionDir)..\Externals\Cg\$(PlatformName)" "%TRG:~0,-1%" *.dll /xo
 robocopy "$(SolutionDir)..\Externals\SDL\$(PlatformName)" "%TRG:~0,-1%" *.dll /xo
-robocopy "$(SolutionDir)..\Externals\wxWidgets\lib\vc_dll\$(PlatformName)" "%TRG:~0,-1%" wxbase292u_*.dll wxmsw292u_*.dll /xo
 if %ERRORLEVEL% leq 3 exit 0</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
