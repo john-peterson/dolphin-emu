@@ -69,7 +69,10 @@ void Init(std::vector<ControllerInterface::Device*>& devices, HWND hwnd)
 	is_init = true;
 	IDirectInput8* idi8;
 	if (FAILED(DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)&idi8, NULL)))
+	{
+		is_init = false;
 		return;
+	}
 
 #ifdef CIFACE_USE_DINPUT_KBM
 	InitKeyboardMouse(idi8, devices, hwnd);
