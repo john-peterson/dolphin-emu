@@ -29,9 +29,6 @@
 //               Boot.cpp               CBoot::BootUp()
 //                                      CBoot::EmulatedBS2_Wii() / GC() or Load_BS2()
 
-
-// Includes
-// ----------------
 #include <string>
 #include <vector>
 
@@ -44,7 +41,7 @@
 #include "SysConf.h"
 #include "Core.h"
 #include "Host.h"
-
+#include "VideoBackendBase.h"
 
 namespace BootManager
 {
@@ -56,6 +53,7 @@ struct ConfigCache
 	bool valid, bCPUThread, bSkipIdle, bEnableFPRF, bMMU, bMMUBAT,
 		bVBeam, bFastDiscSpeed, bMergeBlocks, bDSPHLE, bDisableWiimoteSpeaker;
 	int iTLBHack;
+	std::string m_strVideoBackend;
 };
 static ConfigCache config_cache;
 
@@ -88,6 +86,7 @@ bool BootCore(const std::string& _rFilename)
 	if (unique_id.size() == 6 && game_ini.Load(StartUp.m_strGameIni.c_str()))
 	{
 		config_cache.valid = true;
+		config_cache.m_strVideoBackend = StartUp.m_strVideoBackend;
 		config_cache.bCPUThread = StartUp.bCPUThread;
 		config_cache.bSkipIdle = StartUp.bSkipIdle;
 		config_cache.bEnableFPRF = StartUp.bEnableFPRF;
@@ -100,7 +99,9 @@ bool BootCore(const std::string& _rFilename)
 		config_cache.bDSPHLE = StartUp.bDSPHLE;
 		config_cache.bDisableWiimoteSpeaker = StartUp.bDisableWiimoteSpeaker;
 
-		// General settings
+		// General settings		
+		game_ini.Get("Core", "GFXBackend",			&StartUp.m_strVideoBackend, StartUp.m_strVideoBackend.c_str());
+		SWARN_LOG(CONSOLE, "%s", StartUp.m_strVideoBackend.c_str());
 		game_ini.Get("Core", "CPUThread",			&StartUp.bCPUThread, StartUp.bCPUThread);
 		game_ini.Get("Core", "SkipIdle",			&StartUp.bSkipIdle, StartUp.bSkipIdle);
 		game_ini.Get("Core", "EnableFPRF",			&StartUp.bEnableFPRF, StartUp.bEnableFPRF);
@@ -112,6 +113,7 @@ bool BootCore(const std::string& _rFilename)
 		game_ini.Get("Core", "BlockMerging",		&StartUp.bMergeBlocks, StartUp.bMergeBlocks);
 		game_ini.Get("Core", "DSPHLE",				&StartUp.bDSPHLE, StartUp.bDSPHLE);
 		game_ini.Get("Wii", "DisableWiimoteSpeaker",&StartUp.bDisableWiimoteSpeaker, StartUp.bDisableWiimoteSpeaker);
+		VideoBackend::ActivateBackend(StartUp.m_strVideoBackend);
 
 		// Wii settings
 		if (StartUp.bWii)
@@ -141,6 +143,7 @@ void Stop()
 	if (config_cache.valid)
 	{
 		config_cache.valid = false;
+		StartUp.m_strVideoBackend = config_cache.m_strVideoBackend;
 		StartUp.bCPUThread = config_cache.bCPUThread;
 		StartUp.bSkipIdle = config_cache.bSkipIdle;
 		StartUp.bEnableFPRF = config_cache.bEnableFPRF;
@@ -152,6 +155,7 @@ void Stop()
 		StartUp.bMergeBlocks = config_cache.bMergeBlocks;
 		StartUp.bDSPHLE = config_cache.bDSPHLE;
 		StartUp.bDisableWiimoteSpeaker = config_cache.bDisableWiimoteSpeaker;
+		VideoBackend::ActivateBackend(StartUp.m_strVideoBackend);
 	}
 }
 

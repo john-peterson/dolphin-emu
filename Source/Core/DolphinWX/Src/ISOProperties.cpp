@@ -37,6 +37,8 @@
 #include "../resources/isoprop_folder.xpm"
 #include "../resources/isoprop_disc.xpm"
 
+extern std::vector<VideoBackend*> g_available_video_backends;
+
 struct WiiPartition
 {
 	DiscIO::IVolume *Partition;
@@ -51,7 +53,6 @@ DiscIO::IFileSystem *pFileSystem = NULL;
 std::vector<PatchEngine::Patch> onFrame;
 std::vector<ActionReplay::ARCode> arCodes;
 PHackData PHack_Data;
-
 
 BEGIN_EVENT_TABLE(CISOProperties, wxDialog)
 	EVT_CLOSE(CISOProperties::OnClose)
@@ -302,7 +303,19 @@ void CISOProperties::CreateGUIControls(bool IsWad)
 
 	// GameConfig editing - Overrides and emulation state
 	wxStaticText * const OverrideText = new wxStaticText(m_GameConfig, wxID_ANY, _("These settings override core Dolphin settings.\nUndetermined means the game uses Dolphin's setting."));
-	// Core
+	// Core	
+	choice_backend = new wxChoice(m_GameConfig, wxID_ANY, wxDefaultPosition);
+	//RegisterControl(choice_backend, wxGetTranslation(backend_desc));
+	choice_backend->AppendString(_(""));
+	std::vector<VideoBackend*>::const_iterator
+			it = g_available_video_backends.begin(),
+			itend = g_available_video_backends.end();
+	for (; it != itend; ++it)
+		choice_backend->AppendString(wxGetTranslation(wxString::FromAscii((*it)->GetName().c_str())));
+	wxBoxSizer* const sBackend = new wxBoxSizer(wxHORIZONTAL);
+	sBackend->Add(new wxStaticText(m_GameConfig, wxID_ANY, _("Backend:")), 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
+	sBackend->Add(choice_backend, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+
 	CPUThread = new wxCheckBox(m_GameConfig, ID_USEDUALCORE, _("Enable Dual Core"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE|wxCHK_ALLOW_3RD_STATE_FOR_USER, wxDefaultValidator);
 	SkipIdle = new wxCheckBox(m_GameConfig, ID_IDLESKIP, _("Enable Idle Skipping"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE|wxCHK_ALLOW_3RD_STATE_FOR_USER, wxDefaultValidator);
 	MMU = new wxCheckBox(m_GameConfig, ID_MMU, _("Enable MMU"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE|wxCHK_ALLOW_3RD_STATE_FOR_USER, wxDefaultValidator);
@@ -337,8 +350,7 @@ void CISOProperties::CreateGUIControls(bool IsWad)
 	PHackEnable->SetToolTip(_("Enables Custom Projection Hack"));
 	PHSettings = new wxButton(m_GameConfig, ID_PHSETTINGS, _("Settings..."));
 	PHSettings->SetToolTip(_("Customize some Orthographic Projection parameters."));
-
-	wxBoxSizer * const sEmuState = new wxBoxSizer(wxHORIZONTAL);
+	
 	wxStaticText * const EmuStateText =
 		new wxStaticText(m_GameConfig, wxID_ANY, _("Emulation State: "));
 	arrayStringFor_EmuState.Add(_("Not Set"));
@@ -350,10 +362,10 @@ void CISOProperties::CreateGUIControls(bool IsWad)
 	EmuState = new wxChoice(m_GameConfig, ID_EMUSTATE,
 			wxDefaultPosition, wxDefaultSize, arrayStringFor_EmuState);
 	EmuIssues = new wxTextCtrl(m_GameConfig, ID_EMU_ISSUES, wxEmptyString);
-
-	wxBoxSizer * const sConfigPage = new wxBoxSizer(wxVERTICAL);
+	
 	wxStaticBoxSizer * const sbCoreOverrides =
 		new wxStaticBoxSizer(wxVERTICAL, m_GameConfig, _("Core"));
+	sbCoreOverrides->Add(sBackend, 0, wxLEFT, 5);
 	sbCoreOverrides->Add(CPUThread, 0, wxLEFT, 5);
 	sbCoreOverrides->Add(SkipIdle, 0, wxLEFT, 5);
 	sbCoreOverrides->Add(MMU, 0, wxLEFT, 5);
@@ -365,7 +377,7 @@ void CISOProperties::CreateGUIControls(bool IsWad)
 	sbCoreOverrides->Add(DSPHLE, 0, wxLEFT, 5);
 
 	wxStaticBoxSizer * const sbWiiOverrides =
-	new wxStaticBoxSizer(wxVERTICAL, m_GameConfig, _("Wii Console"));
+		new wxStaticBoxSizer(wxVERTICAL, m_GameConfig, _("Wii Console"));
 	sbWiiOverrides->Add(EnableProgressiveScan, 0, wxLEFT, 5);
 	sbWiiOverrides->Add(EnableWideScreen, 0, wxLEFT, 5);
 	sbWiiOverrides->Add(DisableWiimoteSpeaker, 0, wxLEFT, 5);
@@ -390,14 +402,17 @@ void CISOProperties::CreateGUIControls(bool IsWad)
 	sbGameConfig->Add(sbCoreOverrides, 0, wxEXPAND);
 	sbGameConfig->Add(sbWiiOverrides, 0, wxEXPAND);
 	sbGameConfig->Add(sbVideoOverrides, 0, wxEXPAND);
-	sConfigPage->Add(sbGameConfig, 0, wxEXPAND|wxALL, 5);
+
+	wxBoxSizer * const sEmuState = new wxBoxSizer(wxHORIZONTAL);
 	sEmuState->Add(EmuStateText, 0, wxALIGN_CENTER_VERTICAL);
 	sEmuState->Add(EmuState, 0, wxEXPAND);
 	sEmuState->Add(EmuIssues, 1, wxEXPAND);
+
+	wxBoxSizer * const sConfigPage = new wxBoxSizer(wxVERTICAL);
+	sConfigPage->Add(sbGameConfig, 0, wxEXPAND|wxALL, 5);
 	sConfigPage->Add(sEmuState, 0, wxEXPAND|wxALL, 5);
 	m_GameConfig->SetSizer(sConfigPage);
 
-	
 	// Patches
 	wxBoxSizer * const sPatches = new wxBoxSizer(wxVERTICAL);
 	Patches = new wxCheckListBox(m_PatchPage, ID_PATCHES_LIST, wxDefaultPosition,
@@ -564,6 +579,10 @@ void CISOProperties::CreateGUIControls(bool IsWad)
 	SetSizerAndFit(sMain);
 	Center();
 	SetFocus();
+	// 2.9.2 drawing bug
+	Show();
+	m_Notebook->ChangeSelection(1);
+	m_Notebook->ChangeSelection(0);
 }
 
 void CISOProperties::OnClose(wxCloseEvent& WXUNUSED (event))
@@ -834,6 +853,10 @@ void CISOProperties::LoadGameConfig()
 	int iTemp;
 	std::string sTemp;
 
+	GameIni.Get("Core", "GFXBackend", &sTemp);
+	if (!sTemp.empty())
+		choice_backend->SetStringSelection(wxString(sTemp.c_str(), *wxConvCurrent));
+
 	if (GameIni.Get("Core", "CPUThread", &bTemp))
 		CPUThread->Set3StateValue((wxCheckBoxState)bTemp);
 	else
@@ -933,6 +956,11 @@ void CISOProperties::LoadGameConfig()
 
 bool CISOProperties::SaveGameConfig()
 {
+	if (choice_backend->GetStringSelection() == "")
+		GameIni.DeleteKey("Core", "GFXBackend");
+	else
+		GameIni.Set("Core", "GFXBackend", (const char*)choice_backend->GetStringSelection().mb_str(*wxConvCurrent));
+
 	if (CPUThread->Get3StateValue() == wxCHK_UNDETERMINED)
 		GameIni.DeleteKey("Core", "CPUThread");
 	else
