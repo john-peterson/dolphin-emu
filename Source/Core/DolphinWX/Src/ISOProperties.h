@@ -36,6 +36,7 @@
 #include "PatchEngine.h"
 #include "ActionReplay.h"
 #include "GeckoCodeDiag.h"
+#include "VideoBackendBase.h"
 
 struct PHackData
 {
@@ -69,6 +70,7 @@ private:
 	DECLARE_EVENT_TABLE();
 
 	// Core
+	wxChoice* choice_backend;
 	wxCheckBox *CPUThread, *SkipIdle, *MMU, *MMUBAT, *TLBHack;
 	wxCheckBox *VBeam, *FastDiscSpeed, *BlockMerging, *DSPHLE;
 	// Wii
