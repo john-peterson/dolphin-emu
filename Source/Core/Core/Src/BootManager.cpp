@@ -101,7 +101,6 @@ bool BootCore(const std::string& _rFilename)
 
 		// General settings		
 		game_ini.Get("Core", "GFXBackend",			&StartUp.m_strVideoBackend, StartUp.m_strVideoBackend.c_str());
-		SWARN_LOG(CONSOLE, "%s", StartUp.m_strVideoBackend.c_str());
 		game_ini.Get("Core", "CPUThread",			&StartUp.bCPUThread, StartUp.bCPUThread);
 		game_ini.Get("Core", "SkipIdle",			&StartUp.bSkipIdle, StartUp.bSkipIdle);
 		game_ini.Get("Core", "EnableFPRF",			&StartUp.bEnableFPRF, StartUp.bEnableFPRF);
