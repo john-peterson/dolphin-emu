@@ -29,7 +29,6 @@ bool g_DebugSoundData = false;
 
 void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 {
-	/*
 	std::string Name, TmpData;
 	int size = Size;
 	static int c;
@@ -563,15 +562,23 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 					((wm_core*)&((wm_report_core_accel_ir10_ext6*)sr->data)->c)->unknown5);
 			if (((wm_motionplus*)&data[17])->is_mp_data) {
 				SExt = StringFromFormat(""
-				"%02x %02x %02x %02x %02x %02x | "
-				"%04x %04x %04x %s%s%s",					
-					((wm_motionplus*)&data[17])->roll1, ((wm_motionplus*)&data[17])->roll2,
-					((wm_motionplus*)&data[17])->pitch1, ((wm_motionplus*)&data[17])->pitch2,
-					((wm_motionplus*)&data[17])->yaw1, ((wm_motionplus*)&data[17])->yaw2,
-					((wm_motionplus*)&data[17])->pitch2<<8 | ((wm_motionplus*)&data[17])->pitch1,
-					((wm_motionplus*)&data[17])->roll2<<8 | ((wm_motionplus*)&data[17])->roll1,					
-					((wm_motionplus*)&data[17])->yaw2<<8 | ((wm_motionplus*)&data[17])->yaw1,
-					((wm_motionplus*)&data[17])->pitch_slow?"*":" ", ((wm_motionplus*)&data[17])->roll_slow?"*":" ", ((wm_motionplus*)&data[17])->yaw_slow?"*":" ");
+					//"%02x %02x %02x %02x %02x %02x"
+					//"| %04x %04x %04x
+					" %5.2f %5.2f %5.2f"
+					" %s%s%s"
+					//,((wm_motionplus*)&data[17])->roll1, ((wm_motionplus*)&data[17])->roll2
+					//,((wm_motionplus*)&data[17])->pitch1, ((wm_motionplus*)&data[17])->pitch2
+					//,((wm_motionplus*)&data[17])->yaw1, ((wm_motionplus*)&data[17])->yaw2
+					//,((wm_motionplus*)&data[17])->pitch2<<8 | ((wm_motionplus*)&data[17])->pitch1
+					//,((wm_motionplus*)&data[17])->roll2<<8 | ((wm_motionplus*)&data[17])->roll1					
+					//,((wm_motionplus*)&data[17])->yaw2<<8 | ((wm_motionplus*)&data[17])->yaw1
+					//,((wm_motionplus*)&data[17])->pitch2<<8 | ((wm_motionplus*)&data[17])->pitch1
+					//,((wm_motionplus*)&data[17])->roll2<<8 | ((wm_motionplus*)&data[17])->roll1					
+					//,((wm_motionplus*)&data[17])->yaw2<<8 | ((wm_motionplus*)&data[17])->yaw1
+					,float((((wm_motionplus*)&data[17])->pitch2<<8 | ((wm_motionplus*)&data[17])->pitch1) - 0x1f7f) / float(0x1fff)
+					,float((((wm_motionplus*)&data[17])->roll2<<8 | ((wm_motionplus*)&data[17])->roll1) - 0x1f7f) / float(0x1fff)
+					,float((((wm_motionplus*)&data[17])->yaw2<<8 | ((wm_motionplus*)&data[17])->yaw1) - 0x1f7f) / float(0x1fff)
+					,((wm_motionplus*)&data[17])->pitch_slow?"*":" ", ((wm_motionplus*)&data[17])->roll_slow?"*":" ", ((wm_motionplus*)&data[17])->yaw_slow?"*":" ");
 			} else {
 				SExt = StringFromFormat(
 					"%02x %02x | %02x %02x | %02x %02x %02x | %02x %02x %02x",
@@ -580,22 +587,24 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 					((wm_nc_mp*)&data[17])->ax+((wm_nc_mp*)&data[17])->axL, ((wm_nc_mp*)&data[17])->ay+((wm_nc_mp*)&data[17])->ayL, ((wm_nc_mp*)&data[17])->az<<1+((wm_nc_mp*)&data[17])->azL); // Nunchuck Accelerometer					
 			}
 			SData = StringFromFormat("Data[%s][%s][%d|%d] %s| %s"
-			"| %s"
+			//"| %s"
+			"| %5.2f %5.2f %5.2f"
 			//"| %s"
 			//"| %s"
 			//" (%s)"
-			" (%s)",
-			(Emu ? "E" : "R"),
-			((wm_motionplus*)&data[17])->is_mp_data ? "+" : "e",
-			((wm_motionplus*)&data[17])->is_mp_data ? ((wm_motionplus*)&data[17])->extension_connected : ((wm_nc_mp*)&data[17])->extension_connected,
-			wm->m_extension->active_extension,
-			ArrayToString(data, 2, 0).c_str(),
-			ArrayToString(&data[2], 2, 0).c_str(),
-			ArrayToString(&data[4], 3, 0).c_str(),
-			//ArrayToString(&data[7], 10, 0).c_str(),
-			//ArrayToString(&data[17], 6, 0).c_str(),
-			//SCore.c_str(),
-			SExt.c_str());
+			" (%s)"
+			,(Emu ? "E" : "R")
+			,((wm_motionplus*)&data[17])->is_mp_data ? "+" : "e"
+			,((wm_motionplus*)&data[17])->is_mp_data ? ((wm_motionplus*)&data[17])->extension_connected : ((wm_nc_mp*)&data[17])->extension_connected
+			,wm->m_extension->active_extension
+			,ArrayToString(data, 2, 0).c_str()
+			,ArrayToString(&data[2], 2, 0).c_str()
+			//,ArrayToString(&data[4], 3, 0).c_str()
+			,(((wm_accel*)&data[4])->x - 0x7f) / float(0xff), (((wm_accel*)&data[4])->y - 0x7f) / float(0xff), (((wm_accel*)&data[4])->z - 0x7f) / float(0xff)
+			//,ArrayToString(&data[7], 10, 0).c_str(),
+			//,ArrayToString(&data[17], 6, 0).c_str(),
+			//,SCore.c_str(),
+			,SExt.c_str());
 		//DEBUG_LOG(CONSOLE, "M+ %d Extension %d %d %s", ((wm_motionplus*)&data[17])->is_mp_data, ((wm_motionplus*)&data[17])->is_mp_data ?
 		//		((wm_motionplus*)&data[17])->extension_connected : ((wm_motionplus_nc*)&data[17])->extension_connected, wm->m_extension->active_extension,
 		//		ArrayToString(((u8*)&wm->m_reg_motion_plus.ext_identifier), sizeof(wm->m_reg_motion_plus.ext_identifier), 0).c_str());
@@ -648,7 +657,6 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 
 		SWARN_LOG(CONSOLE, "%s", SData.c_str());
 	}
-	*/
 }
 
 static InputPlugin g_plugin(WIIMOTE_INI_NAME, _trans("Wiimote"), "Wiimote");
@@ -681,6 +689,7 @@ void Initialize(void* const hwnd)
 	if(!IsInit)
 		for (unsigned int i = 0; i<4; ++i)
 			g_plugin.controllers.push_back(new WiimoteEmu::Wiimote(i));
+	IsInit = true;
 
 	g_controller_interface.SetHwnd(hwnd);
 	g_controller_interface.Initialize();
@@ -691,8 +700,6 @@ void Initialize(void* const hwnd)
 	
 	if (Movie::IsPlayingInput()) // reload Wiimotes with our settings
 		Movie::ChangeWiiPads();
-
-	IsInit = true;
 }
 
 // __________________________________________________________________________________________________
