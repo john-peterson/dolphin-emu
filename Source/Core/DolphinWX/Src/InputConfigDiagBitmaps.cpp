@@ -245,7 +245,11 @@ void InputConfigDialog::UpdateBitmaps(wxTimerEvent& WXUNUSED(event))
 						{
 							if ( gyro_dot[2]!=32 )
 							{
+#if wxCHECK_VERSION(2, 9, 0)
 								dc.SetPen(*wxBLUE_PEN);
+#else
+								dc.SetPen(*wxCYAN_PEN);
+#endif
 								dc.SetBrush(*wxBLUE_BRUSH);
 								dc.DrawRectangle( 0, gyro_dot[2] - 0, 64, 1 );
 							}
@@ -279,7 +283,11 @@ void InputConfigDialog::UpdateBitmaps(wxTimerEvent& WXUNUSED(event))
 						{
 							if ( gyro_dot[1]!=32 || gyro_dot[0]!=32 )
 							{
+#if wxCHECK_VERSION(2, 9, 0)
 								dc.SetPen(*wxBLUE_PEN);
+#else
+								dc.SetPen(*wxCYAN_PEN);
+#endif
 								dc.SetBrush(*wxBLUE_BRUSH);
 								dc.DrawRectangle( gyro_dot[1]-1, gyro_dot[0]-1, 2, 2 );
 							}
