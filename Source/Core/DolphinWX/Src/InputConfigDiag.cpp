@@ -985,7 +985,7 @@ GamepadPage::GamepadPage(wxWindow* parent, InputPlugin& plugin, const unsigned i
 };
 
 InputConfigDialog::InputConfigDialog(wxWindow* const parent, InputPlugin& plugin, const std::string& name, const int tab_num)
-	: wxDialog(parent, wxID_ANY, WXTSTR_FROM_CSTR(name.c_str()), wxPoint(128,-1), wxDefaultSize)
+	: wxDialog(parent, wxID_ANY, WXTSTR_FROM_CSTR(name.c_str()), wxPoint(128,-1), wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxMINIMIZE_BOX|wxDIALOG_NO_PARENT)
 	, m_parent(parent)
 	, m_plugin(plugin)
 {

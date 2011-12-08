@@ -65,7 +65,11 @@ void CodeConfigPanel::UpdateCodeList()
 		gcodes_end = m_gcodes.end();
 	for (; gcodes_iter!=gcodes_end; ++gcodes_iter)
 	{
+#if wxCHECK_VERSION(2, 9, 0)
+		m_listbox_gcodes->Append(wxString(gcodes_iter->name));
+#else
 		m_listbox_gcodes->Append(wxString::FromAscii(gcodes_iter->name.c_str()));
+#endif
 		if (gcodes_iter->enabled)
 			m_listbox_gcodes->Check(m_listbox_gcodes->GetCount()-1, true);
 	}
