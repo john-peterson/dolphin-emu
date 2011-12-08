@@ -956,7 +956,7 @@ void CISOProperties::LoadGameConfig()
 
 bool CISOProperties::SaveGameConfig()
 {
-	if (choice_backend->GetStringSelection() == "")
+	if (choice_backend->GetStringSelection() == wxT(""))
 		GameIni.DeleteKey("Core", "GFXBackend");
 	else
 		GameIni.Set("Core", "GFXBackend", (const char*)choice_backend->GetStringSelection().mb_str(*wxConvCurrent));
