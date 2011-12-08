@@ -14,7 +14,7 @@ const wxString& ConnectedWiimotesString()
 }
 
 WiimoteConfigDiag::WiimoteConfigDiag(wxWindow* parent, InputPlugin& plugin, const wxString& title)
-	: wxDialog(NULL, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxDIALOG_NO_PARENT)
+	: wxDialog(NULL, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxMINIMIZE_BOX|wxDIALOG_NO_PARENT)
 	, m_parent(parent)
 	, m_emu_config_diag(NULL)
 	, m_plugin(plugin)
