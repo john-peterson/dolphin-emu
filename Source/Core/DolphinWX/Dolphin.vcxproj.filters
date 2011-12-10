@@ -135,6 +135,9 @@
     <ClCompile Include="Src\GCMicDlg.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="Src\ControlDialog.cpp">
+      <Filter>GUI\InputConfig</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Main.h" />
@@ -263,6 +266,9 @@
     </ClInclude>
     <ClInclude Include="Src\GCMicDlg.h">
       <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ControlDialog.h">
+      <Filter>GUI\InputConfig</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
