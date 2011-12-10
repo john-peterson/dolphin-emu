@@ -18,8 +18,6 @@
 #ifndef _CONFIGBOX_H_
 #define _CONFIGBOX_H_
 
-#define SLIDER_TICK_COUNT			100
-#define DETECT_WAIT_TIME			1500
 #define PREVIEW_UPDATE_TIME			25
 
 // might have to change this setup for wiimote
@@ -40,10 +38,13 @@
 #include <vector>
 
 #include "ControllerInterface/ControllerInterface.h"
+#include "ControlDialog.h"
 #include "ControllerEmu.h"
 #include "InputConfig.h"
 #include "FileSearch.h"
 #include "UDPWrapper.h"
+
+class GamepadPage;
 
 class PadSetting
 {
@@ -93,41 +94,6 @@ public:
 	ControlState&		value;
 };
 
-class GamepadPage;
-
-class ControlDialog : public wxDialog
-{
-public:
-	ControlDialog(GamepadPage* const parent, InputPlugin& plugin, ControllerInterface::ControlReference* const ref);
-	
-	wxStaticBoxSizer* CreateControlChooser(wxWindow* const parent, wxWindow* const eventsink);
-
-	void DetectControl(wxCommandEvent& event);
-	void ClearControl(wxCommandEvent& event);
-	void SetControl(wxCommandEvent& event);
-	void SetDevice(wxCommandEvent& event);
-
-	void UpdateGUI();
-	void UpdateListContents();
-	void SelectControl(const std::string& name);
-
-	void SetSelectedControl(wxCommandEvent& event);
-	void AppendControl(wxCommandEvent& event);
-
-	ControllerInterface::ControlReference* const		control_reference;
-	InputPlugin&				m_plugin;
-	wxComboBox*				device_cbox;
-
-	wxTextCtrl*		textctrl;
-	wxListBox*		control_lbox;
-	wxSlider*		range_slider;
-
-private:
-	GamepadPage* const		m_parent;
-	wxStaticText*		m_bound_label;
-	ControllerInterface::DeviceQualifier	m_devq;
-};
-
 class ExtensionButton : public wxButton
 {
 public:
@@ -136,14 +102,6 @@ public:
 		, extension(ext) {}
 
 	ControllerEmu::Extension* const	extension;
-};
-
-class ControlButton : public wxButton
-{
-public:
-	ControlButton(wxWindow* const parent, ControllerInterface::ControlReference* const _ref, const unsigned int width, const std::string& label = "");
-
-	ControllerInterface::ControlReference* const		control_reference;
 };
 
 class UDPConfigButton : public wxButton
@@ -205,8 +163,7 @@ public:
 
 	void ClearAll(wxCommandEvent& event);
 	void LoadDefaults(wxCommandEvent& event);
-
-	void AdjustControlOption(wxCommandEvent& event);
+	
 	void AdjustSetting(wxCommandEvent& event);
 
 	void GetProfilePath(std::string& path);

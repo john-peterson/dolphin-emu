@@ -49,7 +49,7 @@
 
 // TODO: Move these out of here.
 int frameCount;
-int OSDChoice, OSDTime;
+int HotkeyChoice, HotkeyTime;
 
 Renderer *g_renderer = NULL;
 
@@ -205,111 +205,103 @@ void Renderer::SetScreenshot(const char *filename)
 	s_bScreenshot = true;
 }
 
+// Update input
+void Renderer::UpdateInput()
+{
+	static ControlState lastState[g_ActiveConfig.INPUT_SIZE] = {0};
+
+	for (int i = 0; i < g_ActiveConfig.INPUT_SIZE; ++i)
+	{
+		ControlState state = g_ActiveConfig.controls[i]->control_ref->State();
+		//SERROR_LOG(CONSOLE, "%d | %5.2f", i, state);
+
+		if (state == lastState[i]) continue;
+		lastState[i] = state;
+		if (!state) continue;
+
+		HotkeyChoice = i + 1;
+
+		switch(i)
+		{
+		case g_ActiveConfig.INPUT_FPS: g_Config.bShowFPS = !g_Config.bShowFPS; break;
+		case g_ActiveConfig.INPUT_EFB_ACCESS: g_Config.bEFBAccessEnable = !g_Config.bEFBAccessEnable; break;
+		case g_ActiveConfig.INPUT_EFB_COPY:
+			!g_Config.bEFBCopyEnable ? (g_Config.bEFBCopyEnable = g_Config.bCopyEFBToTexture = true)
+				: (g_Config.bCopyEFBToTexture ? g_Config.bCopyEFBToTexture = false : g_Config.bEFBCopyEnable =  false);
+			break;
+		case g_ActiveConfig.INPUT_EFB_SCALE:
+			g_Config.iEFBScale++;
+			if (g_Config.iEFBScale > 7) g_Config.iEFBScale = 0;
+			break;
+		case g_ActiveConfig.INPUT_AR: g_Config.iAspectRatio = (g_Config.iAspectRatio + 1) & 3; break;
+		case g_ActiveConfig.INPUT_FOG: g_Config.bDisableFog = !g_Config.bDisableFog; break;
+		// TODO: Not implemented in the D3D backends, yet
+		case g_ActiveConfig.INPUT_LIGHTING: g_Config.bDisableLighting = !g_Config.bDisableLighting; break;
+		case g_ActiveConfig.INPUT_WIREFRAME: g_Config.bWireFrame = !g_Config.bWireFrame; break;
+		}
+	}
+}
+
 // Create On-Screen-Messages
 void Renderer::DrawDebugText()
 {
-	// OSD Menu messages
-	if (g_ActiveConfig.bOSDHotKey)
+	if (!g_ActiveConfig.bHotKey) return;
+
+	UpdateInput();
+
+	if (HotkeyChoice > 0)
 	{
-		if (OSDChoice > 0)
+		HotkeyTime = Common::Timer::GetTimeMs() + 3000;
+		HotkeyChoice = -HotkeyChoice;
+	}
+	if ((u32)HotkeyTime > Common::Timer::GetTimeMs())
+	{
+		const char* ar_text = "";
+		switch(g_ActiveConfig.iAspectRatio)
 		{
-			OSDTime = Common::Timer::GetTimeMs() + 3000;
-			OSDChoice = -OSDChoice;
+		case ASPECT_AUTO: ar_text = "Auto"; break;
+		case ASPECT_FORCE_16_9: ar_text = "16:9"; break;
+		case ASPECT_FORCE_4_3: ar_text = "4:3"; break;
+		case ASPECT_STRETCH: ar_text = "Stretch"; break;
 		}
-		if ((u32)OSDTime > Common::Timer::GetTimeMs())
+
+		const char* res_text = "";
+		switch (g_ActiveConfig.iEFBScale)
 		{
-			const char* res_text = "";
-			switch (g_ActiveConfig.iEFBScale)
-			{
-			case 0:
-				res_text = "Auto (fractional)";
-				break;
-			case 1:
-				res_text = "Auto (integral)";
-				break;
-			case 2:
-				res_text = "Native";
-				break;
-			case 3:
-				res_text = "1.5x";
-				break;
-			case 4:
-				res_text = "2x";
-				break;
-			case 5:
-				res_text = "2.5x";
-				break;
-			case 6:
-				res_text = "3x";
-				break;
-			case 7:
-				res_text = "4x";
-				break;
-			}
-
-			const char* ar_text = "";
-			switch(g_ActiveConfig.iAspectRatio)
-			{
-			case ASPECT_AUTO:
-				ar_text = "Auto";
-				break;
-			case ASPECT_FORCE_16_9:
-				ar_text = "16:9";
-				break;
-			case ASPECT_FORCE_4_3:
-				ar_text = "4:3";
-				break;
-			case ASPECT_STRETCH:
-				ar_text = "Stretch";
-				break;
-			}
-
-			const char* const efbcopy_text = g_ActiveConfig.bEFBCopyEnable ?
-				(g_ActiveConfig.bCopyEFBToTexture ? "to Texture" : "to RAM") : "Disabled";
-
-			// The rows
-			const std::string lines[] =
-			{
-				std::string("3: Internal Resolution: ") + res_text,
-				std::string("4: Aspect Ratio: ") + ar_text + (g_ActiveConfig.bCrop ? " (crop)" : ""),
-				std::string("5: Copy EFB: ") + efbcopy_text,
-				std::string("6: Fog: ") + (g_ActiveConfig.bDisableFog ? "Disabled" : "Enabled"),
-				std::string("7: Material Lighting: ") + (g_ActiveConfig.bDisableLighting ? "Disabled" : "Enabled"),
-			};
-
-			enum { lines_count = sizeof(lines)/sizeof(*lines) };
-
-			std::string final_yellow, final_cyan;
-
-			// If there is more text than this we will have a collision
-			if (g_ActiveConfig.bShowFPS)
-			{
-				final_yellow = final_cyan = "\n\n";
-			}
-
-			// The latest changed setting in yellow
-			for (int i = 0; i != lines_count; ++i)
-			{
-				if (OSDChoice == -i - 1)
-					final_yellow += lines[i];
-				final_yellow += '\n';
-			}
-
-			// The other settings in cyan
-			for (int i = 0; i != lines_count; ++i)
-			{
-				if (OSDChoice != -i - 1)
-					final_cyan += lines[i];
-				final_cyan += '\n';
-			}
-
-			// Render a shadow
-			g_renderer->RenderText(final_cyan.c_str(), 21, 21, 0xDD000000);
-			g_renderer->RenderText(final_yellow.c_str(), 21, 21, 0xDD000000);
-			//and then the text
-			g_renderer->RenderText(final_cyan.c_str(), 20, 20, 0xFF00FFFF);
-			g_renderer->RenderText(final_yellow.c_str(), 20, 20, 0xFFFFFF00);
+		case 0: res_text = "Auto (fractional)"; break;
+		case 1: res_text = "Auto (integral)"; break;
+		case 2: res_text = "Native"; break;
+		case 3: res_text = "1.5x"; break;
+		case 4: res_text = "2x"; break;
+		case 5: res_text = "2.5x"; break;
+		case 6: res_text = "3x"; break;
+		case 7: res_text = "4x"; break;
 		}
+
+		const char* const efbcopy_text = g_ActiveConfig.bEFBCopyEnable ?
+			(g_ActiveConfig.bCopyEFBToTexture ? "Texture" : "RAM") : "Disabled";
+
+		std::string line;
+		bool bEnabled;
+		int i = (-HotkeyChoice)-1;
+		switch(i)
+		{
+		case g_ActiveConfig.INPUT_AR: line = std::string("Aspect Ratio: ") + ar_text + (g_ActiveConfig.bCrop ? " (crop)" : ""); bEnabled = true; break;
+		case g_ActiveConfig.INPUT_FPS: line = std::string("Show FPS: ") +  (g_ActiveConfig.bShowFPS ? "Enabled" : "Disabled"); bEnabled = g_ActiveConfig.bShowFPS; break;
+		case g_ActiveConfig.INPUT_EFB_ACCESS: line = std::string("EFB Access: ") + (g_ActiveConfig.bEFBAccessEnable ? "Enabled" : "Disabled"); bEnabled = g_ActiveConfig.bEFBAccessEnable; break;
+		case g_ActiveConfig.INPUT_EFB_COPY: line = std::string("Copy EFB: ") + efbcopy_text; bEnabled = g_ActiveConfig.bEFBCopyEnable; break;		
+		case g_ActiveConfig.INPUT_EFB_SCALE: line = std::string("Internal Resolution: ") + res_text; bEnabled = true; break;
+		case g_ActiveConfig.INPUT_FOG: line = std::string("Fog: ") + (g_ActiveConfig.bDisableFog ? "Disabled" : "Enabled"); bEnabled = g_ActiveConfig.bDisableFog; break;
+		case g_ActiveConfig.INPUT_LIGHTING: line = std::string("Material Lighting: ") + (g_ActiveConfig.bDisableLighting ? "Disabled" : "Enabled"); bEnabled = g_ActiveConfig.bDisableLighting; break;
+		case g_ActiveConfig.INPUT_WIREFRAME: line = std::string("Wireframe: ") + (g_ActiveConfig.bWireFrame ? "Enabled" : "Disabled"); bEnabled = g_ActiveConfig.bWireFrame; break;
+		}
+
+		// Room for fps display
+		if (g_ActiveConfig.bShowFPS) line = "\n" + line;
+
+		// Shadow and text
+		g_renderer->RenderText(line.c_str(), 1, 1, 0x000000|0xdd<<24);
+		g_renderer->RenderText(line.c_str(), 0, 0, (bEnabled ? 0x00FFFF : 0xABABAB)|0xff<<24);
 	}
 }
 
