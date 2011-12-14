@@ -100,6 +100,7 @@ public:
 	virtual std::string GetName() = 0;
 
 	virtual void ShowConfig(void*) {}
+	virtual void InitBackendInfo() {}
 
 	virtual void Video_Prepare() = 0;
 	virtual void Video_EnterLoop() = 0;

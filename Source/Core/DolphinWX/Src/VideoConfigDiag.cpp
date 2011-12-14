@@ -376,7 +376,7 @@ VideoConfigDiag::VideoConfigDiag(wxWindow* parent, const std::string &title, con
 		choice_aamode->AppendString(wxGetTranslation(wxString::FromAscii(it->c_str())));
 
 	choice_aamode->Select(vconfig.iMultisampleMode);
-	szr_enh->Add(0, 0, 0, wxALL, 0);
+	szr_enh->Add(0, 0, 0);
 	szr_enh->Add(text_aamode, 1, wxALIGN_CENTER_VERTICAL, 0);
 	szr_enh->Add(choice_aamode);
 	}
@@ -384,7 +384,7 @@ VideoConfigDiag::VideoConfigDiag(wxWindow* parent, const std::string &title, con
 	// AF
 	{
 	const wxString af_choices[] = {wxT("1x"), wxT("2x"), wxT("4x"), wxT("8x"), wxT("16x")};
-	szr_enh->Add(0, 0, 0, wxALL, 0);
+	szr_enh->Add(0, 0, 0);
 	szr_enh->Add(new wxStaticText(page_enh, -1, _("Anisotropic Filtering:")), 1, wxALIGN_CENTER_VERTICAL, 0);
 	szr_enh->Add(CreateChoice(page_enh, vconfig.iMaxAnisotropy, wxGetTranslation(af_desc), 5, af_choices));
 	}
@@ -449,6 +449,7 @@ VideoConfigDiag::VideoConfigDiag(wxWindow* parent, const std::string &title, con
 
 	control_buttons[vconfig.INPUT_EFB_ACCESS] = new ControlButton(page_hacks, vconfig.controls[vconfig.INPUT_EFB_ACCESS]->control_ref, 40);
 	control_buttons[vconfig.INPUT_EFB_COPY] = new ControlButton(page_hacks, vconfig.controls[vconfig.INPUT_EFB_COPY]->control_ref, 40);
+	control_buttons[vconfig.INPUT_XFB] = new ControlButton(page_hacks, vconfig.controls[vconfig.INPUT_XFB]->control_ref, 40);
 	control_buttons[vconfig.INPUT_FOG] = new ControlButton(page_hacks, vconfig.controls[vconfig.INPUT_FOG]->control_ref, 40);
 	control_buttons[vconfig.INPUT_LIGHTING] = new ControlButton(page_hacks, vconfig.controls[vconfig.INPUT_LIGHTING]->control_ref, 40);
 
@@ -511,16 +512,18 @@ VideoConfigDiag::VideoConfigDiag(wxWindow* parent, const std::string &title, con
 	// - XFB
 	{
 	wxStaticBoxSizer* const group_xfb = new wxStaticBoxSizer(wxHORIZONTAL, page_hacks, _("External Frame Buffer"));
+	wxBoxSizer* const row_xfb = new wxBoxSizer(wxHORIZONTAL);
 
 	SettingCheckBox* disable_xfb = CreateCheckBox(page_hacks, _("Disable"), wxGetTranslation(xfb_desc), vconfig.bUseXFB, true);
 	virtual_xfb = CreateRadioButton(page_hacks, _("Virtual"), wxGetTranslation(xfb_virtual_desc), vconfig.bUseRealXFB, true, wxRB_GROUP);
 	real_xfb = CreateRadioButton(page_hacks, _("Real"), wxGetTranslation(xfb_real_desc), vconfig.bUseRealXFB);
 
-	group_xfb->Add(disable_xfb, 0, wxLEFT | wxRIGHT | wxBOTTOM, 5);
-	group_xfb->AddStretchSpacer(1);
+	group_xfb->Add(disable_xfb, 0, wxLEFT|wxRIGHT|wxBOTTOM, 5);
 	group_xfb->Add(virtual_xfb, 0, wxRIGHT, 5);
 	group_xfb->Add(real_xfb, 0, wxRIGHT, 5);
-	szr_hacks->Add(group_xfb, 0, wxEXPAND | wxALL, 5);
+	row_xfb->Add(control_buttons[vconfig.INPUT_XFB], 0, wxALIGN_CENTER_VERTICAL);
+	row_xfb->Add(group_xfb, 0, wxALL, 5);
+	szr_hacks->Add(row_xfb, 0, wxLEFT, 5);
 	}	// xfb
 
 	// - other hacks
@@ -671,10 +674,8 @@ void VideoConfigDiag::Event_ControlDialog(wxCommandEvent &event)
 	default_device.FromDevice(g_controller_interface.Devices()[0]);
 	ControlDialog* m_control_dialog = new ControlDialog(this, *Wiimote::GetPlugin(), default_device, ((ControlButton*)event.GetEventObject())->control_reference);
 	m_control_dialog->ShowModal();
-	m_control_dialog->Destroy();	
-	//UpdateWindowUI();
+	m_control_dialog->Destroy();
 	UpdateUI();
-	//OnUpdateUI(wxUpdateUIEvent(0));
 	event.Skip();
 }
 
