@@ -4,6 +4,6 @@ set BUILDCONFIG=Release
 set PLATFORM=%2
 set PROJECT=%3
 
-call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat" %build_type%
+call "%VS110COMNTOOLS%..\..\VC\vcvarsall.bat" %build_type%
 
-devenv /nologo Dolphin_2010.sln /Project %PROJECT% /%BUILDTYPE% "%BUILDCONFIG%|%PLATFORM%"
+devenv /nologo Dolphin.sln /Project %PROJECT% /%BUILDTYPE% "%BUILDCONFIG%|%PLATFORM%"
