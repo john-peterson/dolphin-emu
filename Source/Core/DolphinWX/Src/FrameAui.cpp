@@ -1019,10 +1019,6 @@ wxFrame * CFrame::CreateParentFrame(wxWindowID Id, const wxString& Title,
 	Frame->SetSizer(m_MainSizer);
 	// Minimum frame size
 	Frame->SetMinSize(wxSize(200, 200));
-	if (Id == IDM_CONSOLEWINDOW_PARENT) {
-		Frame->SetSize(wxSize(960, 1040));
-		Frame->SetPosition(wxPoint(0, 0));
-	}
 	Frame->Show();
 	return Frame;
 }

@@ -118,8 +118,6 @@ void ControllerEmu::UpdateDefaultDevice()
 void ControllerEmu::ControlGroup::LoadConfig(IniFile::Section *sec, const std::string& defdev, const std::string& base)
 {
 	std::string group(base + name); group += "/";
-	ControlState cTmp;
-	std::string sTmp;
 
 	// settings
 	std::vector<ControlGroup::Setting*>::const_iterator
@@ -127,8 +125,8 @@ void ControllerEmu::ControlGroup::LoadConfig(IniFile::Section *sec, const std::s
 		se = settings.end();
 	for (; si!=se; ++si)
 	{
-		if(sec->Get((group+(*si)->name).c_str(), &cTmp, (*si)->default_value))
-			(*si)->value = cTmp*0.01;
+		sec->Get((group+(*si)->name).c_str(), &(*si)->value, (*si)->default_value*100);
+		(*si)->value *= 0.01;
 	}
 
 	// controls
@@ -138,11 +136,12 @@ void ControllerEmu::ControlGroup::LoadConfig(IniFile::Section *sec, const std::s
 	for (; ci!=ce; ++ci)
 	{
 		// control expression
-		if(sec->Get((group + (*ci)->name).c_str(), &sTmp, ""))
-			(*ci)->control_ref->expression = sTmp;
+		sec->Get((group + (*ci)->name).c_str(), &(*ci)->control_ref->expression, "");
+
 		// range
-		if(sec->Get((group+(*ci)->name+"/Range").c_str(), &cTmp, 100.0f))
-			(*ci)->control_ref->range = cTmp*0.01;
+		sec->Get((group+(*ci)->name+"/Range").c_str(), &(*ci)->control_ref->range, 100.0f);
+		(*ci)->control_ref->range *= 0.01;
+
 	}
 
 	// extensions
@@ -174,8 +173,8 @@ void ControllerEmu::LoadConfig(IniFile::Section *sec, const std::string& base)
 	std::string defdev = default_device.ToString();
 	if (base.empty())
 	{
-		if(sec->Get((base + "Device").c_str(), &defdev, ""))
-			default_device.FromString(defdev);
+		sec->Get((base + "Device").c_str(), &defdev, "");
+		default_device.FromString(defdev);
 	}
 	std::vector<ControlGroup*>::const_iterator i = groups.begin(),
 		e = groups.end();

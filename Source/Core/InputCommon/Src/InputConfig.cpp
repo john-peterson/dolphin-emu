@@ -40,9 +40,22 @@ bool InputPlugin::LoadConfig()
 		for (; i!=e; ++i)
 		{
 			// load settings from ini
-			(*i)->LoadConfig(inifile.GetOrCreateSection((*i)->GetName().c_str()));
-			// override
-			if (gameini.length() > 0) if (gameiniFile.Load(gameini)) (*i)->LoadConfig(gameiniFile.GetOrCreateSection((*i)->GetName().c_str()));
+			if (gameiniFile.Load(gameini))
+			{
+				// copy from baseini
+				if (gameiniFile.GetOrCreateSection((*i)->GetName().c_str())->Exists("FirstUse"))
+				{
+					gameiniFile.GetOrCreateSection((*i)->GetName().c_str())->Copy(inifile.GetOrCreateSection((*i)->GetName().c_str()));
+					gameiniFile.GetOrCreateSection((*i)->GetName().c_str())->Delete("FirstUse");
+					gameiniFile.Save(gameini);
+				}
+				(*i)->LoadConfig(gameiniFile.GetOrCreateSection((*i)->GetName().c_str()));
+			}
+			else if (inifile.Load(ini))
+			{
+				(*i)->LoadConfig(inifile.GetOrCreateSection((*i)->GetName().c_str()));
+			}
+			
 			// update refs
 			(*i)->UpdateReferences(g_controller_interface);
 		}

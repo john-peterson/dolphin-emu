@@ -608,7 +608,7 @@ public:
 
 					if (!relative)
 					{							
-						m_state[i] = std::min(1.0f, state);
+						m_state[i] = MathUtil::Trim(state, -1, 1);
 					}
 					// create relative data
 					else

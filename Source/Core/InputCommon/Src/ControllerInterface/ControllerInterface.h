@@ -226,7 +226,7 @@ public:
 	void SetHwnd(void* const hwnd);
 	void Initialize();
 	void Shutdown();
-	bool IsInit() const { return m_is_init; }
+	bool IsInit();
 
 	void UpdateReference(ControlReference* control, const DeviceQualifier& default_device) const;
 	bool UpdateInput(const bool force = false);

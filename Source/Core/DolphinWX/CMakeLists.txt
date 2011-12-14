@@ -37,6 +37,7 @@ if(wxWidgets_FOUND)
 				Src/Debugger/MemoryWindow.cpp
 				Src/Debugger/RegisterView.cpp
 				Src/Debugger/RegisterWindow.cpp
+				Src/ControlDiag.cpp
 				Src/FifoPlayerDlg.cpp
 				Src/Frame.cpp
 				Src/FrameAui.cpp

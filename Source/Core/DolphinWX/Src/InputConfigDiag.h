@@ -38,7 +38,7 @@
 #include <vector>
 
 #include "ControllerInterface/ControllerInterface.h"
-#include "ControlDialog.h"
+#include "ControlDiag.h"
 #include "ControllerEmu.h"
 #include "InputConfig.h"
 #include "FileSearch.h"

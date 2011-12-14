@@ -113,8 +113,6 @@ void CFrame::CreateMenu()
 	fileMenu->AppendSeparator();
 	fileMenu->Append(IDM_BROWSE, _("&Browse for ISOs..."));
 	fileMenu->AppendSeparator();
-	fileMenu->Append(IDM_RESTART, UseDebugger ? _T("Regular mode") : _T("Debugging mode"));
-	fileMenu->AppendSeparator();
 	fileMenu->Append(wxID_EXIT, _("E&xit") + wxString(wxT("\tAlt+F4")));
 	m_MenuBar->Append(fileMenu, _("&File"));
 
@@ -283,6 +281,8 @@ void CFrame::CreateMenu()
 	viewMenu->AppendCheckItem(IDM_LISTDRIVES, _("Show Drives"));
 	viewMenu->Check(IDM_LISTDRIVES, SConfig::GetInstance().m_ListDrives);
 	viewMenu->Append(IDM_PURGECACHE, _("Purge Cache"));
+	viewMenu->AppendSeparator();
+	viewMenu->Append(IDM_RESTART, UseDebugger ? _T("Regular mode") : _T("Debugging mode"));	
 	m_MenuBar->Append(viewMenu, _("&View"));
 
 	if (g_pCodeWindow) g_pCodeWindow->CreateMenu(SConfig::GetInstance().m_LocalCoreStartupParameter, m_MenuBar);

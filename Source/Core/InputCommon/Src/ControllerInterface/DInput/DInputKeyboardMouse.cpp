@@ -39,13 +39,8 @@ static const struct
 	{ VK_SCROLL, "SCROLL LOCK" }
 };
 
-// lil silly
-static HWND hwnd;
-
-void InitKeyboardMouse(IDirectInput8* const idi8, std::vector<ControllerInterface::Device*>& devices, HWND _hwnd)
+void InitKeyboardMouse(IDirectInput8* const idi8, std::vector<ControllerInterface::Device*>& devices)
 {
-	hwnd = _hwnd;
-
 	// mouse and keyboard are a combined device, to allow shift+click and stuff
 	// if thats dumb, i will make a VirtualDevice class that just uses ranges of inputs/outputs from other devices
 	// so there can be a separated Keyboard and mouse, as well as combined KeyboardMouse

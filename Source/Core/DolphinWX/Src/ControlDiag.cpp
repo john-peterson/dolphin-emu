@@ -15,7 +15,7 @@
 // Official SVN repository and contact information can be found at
 // http://code.google.com/p/dolphin-emu/
 
-#include "ControlDialog.h"
+#include "ControlDiag.h"
 
 #define _connect_macro_(b, f, c, s)	(b)->Connect(wxID_ANY, (c), wxCommandEventHandler(f), (wxObject*)0, (wxEvtHandler*)s)
 #if wxCHECK_VERSION(2, 9, 0)
