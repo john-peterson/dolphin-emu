@@ -139,12 +139,12 @@ public:
 	void SortSections();
 
 	Section* GetOrCreateSection(const char* section);
+	const Section* GetSection(const char* section) const;
+	Section* GetSection(const char* section);
 
 private:
 	std::vector<Section> sections;
 
-	const Section* GetSection(const char* section) const;
-	Section* GetSection(const char* section);
 	std::string* GetLine(const char* section, const char* key);
 	void CreateSection(const char* section);
 };

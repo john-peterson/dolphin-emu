@@ -1182,6 +1182,7 @@ void CFrame::OnConfigMain(wxCommandEvent& WXUNUSED (event))
 
 void CFrame::OnConfigGFX(wxCommandEvent& WXUNUSED (event))
 {
+	VideoBackend::ActivateBackend(SConfig::GetInstance().m_LocalCoreStartupParameter.m_strVideoBackend);
 	if (g_video_backend)
 		g_video_backend->ShowConfig(this);
 }

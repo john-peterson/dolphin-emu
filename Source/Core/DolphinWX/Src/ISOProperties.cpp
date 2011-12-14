@@ -37,6 +37,8 @@
 #include "../resources/isoprop_folder.xpm"
 #include "../resources/isoprop_disc.xpm"
 
+#define _connect_macro_(b, f, c, s)	(b)->Connect(wxID_ANY, (c), wxCommandEventHandler( f ), (wxObject*)0, (wxEvtHandler*)s)
+
 extern std::vector<VideoBackend*> g_available_video_backends;
 
 struct WiiPartition
@@ -284,8 +286,7 @@ void CISOProperties::CreateGUIControls(bool IsWad)
 	EditConfig->SetToolTip(_("This will let you Manually Edit the INI config file"));
 
 	// Notebook
-	wxNotebook * const m_Notebook =
-		new wxNotebook(this, ID_NOTEBOOK, wxDefaultPosition, wxDefaultSize);
+	m_Notebook = new wxNotebook(this, ID_NOTEBOOK, wxDefaultPosition, wxDefaultSize);
 	wxPanel * const m_GameConfig =
 		new wxPanel(m_Notebook, ID_GAMECONFIG, wxDefaultPosition, wxDefaultSize);
 	m_Notebook->AddPage(m_GameConfig, _("GameConfig"));
@@ -304,18 +305,6 @@ void CISOProperties::CreateGUIControls(bool IsWad)
 	// GameConfig editing - Overrides and emulation state
 	wxStaticText * const OverrideText = new wxStaticText(m_GameConfig, wxID_ANY, _("These settings override core Dolphin settings.\nUndetermined means the game uses Dolphin's setting."));
 	// Core	
-	choice_backend = new wxChoice(m_GameConfig, wxID_ANY, wxDefaultPosition);
-	//RegisterControl(choice_backend, wxGetTranslation(backend_desc));
-	choice_backend->AppendString(_(""));
-	std::vector<VideoBackend*>::const_iterator
-			it = g_available_video_backends.begin(),
-			itend = g_available_video_backends.end();
-	for (; it != itend; ++it)
-		choice_backend->AppendString(wxGetTranslation(wxString::FromAscii((*it)->GetName().c_str())));
-	wxBoxSizer* const sBackend = new wxBoxSizer(wxHORIZONTAL);
-	sBackend->Add(new wxStaticText(m_GameConfig, wxID_ANY, _("Backend:")), 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
-	sBackend->Add(choice_backend, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-
 	CPUThread = new wxCheckBox(m_GameConfig, ID_USEDUALCORE, _("Enable Dual Core"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE|wxCHK_ALLOW_3RD_STATE_FOR_USER, wxDefaultValidator);
 	SkipIdle = new wxCheckBox(m_GameConfig, ID_IDLESKIP, _("Enable Idle Skipping"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE|wxCHK_ALLOW_3RD_STATE_FOR_USER, wxDefaultValidator);
 	MMU = new wxCheckBox(m_GameConfig, ID_MMU, _("Enable MMU"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE|wxCHK_ALLOW_3RD_STATE_FOR_USER, wxDefaultValidator);
@@ -337,20 +326,47 @@ void CISOProperties::CreateGUIControls(bool IsWad)
 	DisableWiimoteSpeaker = new wxCheckBox(m_GameConfig, ID_DISABLEWIIMOTESPEAKER, _("Alternate Wiimote Timing"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE|wxCHK_ALLOW_3RD_STATE_FOR_USER, wxDefaultValidator);
 	DisableWiimoteSpeaker->SetToolTip(_("Mutes the Wiimote speaker. Fixes random disconnections on real wiimotes. No effect on emulated wiimotes."));
 
-	// Video
+	// Video	
+	choice_backend = new wxChoice(m_GameConfig, wxID_ANY, wxDefaultPosition);
+	choice_backend->AppendString(_(""));
+	for (std::vector<VideoBackend*>::const_iterator it = g_available_video_backends.begin(), itend = g_available_video_backends.end(); it != itend; ++it)
+		choice_backend->AppendString(wxGetTranslation(wxString::FromAscii((*it)->GetName().c_str())));
+	_connect_macro_(choice_backend, CISOProperties::UpdateUIGameConfig, wxEVT_COMMAND_CHOICE_SELECTED, this);
+	choice_aa = new wxChoice(m_GameConfig, wxID_ANY, wxDefaultPosition);
+
+	const wxString af_choices[] = {wxT(""), wxT("1x"), wxT("2x"), wxT("4x"), wxT("8x"), wxT("16x")};
+	choice_af = new wxChoice(m_GameConfig, wxID_ANY, wxDefaultPosition, wxDefaultSize, 6, af_choices);
+
 	UseBBox = new wxCheckBox(m_GameConfig, ID_USE_BBOX, _("Enable Bounding Box Calculation"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE|wxCHK_ALLOW_3RD_STATE_FOR_USER);
 	UseBBox->SetToolTip(_("If checked, the bounding box registers will be updated. Used by the Paper Mario games."));
 
 	UseZTPSpeedupHack = new wxCheckBox(m_GameConfig, ID_ZTP_SPEEDUP, _("ZTP hack"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE|wxCHK_ALLOW_3RD_STATE_FOR_USER);
 	UseZTPSpeedupHack->SetToolTip(_("Enable this to speed up The Legend of Zelda: Twilight Princess. Disable for ANY other game."));
-	
+
 	// Hack
 	wxFlexGridSizer * const szrPHackSettings = new wxFlexGridSizer(0);
 	PHackEnable = new wxCheckBox(m_GameConfig, ID_PHACKENABLE, _("Custom Projection Hack"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE);
 	PHackEnable->SetToolTip(_("Enables Custom Projection Hack"));
 	PHSettings = new wxButton(m_GameConfig, ID_PHSETTINGS, _("Settings..."));
 	PHSettings->SetToolTip(_("Customize some Orthographic Projection parameters."));
-	
+	szrPHackSettings->Add(PHackEnable, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
+	szrPHackSettings->Add(PHSettings, 0, wxLEFT, 5);
+
+	wxStaticBoxSizer * const sbVideoOverrides =
+		new wxStaticBoxSizer(wxVERTICAL, m_GameConfig, _("Video"));
+	wxFlexGridSizer* const fgVideoOverrides = new wxFlexGridSizer(2, 5, 5);
+	fgVideoOverrides->Add(new wxStaticText(m_GameConfig, wxID_ANY, _("Backend:")), 0, wxALIGN_CENTER_VERTICAL, 0);
+	fgVideoOverrides->Add(choice_backend, 0);
+	fgVideoOverrides->Add(new wxStaticText(m_GameConfig, wxID_ANY, _("Anti-Aliasing:")), 0, wxALIGN_CENTER_VERTICAL, 0);
+	fgVideoOverrides->Add(choice_aa, 0);
+	fgVideoOverrides->Add(new wxStaticText(m_GameConfig, wxID_ANY, _("Anisotropic Filtering:")), 0, wxALIGN_CENTER_VERTICAL, 0);
+	fgVideoOverrides->Add(choice_af, 0);
+	sbVideoOverrides->Add(fgVideoOverrides, 0, wxLEFT, 5);
+	sbVideoOverrides->Add(UseBBox, 0, wxLEFT, 5);
+	sbVideoOverrides->Add(UseZTPSpeedupHack, 0, wxLEFT, 5);
+	sbVideoOverrides->Add(szrPHackSettings, 0);	
+
+	// State
 	wxStaticText * const EmuStateText =
 		new wxStaticText(m_GameConfig, wxID_ANY, _("Emulation State: "));
 	arrayStringFor_EmuState.Add(_("Not Set"));
@@ -364,8 +380,7 @@ void CISOProperties::CreateGUIControls(bool IsWad)
 	EmuIssues = new wxTextCtrl(m_GameConfig, ID_EMU_ISSUES, wxEmptyString);
 	
 	wxStaticBoxSizer * const sbCoreOverrides =
-		new wxStaticBoxSizer(wxVERTICAL, m_GameConfig, _("Core"));
-	sbCoreOverrides->Add(sBackend, 0, wxLEFT, 5);
+		new wxStaticBoxSizer(wxVERTICAL, m_GameConfig, _("Core"));	
 	sbCoreOverrides->Add(CPUThread, 0, wxLEFT, 5);
 	sbCoreOverrides->Add(SkipIdle, 0, wxLEFT, 5);
 	sbCoreOverrides->Add(MMU, 0, wxLEFT, 5);
@@ -388,14 +403,6 @@ void CISOProperties::CreateGUIControls(bool IsWad)
 	// rather useless.
 	EnableProgressiveScan->Disable();
 
-	wxStaticBoxSizer * const sbVideoOverrides =
-		new wxStaticBoxSizer(wxVERTICAL, m_GameConfig, _("Video"));
-	sbVideoOverrides->Add(UseBBox, 0, wxLEFT, 5);
-	sbVideoOverrides->Add(UseZTPSpeedupHack, 0, wxLEFT, 5);
-	szrPHackSettings->Add(PHackEnable, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
-	szrPHackSettings->Add(PHSettings, 0, wxLEFT, 5);
-
-	sbVideoOverrides->Add(szrPHackSettings, 0, wxEXPAND);
 	wxStaticBoxSizer * const sbGameConfig =
 		new wxStaticBoxSizer(wxVERTICAL, m_GameConfig, _("Game-Specific Settings"));
 	sbGameConfig->Add(OverrideText, 0, wxEXPAND|wxALL, 5);
@@ -579,10 +586,6 @@ void CISOProperties::CreateGUIControls(bool IsWad)
 	SetSizerAndFit(sMain);
 	Center();
 	SetFocus();
-	// 2.9.2 drawing bug
-	Show();
-	m_Notebook->ChangeSelection(1);
-	m_Notebook->ChangeSelection(0);
 }
 
 void CISOProperties::OnClose(wxCloseEvent& WXUNUSED (event))
@@ -596,6 +599,20 @@ void CISOProperties::OnClose(wxCloseEvent& WXUNUSED (event))
 void CISOProperties::OnCloseClick(wxCommandEvent& WXUNUSED (event))
 {
 	Close();
+}
+
+void CISOProperties::UpdateUIGameConfig(wxCommandEvent &event)
+{
+	if (choice_backend->GetSelection() > 0)
+	{
+		g_video_backend = g_available_video_backends[choice_backend->GetSelection()-1];
+		g_video_backend->InitBackendInfo();
+	}
+	choice_aa->Enable(choice_backend->GetSelection() > 0);
+	choice_aa->Clear();
+	choice_aa->AppendString(wxT(""));
+	for (std::vector<std::string>::const_iterator it = g_Config.backend_info.AAModes.begin(), itend = g_Config.backend_info.AAModes.end(); it != itend; ++it)
+		choice_aa->AppendString(wxGetTranslation(wxString::FromAscii(it->c_str())));
 }
 
 void CISOProperties::RightClickOnBanner(wxMouseEvent& event)
@@ -853,10 +870,6 @@ void CISOProperties::LoadGameConfig()
 	int iTemp;
 	std::string sTemp;
 
-	GameIni.Get("Core", "GFXBackend", &sTemp);
-	if (!sTemp.empty())
-		choice_backend->SetStringSelection(wxString(sTemp.c_str(), *wxConvCurrent));
-
 	if (GameIni.Get("Core", "CPUThread", &bTemp))
 		CPUThread->Set3StateValue((wxCheckBoxState)bTemp);
 	else
@@ -918,6 +931,17 @@ void CISOProperties::LoadGameConfig()
 	else
 		DisableWiimoteSpeaker->Set3StateValue(wxCHK_UNDETERMINED);
 
+	GameIni.Get("Core", "GFXBackend", &sTemp);
+	if (!sTemp.empty())
+		choice_backend->SetStringSelection(wxString(sTemp.c_str(), *wxConvCurrent));
+	UpdateUIGameConfig(wxCommandEvent(wxEVT_NULL));
+
+	if (GameIni.Get("Video_Settings", "MSAA", &iTemp))
+		choice_aa->SetSelection(iTemp+1);
+
+	if (GameIni.Get("Video_Enhancements", "MaxAnisotropy", &iTemp))
+		choice_af->SetSelection(iTemp+1);
+
 	if (GameIni.Get("Video", "UseBBox", &bTemp))
 		UseBBox->Set3StateValue((wxCheckBoxState)bTemp);
 	else
@@ -952,15 +976,15 @@ void CISOProperties::LoadGameConfig()
 	PatchList_Load();
 	ActionReplayList_Load();
 	m_geckocode_panel->LoadCodes(GameIni, OpenISO->GetUniqueID());
+
+	// 2.9.2 drawing bug
+	Show();
+	m_Notebook->ChangeSelection(1);
+	m_Notebook->ChangeSelection(0);
 }
 
 bool CISOProperties::SaveGameConfig()
 {
-	if (choice_backend->GetStringSelection() == wxT(""))
-		GameIni.DeleteKey("Core", "GFXBackend");
-	else
-		GameIni.Set("Core", "GFXBackend", (const char*)choice_backend->GetStringSelection().mb_str(*wxConvCurrent));
-
 	if (CPUThread->Get3StateValue() == wxCHK_UNDETERMINED)
 		GameIni.DeleteKey("Core", "CPUThread");
 	else
@@ -1020,6 +1044,21 @@ bool CISOProperties::SaveGameConfig()
 		GameIni.DeleteKey("Wii", "DisableWiimoteSpeaker");
 	else
 		GameIni.Set("Wii", "DisableWiimoteSpeaker", DisableWiimoteSpeaker->Get3StateValue());
+
+	if (choice_backend->GetSelection() == 0)
+		GameIni.DeleteKey("Core", "GFXBackend");
+	else
+		GameIni.Set("Core", "GFXBackend", (const char*)choice_backend->GetStringSelection().mb_str(*wxConvCurrent));
+
+	if (choice_backend->GetSelection() == 0 || choice_aa->GetSelection() == 0)
+		GameIni.DeleteKey("Video_Settings", "MSAA");
+	else
+		GameIni.Set("Video_Settings", "MSAA", choice_aa->GetSelection()-1);
+
+	if (choice_af->GetSelection() == 0)
+		GameIni.DeleteKey("Video_Enhancements", "MaxAnisotropy");
+	else
+		GameIni.Set("Video_Enhancements", "MaxAnisotropy", choice_af->GetSelection()-1);
 
 	if (UseBBox->Get3StateValue() == wxCHK_UNDETERMINED)
 		GameIni.DeleteKey("Video", "UseBBox");

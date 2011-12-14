@@ -40,6 +40,7 @@ VideoConfig::VideoConfig()
 	controls.push_back(new ControllerEmu::ControlGroup::Input("EFB Access"));
 	controls.push_back(new ControllerEmu::ControlGroup::Input("EFB Copy"));
 	controls.push_back(new ControllerEmu::ControlGroup::Input("EFB Scale"));	
+	controls.push_back(new ControllerEmu::ControlGroup::Input("XFB"));
 	controls.push_back(new ControllerEmu::ControlGroup::Input("Fog"));
 	controls.push_back(new ControllerEmu::ControlGroup::Input("Lighting"));
 	controls.push_back(new ControllerEmu::ControlGroup::Input("Wireframe"));
