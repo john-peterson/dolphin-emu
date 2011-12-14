@@ -35,7 +35,6 @@ VideoConfig::VideoConfig()
 {
 	bRunning = false;
 	
-	g_controller_interface.Initialize();
 	controls.push_back(new ControllerEmu::ControlGroup::Input("Aspect Ratio"));
 	controls.push_back(new ControllerEmu::ControlGroup::Input("Show FPS"));
 	controls.push_back(new ControllerEmu::ControlGroup::Input("EFB Access"));
@@ -62,12 +61,15 @@ void VideoConfig::Load(const char *ini_file)
 	iniFile.Load(ini_file);
 
 	g_controller_interface.Initialize();
-	ControllerInterface::DeviceQualifier default_device;
-	default_device.FromDevice(g_controller_interface.Devices()[0]);
-	for (int i = 0; i < INPUT_SIZE; ++i)
+	if (g_controller_interface.Devices().size() > 0)
 	{
-		iniFile.Get("Input", controls[i]->name, &controls[i]->control_ref->expression, "");	
-		g_controller_interface.UpdateReference(controls[i]->control_ref, default_device);
+		ControllerInterface::DeviceQualifier default_device;
+		default_device.FromDevice(g_controller_interface.Devices()[0]);
+		for (int i = 0; i < INPUT_SIZE; ++i)
+		{
+			iniFile.Get("Input", controls[i]->name, &controls[i]->control_ref->expression, "");	
+			g_controller_interface.UpdateReference(controls[i]->control_ref, default_device);
+		}
 	}
 
 	iniFile.Get("Hardware", "VSync", &bVSync, 0); // Hardware

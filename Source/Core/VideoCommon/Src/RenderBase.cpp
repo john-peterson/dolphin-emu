@@ -208,9 +208,9 @@ void Renderer::SetScreenshot(const char *filename)
 // Update input
 void Renderer::UpdateInput()
 {
-	static ControlState lastState[g_ActiveConfig.INPUT_SIZE] = {0};
+	static ControlState lastState[VideoConfig::INPUT_SIZE] = {0};
 
-	for (int i = 0; i < g_ActiveConfig.INPUT_SIZE; ++i)
+	for (int i = 0; i < VideoConfig::INPUT_SIZE; ++i)
 	{
 		ControlState state = g_ActiveConfig.controls[i]->control_ref->State();
 		//SERROR_LOG(CONSOLE, "%d | %5.2f", i, state);
@@ -223,21 +223,21 @@ void Renderer::UpdateInput()
 
 		switch(i)
 		{
-		case g_ActiveConfig.INPUT_FPS: g_Config.bShowFPS = !g_Config.bShowFPS; break;
-		case g_ActiveConfig.INPUT_EFB_ACCESS: g_Config.bEFBAccessEnable = !g_Config.bEFBAccessEnable; break;
-		case g_ActiveConfig.INPUT_EFB_COPY:
-			!g_Config.bEFBCopyEnable ? (g_Config.bEFBCopyEnable = g_Config.bCopyEFBToTexture = true)
-				: (g_Config.bCopyEFBToTexture ? g_Config.bCopyEFBToTexture = false : g_Config.bEFBCopyEnable =  false);
+		case VideoConfig::INPUT_FPS: g_ActiveConfig.bShowFPS = !g_ActiveConfig.bShowFPS; break;
+		case VideoConfig::INPUT_EFB_ACCESS: g_ActiveConfig.bEFBAccessEnable = !g_ActiveConfig.bEFBAccessEnable; break;
+		case VideoConfig::INPUT_EFB_COPY:
+			!g_ActiveConfig.bEFBCopyEnable ? (g_ActiveConfig.bEFBCopyEnable = g_ActiveConfig.bCopyEFBToTexture = true)
+				: (g_ActiveConfig.bCopyEFBToTexture ? g_ActiveConfig.bCopyEFBToTexture = false : g_ActiveConfig.bEFBCopyEnable =  false);
 			break;
-		case g_ActiveConfig.INPUT_EFB_SCALE:
-			g_Config.iEFBScale++;
-			if (g_Config.iEFBScale > 7) g_Config.iEFBScale = 0;
+		case VideoConfig::INPUT_EFB_SCALE:
+			g_ActiveConfig.iEFBScale++;
+			if (g_ActiveConfig.iEFBScale > 7) g_ActiveConfig.iEFBScale = 0;
 			break;
-		case g_ActiveConfig.INPUT_AR: g_Config.iAspectRatio = (g_Config.iAspectRatio + 1) & 3; break;
-		case g_ActiveConfig.INPUT_FOG: g_Config.bDisableFog = !g_Config.bDisableFog; break;
+		case VideoConfig::INPUT_AR: g_ActiveConfig.iAspectRatio = (g_ActiveConfig.iAspectRatio + 1) & 3; break;
+		case VideoConfig::INPUT_FOG: g_ActiveConfig.bDisableFog = !g_ActiveConfig.bDisableFog; break;
 		// TODO: Not implemented in the D3D backends, yet
-		case g_ActiveConfig.INPUT_LIGHTING: g_Config.bDisableLighting = !g_Config.bDisableLighting; break;
-		case g_ActiveConfig.INPUT_WIREFRAME: g_Config.bWireFrame = !g_Config.bWireFrame; break;
+		case VideoConfig::INPUT_LIGHTING: g_ActiveConfig.bDisableLighting = !g_ActiveConfig.bDisableLighting; break;
+		case VideoConfig::INPUT_WIREFRAME: g_ActiveConfig.bWireFrame = !g_ActiveConfig.bWireFrame; break;
 		}
 	}
 }
@@ -286,14 +286,14 @@ void Renderer::DrawDebugText()
 		int i = (-HotkeyChoice)-1;
 		switch(i)
 		{
-		case g_ActiveConfig.INPUT_AR: line = std::string("Aspect Ratio: ") + ar_text + (g_ActiveConfig.bCrop ? " (crop)" : ""); bEnabled = true; break;
-		case g_ActiveConfig.INPUT_FPS: line = std::string("Show FPS: ") +  (g_ActiveConfig.bShowFPS ? "Enabled" : "Disabled"); bEnabled = g_ActiveConfig.bShowFPS; break;
-		case g_ActiveConfig.INPUT_EFB_ACCESS: line = std::string("EFB Access: ") + (g_ActiveConfig.bEFBAccessEnable ? "Enabled" : "Disabled"); bEnabled = g_ActiveConfig.bEFBAccessEnable; break;
-		case g_ActiveConfig.INPUT_EFB_COPY: line = std::string("Copy EFB: ") + efbcopy_text; bEnabled = g_ActiveConfig.bEFBCopyEnable; break;		
-		case g_ActiveConfig.INPUT_EFB_SCALE: line = std::string("Internal Resolution: ") + res_text; bEnabled = true; break;
-		case g_ActiveConfig.INPUT_FOG: line = std::string("Fog: ") + (g_ActiveConfig.bDisableFog ? "Disabled" : "Enabled"); bEnabled = g_ActiveConfig.bDisableFog; break;
-		case g_ActiveConfig.INPUT_LIGHTING: line = std::string("Material Lighting: ") + (g_ActiveConfig.bDisableLighting ? "Disabled" : "Enabled"); bEnabled = g_ActiveConfig.bDisableLighting; break;
-		case g_ActiveConfig.INPUT_WIREFRAME: line = std::string("Wireframe: ") + (g_ActiveConfig.bWireFrame ? "Enabled" : "Disabled"); bEnabled = g_ActiveConfig.bWireFrame; break;
+		case VideoConfig::INPUT_AR: line = std::string("Aspect Ratio: ") + ar_text + (g_ActiveConfig.bCrop ? " (crop)" : ""); bEnabled = true; break;
+		case VideoConfig::INPUT_FPS: line = std::string("Show FPS: ") +  (g_ActiveConfig.bShowFPS ? "Enabled" : "Disabled"); bEnabled = g_ActiveConfig.bShowFPS; break;
+		case VideoConfig::INPUT_EFB_ACCESS: line = std::string("EFB Access: ") + (g_ActiveConfig.bEFBAccessEnable ? "Enabled" : "Disabled"); bEnabled = g_ActiveConfig.bEFBAccessEnable; break;
+		case VideoConfig::INPUT_EFB_COPY: line = std::string("Copy EFB: ") + efbcopy_text; bEnabled = g_ActiveConfig.bEFBCopyEnable; break;		
+		case VideoConfig::INPUT_EFB_SCALE: line = std::string("Internal Resolution: ") + res_text; bEnabled = true; break;
+		case VideoConfig::INPUT_FOG: line = std::string("Fog: ") + (g_ActiveConfig.bDisableFog ? "Disabled" : "Enabled"); bEnabled = g_ActiveConfig.bDisableFog; break;
+		case VideoConfig::INPUT_LIGHTING: line = std::string("Material Lighting: ") + (g_ActiveConfig.bDisableLighting ? "Disabled" : "Enabled"); bEnabled = g_ActiveConfig.bDisableLighting; break;
+		case VideoConfig::INPUT_WIREFRAME: line = std::string("Wireframe: ") + (g_ActiveConfig.bWireFrame ? "Enabled" : "Disabled"); bEnabled = g_ActiveConfig.bWireFrame; break;
 		}
 
 		// Room for fps display

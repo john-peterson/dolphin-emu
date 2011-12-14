@@ -93,7 +93,10 @@ void IniFile::Section::Set(const char* key, const char* newValue)
 
 void IniFile::Section::Set(const char* key, const std::string& newValue, const std::string& defaultValue)
 {
-	Set(key, newValue);
+	if (newValue != defaultValue)
+		Set(key, newValue);
+	else
+		Delete(key);
 }
 
 bool IniFile::Section::Get(const char* key, std::string* value, const char* defaultValue)
@@ -112,17 +115,26 @@ bool IniFile::Section::Get(const char* key, std::string* value, const char* defa
 
 void IniFile::Section::Set(const char* key, const float newValue, const float defaultValue)
 {
-	Set(key, newValue);
+	if (newValue != defaultValue)
+		Set(key, newValue);
+	else
+		Delete(key);
 }
 
 void IniFile::Section::Set(const char* key, int newValue, int defaultValue)
 {
-	Set(key, newValue);
+	if (newValue != defaultValue)
+		Set(key, newValue);
+	else
+		Delete(key);
 }
 
 void IniFile::Section::Set(const char* key, bool newValue, bool defaultValue)
 {
-	Set(key, newValue);
+	if (newValue != defaultValue)
+		Set(key, newValue);
+	else
+		Delete(key);
 }
 
 void IniFile::Section::Set(const char* key, const std::vector<std::string>& newValues) 
@@ -241,6 +253,17 @@ bool IniFile::Section::Delete(const char *key)
 		}
 	}
 	return false;
+}
+
+void IniFile::Section::Copy(IniFile::Section* section)
+{
+	for (std::vector<std::string>::const_iterator iter = section->lines.begin(); iter != section->lines.end(); ++iter)
+	{
+		std::string lineKey;
+		ParseLine(*iter, &lineKey, NULL, NULL);
+		// copy new lines
+		if (!Exists(lineKey.c_str())) lines.push_back(*iter);
+	}
 }
 
 // IniFile

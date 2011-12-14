@@ -19,6 +19,7 @@ namespace DInput
 {
 
 extern bool	is_init, is_init_done;
+extern HWND hwnd;
 
 //BOOL CALLBACK DIEnumEffectsCallback(LPCDIEFFECTINFO pdei, LPVOID pvRef);
 BOOL CALLBACK DIEnumDeviceObjectsCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef);
@@ -26,6 +27,7 @@ BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
 std::string GetDeviceName(const LPDIRECTINPUTDEVICE8 device);
 
 void Init(std::vector<ControllerInterface::Device*>& devices, HWND hwnd);
+void SetHWND(HWND _hwnd);
 
 }
 }

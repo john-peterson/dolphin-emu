@@ -32,7 +32,11 @@ ControllerInterface g_controller_interface;
 //
 void ControllerInterface::Initialize()
 {
-	if (m_is_init) return;
+	if (m_is_init)
+	{
+		IsInit();
+		return;
+	}
 	m_is_init = true;
 
 #ifdef CIFACE_USE_DINPUT
@@ -108,6 +112,17 @@ void ControllerInterface::Shutdown()
 }
 
 //
+//		IsInit
+//
+// wait for Init
+//
+bool ControllerInterface::IsInit()
+{
+	while (m_is_init && !m_is_init_done) Common::SleepCurrentThread(10);
+	return m_is_init_done;
+}
+
+//
 //		SetHwnd
 //
 // sets the hwnd used for some crap when initializing, use before calling Init
@@ -115,6 +130,9 @@ void ControllerInterface::Shutdown()
 void ControllerInterface::SetHwnd( void* const hwnd )
 {
 	m_hwnd = hwnd;
+#ifdef CIFACE_USE_DINPUT
+	ciface::DInput::SetHWND((HWND)m_hwnd);
+#endif
 #ifdef CIFACE_USE_RINPUT
 	ciface::RInput::SetHWND((HWND)m_hwnd);
 #endif
