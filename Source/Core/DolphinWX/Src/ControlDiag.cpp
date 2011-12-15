@@ -41,7 +41,7 @@ ControlDialog::ControlDialog(wxWindow* const parent, InputPlugin& plugin, const 
 	_connect_macro_(device_cbox, ControlDialog::SetDevice, wxEVT_COMMAND_COMBOBOX_SELECTED, this);
 	_connect_macro_(device_cbox, ControlDialog::SetDevice, wxEVT_COMMAND_TEXT_ENTER, this);
 
-	wxStaticBoxSizer* const control_chooser = CreateControlChooser(this, parent);
+	wxStaticBoxSizer* const control_chooser = CreateControlChooser(this);
 
 	wxStaticBoxSizer* const d_szr = new wxStaticBoxSizer(wxVERTICAL, this, _("Device"));
 	d_szr->Add(device_cbox, 0, wxEXPAND|wxALL, 5);
@@ -57,7 +57,7 @@ ControlDialog::ControlDialog(wxWindow* const parent, InputPlugin& plugin, const 
 	SetFocus();
 }
 
-wxStaticBoxSizer* ControlDialog::CreateControlChooser(wxWindow* const parent, wxWindow* const eventsink)
+wxStaticBoxSizer* ControlDialog::CreateControlChooser(wxWindow* const parent)
 {
 	wxStaticBoxSizer* const main_szr = new wxStaticBoxSizer(wxVERTICAL, parent, control_reference->is_input ? _("Input") : _("Output"));
 

@@ -211,7 +211,7 @@ private:
 	IniFile GameIni;
 	std::string GameIniFile;
 
-	void UpdateUIGameConfig(wxCommandEvent& event);
+	void UpdateUIGameConfig(wxCommandEvent& event); void UpdateUIGameConfig();
 	void LoadGameConfig();
 	void PatchList_Load();
 	void PatchList_Save();
