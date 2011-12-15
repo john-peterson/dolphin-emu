@@ -39,6 +39,7 @@
 
 class WXDLLIMPEXP_FWD_BASE wxList;
 class WXDLLIMPEXP_FWD_BASE wxEvent;
+class WXDLLIMPEXP_FWD_BASE wxEventFilter;
 #if wxUSE_GUI
     class WXDLLIMPEXP_FWD_CORE wxDC;
     class WXDLLIMPEXP_FWD_CORE wxMenu;
@@ -1660,7 +1661,12 @@ class WXDLLIMPEXP_CORE wxKeyEvent : public wxEvent,
 {
 public:
     wxKeyEvent(wxEventType keyType = wxEVT_NULL);
+
+    // Normal copy ctor and a ctor creating a new event for the same key as the
+    // given one but a different event type (this is used in implementation
+    // code only, do not use outside of the library).
     wxKeyEvent(const wxKeyEvent& evt);
+    wxKeyEvent(wxEventType eventType, const wxKeyEvent& evt);
 
     // get the key code: an ASCII7 char or an element of wxKeyCode enum
     int GetKeyCode() const { return (int)m_keyCode; }
@@ -1701,6 +1707,15 @@ public:
     // Get Y position
     wxCoord GetY() const { return m_y; }
 
+    // Can be called from wxEVT_CHAR_HOOK handler to allow generation of normal
+    // key events even though the event had been handled (by default they would
+    // not be generated in this case).
+    void DoAllowNextEvent() { m_allowNext = true; }
+
+    // Return the value of the "allow next" flag, for internal use only.
+    bool IsNextEventAllowed() const { return m_allowNext; }
+
+
     virtual wxEvent *Clone() const { return new wxKeyEvent(*this); }
     virtual wxEventCategory GetEventCategory() const { return wxEVT_CATEGORY_USER_INPUT; }
 
@@ -1716,16 +1731,7 @@ public:
             // implicitly defined operator=() so need to do it this way:
             *static_cast<wxKeyboardState *>(this) = evt;
 
-            m_x = evt.m_x;
-            m_y = evt.m_y;
-
-            m_keyCode = evt.m_keyCode;
-
-            m_rawCode = evt.m_rawCode;
-            m_rawFlags = evt.m_rawFlags;
-#if wxUSE_UNICODE
-            m_uniChar = evt.m_uniChar;
-#endif
+            DoAssignMembers(evt);
         }
         return *this;
     }
@@ -1747,6 +1753,37 @@ public:
     wxUint32      m_rawFlags;
 
 private:
+    // Set the event to propagate if necessary, i.e. if it's of wxEVT_CHAR_HOOK
+    // type. This is used by all ctors.
+    void InitPropagation()
+    {
+        if ( m_eventType == wxEVT_CHAR_HOOK )
+            m_propagationLevel = wxEVENT_PROPAGATE_MAX;
+
+        m_allowNext = false;
+    }
+
+    // Copy only the event data present in this class, this is used by
+    // AssignKeyData() and copy ctor.
+    void DoAssignMembers(const wxKeyEvent& evt)
+    {
+        m_x = evt.m_x;
+        m_y = evt.m_y;
+
+        m_keyCode = evt.m_keyCode;
+
+        m_rawCode = evt.m_rawCode;
+        m_rawFlags = evt.m_rawFlags;
+#if wxUSE_UNICODE
+        m_uniChar = evt.m_uniChar;
+#endif
+    }
+
+    // If this flag is true, the normal key events should still be generated
+    // even if wxEVT_CHAR_HOOK had been handled. By default it is false as
+    // handling wxEVT_CHAR_HOOK suppresses all the subsequent events.
+    bool m_allowNext;
+
     DECLARE_DYNAMIC_CLASS(wxKeyEvent)
 };
 
@@ -3013,6 +3050,19 @@ public:
     bool IsUnlinked() const;
 
 
+    // Global event filters
+    // --------------------
+
+    // Add an event filter whose FilterEvent() method will be called for each
+    // and every event processed by wxWidgets. The filters are called in LIFO
+    // order and wxApp is registered as an event filter by default. The pointer
+    // must remain valid until it's removed with RemoveFilter() and is not
+    // deleted by wxEvtHandler.
+    static void AddFilter(wxEventFilter* filter);
+
+    // Remove a filter previously installed with AddFilter().
+    static void RemoveFilter(wxEventFilter* filter);
+
 
     // Event queuing and processing
     // ----------------------------
@@ -3359,6 +3409,9 @@ private:
 
     // try to process events in all handlers chained to this one
     bool DoTryChain(wxEvent& event);
+
+    // Head of the event filter linked list.
+    static wxEventFilter* ms_filterList;
 
     DECLARE_DYNAMIC_CLASS_NO_COPY(wxEvtHandler)
 };

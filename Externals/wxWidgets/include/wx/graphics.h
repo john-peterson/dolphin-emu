@@ -19,12 +19,13 @@
 #include "wx/geometry.h"
 #include "wx/dynarray.h"
 #include "wx/dc.h"
+#include "wx/image.h"
 #include "wx/vector.h"
 
 enum wxAntialiasMode
 {
     wxANTIALIAS_NONE, // should be 0
-    wxANTIALIAS_DEFAULT,
+    wxANTIALIAS_DEFAULT
 };
 
 enum wxInterpolationQuality
@@ -166,6 +167,14 @@ class WXDLLIMPEXP_CORE wxGraphicsBitmap : public wxGraphicsObject
 public:
     wxGraphicsBitmap() {}
     virtual ~wxGraphicsBitmap() {}
+
+    // Convert bitmap to wxImage: this is more efficient than converting to
+    // wxBitmap first and then to wxImage and also works without X server
+    // connection under Unix that wxBitmap requires.
+#if wxUSE_IMAGE
+    wxImage ConvertToImage() const;
+#endif // wxUSE_IMAGE
+
 private:
     DECLARE_DYNAMIC_CLASS(wxGraphicsBitmap)
 };
@@ -425,6 +434,13 @@ public:
 
     static wxGraphicsContext* Create( wxWindow* window );
 
+#if wxUSE_IMAGE
+    // Create a context for drawing onto a wxImage. The image life time must be
+    // greater than that of the context itself as when the context is destroyed
+    // it will copy its contents to the specified image.
+    static wxGraphicsContext* Create(wxImage& image);
+#endif // wxUSE_IMAGE
+
     // create a context that can be used for measuring texts only, no drawing allowed
     static wxGraphicsContext * Create();
 
@@ -474,11 +490,18 @@ public:
                               wxDouble xc, wxDouble yc, wxDouble radius,
                               const wxGraphicsGradientStops& stops) const;
 
-    // sets the font
+    // creates a font
     virtual wxGraphicsFont CreateFont( const wxFont &font , const wxColour &col = *wxBLACK ) const;
+    virtual wxGraphicsFont CreateFont(double sizeInPixels,
+                                      const wxString& facename,
+                                      int flags = wxFONTFLAG_DEFAULT,
+                                      const wxColour& col = *wxBLACK) const;
 
     // create a native bitmap representation
     virtual wxGraphicsBitmap CreateBitmap( const wxBitmap &bitmap ) const;
+#if wxUSE_IMAGE
+    wxGraphicsBitmap CreateBitmapFromImage(const wxImage& image) const;
+#endif // wxUSE_IMAGE
 
     // create a native bitmap representation
     virtual wxGraphicsBitmap CreateSubBitmap( const wxGraphicsBitmap &bitmap, wxDouble x, wxDouble y, wxDouble w, wxDouble h  ) const;
@@ -772,6 +795,10 @@ public:
 
     virtual wxGraphicsContext * CreateContext( wxWindow* window ) = 0;
 
+#if wxUSE_IMAGE
+    virtual wxGraphicsContext * CreateContextFromImage(wxImage& image) = 0;
+#endif // wxUSE_IMAGE
+
     // create a context that can be used for measuring texts only, no drawing allowed
     virtual wxGraphicsContext * CreateMeasuringContext() = 0;
 
@@ -806,9 +833,17 @@ public:
 
     // sets the font
     virtual wxGraphicsFont CreateFont( const wxFont &font , const wxColour &col = *wxBLACK ) = 0;
+    virtual wxGraphicsFont CreateFont(double sizeInPixels,
+                                      const wxString& facename,
+                                      int flags = wxFONTFLAG_DEFAULT,
+                                      const wxColour& col = *wxBLACK) = 0;
 
     // create a native bitmap representation
     virtual wxGraphicsBitmap CreateBitmap( const wxBitmap &bitmap ) = 0;
+#if wxUSE_IMAGE
+    virtual wxGraphicsBitmap CreateBitmapFromImage(const wxImage& image) = 0;
+    virtual wxImage CreateImageFromBitmap(const wxGraphicsBitmap& bmp) = 0;
+#endif // wxUSE_IMAGE
 
     // create a graphics bitmap from a native bitmap
     virtual wxGraphicsBitmap CreateBitmapFromNativeBitmap( void* bitmap ) = 0;
@@ -821,6 +856,16 @@ private:
     DECLARE_ABSTRACT_CLASS(wxGraphicsRenderer)
 };
 
-#endif
+
+#if wxUSE_IMAGE
+inline
+wxImage wxGraphicsBitmap::ConvertToImage() const
+{
+    wxGraphicsRenderer* renderer = GetRenderer();
+    return renderer ? renderer->CreateImageFromBitmap(*this) : wxNullImage;
+}
+#endif // wxUSE_IMAGE
+
+#endif // wxUSE_GRAPHICS_CONTEXT
 
 #endif // _WX_GRAPHICS_H_

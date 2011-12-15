@@ -57,11 +57,6 @@
    global features
  */
 
-/* GUI build by default */
-#if !defined(wxUSE_GUI)
-#   define wxUSE_GUI 1
-#endif /* !defined(wxUSE_GUI) */
-
 /*
     If we're compiling without support for threads/exceptions we have to
     disable the corresponding features.
@@ -979,7 +974,15 @@
 #   else
 #       define wxUSE_RICHMSGDLG 0
 #   endif
-#endif /* !defined(wxUSE_RIBBON) */
+#endif /* !defined(wxUSE_RICHMSGDLG) */
+
+#ifndef wxUSE_RICHTOOLTIP
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_RICHTOOLTIP must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_RICHTOOLTIP 0
+#   endif
+#endif /* !defined(wxUSE_RICHTOOLTIP) */
 
 #ifndef wxUSE_SASH
 #   ifdef wxABORT_ON_CONFIG_ERROR
@@ -1101,6 +1104,14 @@
 #   endif
 #endif /* !defined(wxUSE_TEXTCTRL) */
 
+#ifndef wxUSE_TIMEPICKCTRL
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_TIMEPICKCTRL must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_TIMEPICKCTRL 0
+#   endif
+#endif /* !defined(wxUSE_TIMEPICKCTRL) */
+
 #ifndef wxUSE_TIPWINDOW
 #   ifdef wxABORT_ON_CONFIG_ERROR
 #       error "wxUSE_TIPWINDOW must be defined, please read comment near the top of this file."
@@ -1133,6 +1144,14 @@
 #   endif
 #endif /* !defined(wxUSE_TREECTRL) */
 
+#ifndef wxUSE_TREELISTCTRL
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_TREELISTCTRL must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_TREELISTCTRL 0
+#   endif
+#endif /* !defined(wxUSE_TREELISTCTRL) */
+
 #ifndef wxUSE_UIACTIONSIMULATOR
 #   ifdef wxABORT_ON_CONFIG_ERROR
 #       error "wxUSE_UIACTIONSIMULATOR must be defined, please read comment near the top of this file."
@@ -1148,6 +1167,14 @@
 #       define wxUSE_VALIDATORS 0
 #   endif
 #endif /* !defined(wxUSE_VALIDATORS) */
+
+#ifndef wxUSE_WEBVIEW
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_WEBVIEW must be defined, please read comment near the top of this file."
+#   else
+#       define wxUSE_WEBVIEW 0
+#   endif
+#endif /* !defined(wxUSE_WEBVIEW) */
 
 #ifndef wxUSE_WXHTML_HELP
 #   ifdef wxABORT_ON_CONFIG_ERROR
@@ -1463,7 +1490,8 @@
     wxUSE_STATUSBAR || \
     wxUSE_TEXTCTRL || \
     wxUSE_TOOLBAR || \
-    wxUSE_TREECTRL
+    wxUSE_TREECTRL || \
+    wxUSE_TREELISTCTRL
 #    if !wxUSE_CONTROLS
 #        ifdef wxABORT_ON_CONFIG_ERROR
 #            error "wxUSE_CONTROLS unset but some controls used"
@@ -1696,16 +1724,16 @@
 #   endif
 #endif /* wxUSE_CALENDARCTRL */
 
-#if wxUSE_DATEPICKCTRL
+#if wxUSE_DATEPICKCTRL || wxUSE_TIMEPICKCTRL
 #   if !wxUSE_DATETIME
 #       ifdef wxABORT_ON_CONFIG_ERROR
-#           error "wxDatePickerCtrl requires wxUSE_DATETIME"
+#           error "wxDatePickerCtrl and wxTimePickerCtrl requires wxUSE_DATETIME"
 #       else
 #           undef wxUSE_DATETIME
 #           define wxUSE_DATETIME 1
 #       endif
 #   endif
-#endif /* wxUSE_DATEPICKCTRL */
+#endif /* wxUSE_DATEPICKCTRL || wxUSE_TIMEPICKCTRL */
 
 #if wxUSE_CHECKLISTBOX
 #   if !wxUSE_LISTBOX
@@ -2001,7 +2029,7 @@
 #endif
 
 #if !wxUSE_IMAGLIST
-#   if wxUSE_TREECTRL || wxUSE_NOTEBOOK || wxUSE_LISTCTRL
+#   if wxUSE_TREECTRL || wxUSE_NOTEBOOK || wxUSE_LISTCTRL || wxUSE_TREELISTCTRL
 #       ifdef wxABORT_ON_CONFIG_ERROR
 #           error "wxImageList must be compiled as well"
 #       else
@@ -2127,6 +2155,24 @@
 #       endif
 #   endif
 #endif /* wxUSE_VARIANT */
+
+#if wxUSE_TREELISTCTRL && !wxUSE_DATAVIEWCTRL
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_TREELISTCTRL requires wxDataViewCtrl"
+#   else
+#       undef wxUSE_TREELISTCTRL
+#       define wxUSE_TREELISTCTRL 0
+#   endif
+#endif /* wxUSE_TREELISTCTRL */
+
+#if wxUSE_WEBVIEW && !(wxUSE_WEBVIEW_WEBKIT || wxUSE_WEBVIEW_IE)
+#   ifdef wxABORT_ON_CONFIG_ERROR
+#       error "wxUSE_WEBVIEW requires at least one backend"
+#   else
+#       undef wxUSE_WEBVIEW
+#       define wxUSE_WEBVIEW 0
+#   endif
+#endif /* wxUSE_WEBVIEW && !any web view backend */
 
 #endif /* wxUSE_GUI */
 

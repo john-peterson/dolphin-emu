@@ -68,10 +68,12 @@ public:
     virtual void SetFlags(int flags) { m_flags = flags; UpdateDisplay(); }
     virtual int GetFlags() const { return m_flags; }
 
-    virtual void SetAsSortKey(bool sort = true) { m_sort = sort; UpdateDisplay(); }
     virtual bool IsSortKey() const { return m_sort; }
 
-    virtual void SetSortOrder(bool ascending) { m_sortAscending = ascending; UpdateDisplay(); }
+    virtual void UnsetAsSortKey() { m_sort = false; UpdateDisplay(); }
+
+    virtual void SetSortOrder(bool ascending);
+
     virtual bool IsSortOrderAscending() const { return m_sortAscending; }
 
     virtual void SetBitmap( const wxBitmap& bitmap ) { wxDataViewColumnBase::SetBitmap(bitmap); UpdateDisplay(); }
@@ -155,7 +157,7 @@ public:
 
     virtual wxDataViewColumn *GetSortingColumn() const;
 
-    virtual wxDataViewItem GetSelection() const;
+    virtual int GetSelectedItemsCount() const;
     virtual int GetSelections( wxDataViewItemArray & sel ) const;
     virtual void SetSelections( const wxDataViewItemArray & sel );
     virtual void Select( const wxDataViewItem & item );
@@ -190,14 +192,6 @@ public:
     virtual void StartEditor( const wxDataViewItem & item, unsigned int column );
 
 protected:
-    virtual int GetSelections( wxArrayInt & sel ) const;
-    virtual void SetSelections( const wxArrayInt & sel );
-    virtual void Select( int row );
-    virtual void Unselect( int row );
-    virtual bool IsSelected( int row ) const;
-    virtual void SelectRange( int from, int to );
-    virtual void UnselectRange( int from, int to );
-
     virtual void EnsureVisible( int row, int column );
 
     virtual wxDataViewItem GetItemByRow( unsigned int row ) const;
@@ -228,17 +222,23 @@ public:     // utility functions not part of the API
     // return the column displayed at the given position in the control
     wxDataViewColumn *GetColumnAt(unsigned int pos) const;
 
+    virtual void OnInternalIdle();
+
 private:
     virtual wxDataViewItem DoGetCurrentItem() const;
     virtual void DoSetCurrentItem(const wxDataViewItem& item);
 
     void InvalidateColBestWidths();
     void InvalidateColBestWidth(int idx);
+    void UpdateColWidths();
 
     wxDataViewColumnList      m_cols;
     // cached column best widths or 0 if not computed, values are for
     // respective columns from m_cols and the arrays have same size
     wxVector<int>             m_colsBestWidths;
+    // m_colsBestWidths partially invalid, needs recomputing
+    bool                      m_colsDirty;
+
     wxDataViewModelNotifier  *m_notifier;
     wxDataViewMainWindow     *m_clientArea;
     wxDataViewHeaderWindow   *m_headerArea;

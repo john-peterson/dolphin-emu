@@ -26,8 +26,12 @@
     // no native version, use the generic one
     #define wxUSE_NATIVE_SEARCH_CONTROL 0
 
-    class WXDLLIMPEXP_CORE wxSearchCtrlBaseBaseClass : public wxControl,
-                                                       public wxTextCtrlIface
+    #include "wx/compositewin.h"
+    #include "wx/containr.h"
+
+    class WXDLLIMPEXP_CORE wxSearchCtrlBaseBaseClass
+        : public wxCompositeWindow< wxNavigationEnabled<wxControl> >,
+          public wxTextCtrlIface
     {
     };
 #endif

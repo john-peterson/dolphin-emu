@@ -112,6 +112,9 @@ public:
     // Overridden to grab the input on some plaforms
     virtual bool Show( bool show = true );
 
+    // Override to implement delayed destruction of this window.
+    virtual bool Destroy();
+
 protected:
     // common part of all ctors
     void Init();
@@ -129,8 +132,9 @@ protected:
     // get alerted when child gets deleted from under us
     void OnDestroy(wxWindowDestroyEvent& event);
 
-#if defined( __WXMSW__ ) || defined( __WXMAC__)
-    // check if the mouse needs captured or released
+#if defined(__WXMSW__) ||(defined(__WXMAC__) && wxOSX_USE_CARBON)
+    // Check if the mouse needs to be captured or released: we must release
+    // when it's inside our window if we want the embedded controls to work.
     void OnIdle(wxIdleEvent& event);
 #endif
 

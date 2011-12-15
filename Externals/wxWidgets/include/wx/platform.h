@@ -15,6 +15,7 @@
 #define _WX_PLATFORM_H_
 
 
+
 /*
     Codewarrior doesn't define any Windows symbols until some headers
     are included
@@ -32,6 +33,12 @@
 #    include <TargetConditionals.h>
 #    include <AvailabilityMacros.h>
 #    include "wx/osx/config_xcode.h"
+#    ifndef __WXOSX__
+#        define __WXOSX__ 1
+#    endif
+#    ifndef __WXMAC__
+#        define __WXMAC__ 1
+#    endif
 #endif
 
 /*

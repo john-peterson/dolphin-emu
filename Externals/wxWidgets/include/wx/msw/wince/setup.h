@@ -705,6 +705,34 @@
 // Recommended setting: 1
 #define wxUSE_STC 1
 
+// Use wxWidget's web viewing classes
+//
+// Default is 1
+//
+// Recommended setting: 1
+#define wxUSE_WEBVIEW 1
+
+// Use the IE wxWebView backend
+//
+// Default is 1 on MSW
+//
+// Recommended setting: 1
+#ifdef __WXMSW__
+#define wxUSE_WEBVIEW_IE 1
+#else
+#define wxUSE_WEBVIEW_IE 0
+#endif
+
+// Use the WebKit wxWebView backend
+//
+// Default is 1 on GTK and OSX
+//
+// Recommended setting: 1
+#if defined(__WXGTK__) || defined(__WXOSX__)
+#define wxUSE_WEBVIEW_WEBKIT 1
+#else
+#define wxUSE_WEBVIEW_WEBKIT 0
+#endif
 
 // Enable the new wxGraphicsPath and wxGraphicsContext classes for an advanced
 // 2D drawing API.  (Still somewhat experimental)
@@ -803,6 +831,7 @@
 //
 // Recommended setting: 1
 #define wxUSE_ANIMATIONCTRL 1   // wxAnimationCtrl
+#define wxUSE_BANNERWINDOW  1   // wxBannerWindow
 #define wxUSE_BUTTON        1   // wxButton
 #define wxUSE_BMPBUTTON     1   // wxBitmapButton
 #define wxUSE_CALENDARCTRL  1   // wxCalendarCtrl
@@ -838,8 +867,10 @@
 #define wxUSE_STATTEXT      1   // wxStaticText
 #define wxUSE_STATBMP       1   // wxStaticBitmap
 #define wxUSE_TEXTCTRL      1   // wxTextCtrl
+#define wxUSE_TIMEPICKCTRL  1   // wxTimePickerCtrl
 #define wxUSE_TOGGLEBTN     1   // requires wxButton
 #define wxUSE_TREECTRL      1   // wxTreeCtrl
+#define wxUSE_TREELISTCTRL  1   // wxTreeListCtrl
 
 // Use a status bar class? Depending on the value of wxUSE_NATIVE_STATUSBAR
 // below either wxStatusBar95 or a generic wxStatusBar will be used.
@@ -1055,6 +1086,14 @@
 //
 // Recommended setting: 1
 #define wxUSE_NOTIFICATION_MESSAGE 1
+
+// wxRichToolTip is a customizable tooltip class which has more functionality
+// than the stock (but native, unlike this class) wxToolTip.
+//
+// Default is 1.
+//
+// Recommended setting: 1 (but can be safely set to 0 if you don't need it)
+#define wxUSE_RICHTOOLTIP 1
 
 // Use wxSashWindow class.
 //

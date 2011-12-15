@@ -1254,6 +1254,15 @@ public:
         // get the associated tooltip or NULL if none
     wxToolTip* GetToolTip() const { return m_tooltip; }
     wxString GetToolTipText() const;
+
+    // Use the same tool tip as the given one (which can be NULL to indicate
+    // that no tooltip should be used) for this window. This is currently only
+    // used by wxCompositeWindow::DoSetToolTip() implementation and is not part
+    // of the public wx API.
+    //
+    // Returns true if tip was valid and we copied it or false if it was NULL
+    // and we reset our own tooltip too.
+    bool CopyToolTip(wxToolTip *tip);
 #else // !wxUSE_TOOLTIPS
         // make it much easier to compile apps in an environment
         // that doesn't support tooltips, such as PocketPC
@@ -1421,6 +1430,15 @@ public:
     // windows
     virtual wxWindow *GetMainWindowOfCompositeControl()
         { return (wxWindow*)this; }
+
+    // If this function returns true, keyboard navigation events shouldn't
+    // escape from it. A typical example of such "navigation domain" is a top
+    // level window because pressing TAB in one of them must not transfer focus
+    // to a different top level window. But it's not limited to them, e.g. MDI
+    // children frames are not top level windows (and their IsTopLevel()
+    // returns false) but still are self-contained navigation domains as well.
+    virtual bool IsTopNavigationDomain() const { return false; }
+
 
 protected:
     // helper for the derived class Create() methods: the first overload, with
