@@ -47,7 +47,7 @@ class ControlDialog : public wxDialog
 public:
 	ControlDialog(wxWindow* const parent, InputPlugin& plugin, const ControllerInterface::DeviceQualifier& default_device, ControllerInterface::ControlReference* const ref);
 	
-	wxStaticBoxSizer* CreateControlChooser(wxWindow* const parent, wxWindow* const eventsink);
+	wxStaticBoxSizer* CreateControlChooser(wxWindow* const parent);
 
 	void DetectControl(wxCommandEvent& event);
 	void ClearControl(wxCommandEvent& event);

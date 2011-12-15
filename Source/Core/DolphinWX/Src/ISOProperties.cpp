@@ -601,6 +601,7 @@ void CISOProperties::OnCloseClick(wxCommandEvent& WXUNUSED (event))
 	Close();
 }
 
+void CISOProperties::UpdateUIGameConfig() { wxCommandEvent ev; UpdateUIGameConfig(ev); }
 void CISOProperties::UpdateUIGameConfig(wxCommandEvent &event)
 {
 	if (choice_backend->GetSelection() > 0)
@@ -934,7 +935,7 @@ void CISOProperties::LoadGameConfig()
 	GameIni.Get("Core", "GFXBackend", &sTemp);
 	if (!sTemp.empty())
 		choice_backend->SetStringSelection(wxString(sTemp.c_str(), *wxConvCurrent));
-	UpdateUIGameConfig(wxCommandEvent(wxEVT_NULL));
+	UpdateUIGameConfig();
 
 	if (GameIni.Get("Video_Settings", "MSAA", &iTemp))
 		choice_aa->SetSelection(iTemp+1);

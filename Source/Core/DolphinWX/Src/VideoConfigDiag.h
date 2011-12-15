@@ -6,8 +6,6 @@
 #include <string>
 #include <map>
 
-//#include "ControllerInterface/ControllerInterface.h"
-//#include "ControllerEmu.h"
 #include "InputConfigDiag.h"
 #include "ConfigManager.h"
 #include "VideoConfig.h"
