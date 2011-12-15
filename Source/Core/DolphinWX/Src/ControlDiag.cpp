@@ -105,7 +105,7 @@ wxStaticBoxSizer* ControlDialog::CreateControlChooser(wxWindow* const parent, wx
 	range_slider->SetValue((int)(control_reference->range * SLIDER_TICK_COUNT));
 	_connect_macro_(range_slider, ControlDialog::AdjustControlOption, wxEVT_SCROLL_CHANGED, parent);
 	wxBoxSizer* const range_sizer = new wxBoxSizer(wxHORIZONTAL);
-	range_sizer->Add(new wxStaticText(parent, wxID_ANY, _("Range")), 0, wxTOP|wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
+	range_sizer->Add(new wxStaticText(parent, wxID_ANY, _("Range")), 0, wxALIGN_CENTER_VERTICAL);
 	range_sizer->Add(range_slider, 1, wxLEFT, 5);
 
 	wxBoxSizer* const ctrls_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -121,7 +121,7 @@ wxStaticBoxSizer* ControlDialog::CreateControlChooser(wxWindow* const parent, wx
 	main_szr->Add(range_sizer, 0, wxEXPAND|wxLEFT|wxRIGHT, 5);
 	main_szr->Add(ctrls_sizer, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 	main_szr->Add(textctrl, 1, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5);
-	main_szr->Add(bottom_btns_sizer, 0, wxEXPAND|wxBOTTOM|wxRIGHT, 5);
+	main_szr->Add(bottom_btns_sizer, 0, wxEXPAND|wxBOTTOM, 5);
 	main_szr->Add(m_bound_label, 0, wxCENTER, 0);
 
 	UpdateListContents();
