@@ -121,7 +121,8 @@ public:
 	CCodeWindow* g_pCodeWindow;
 	NetPlaySetupDiag* g_NetPlaySetupDiag;
 	wxCheatsWindow* g_CheatsWindow;
-	TASInputDlg* g_TASInputDlg;	
+	TASInputDlg* g_TASInputDlg;
+	InputConfigDialog* m_PadConfigDiag;
 	WiimoteConfigDiag* m_WiimoteConfigDiag;
 
 	void InitBitmaps();

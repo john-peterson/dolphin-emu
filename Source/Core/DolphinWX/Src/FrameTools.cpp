@@ -965,6 +965,7 @@ void CFrame::StartGame(const std::string& filename)
 #else
 		m_RenderParent->SetFocus();
 #endif
+		if(m_PadConfigDiag) m_PadConfigDiag->UpdateGUI();
 		if(m_WiimoteConfigDiag) m_WiimoteConfigDiag->UpdateGUI();
 
 		wxTheApp->Connect(wxID_ANY, wxEVT_KEY_DOWN, // Keyboard
@@ -1197,26 +1198,19 @@ void CFrame::OnConfigDSP(wxCommandEvent& WXUNUSED (event))
 
 void CFrame::OnConfigPAD(wxCommandEvent& WXUNUSED (event))
 {
+	if (m_PadConfigDiag) {
+		m_PadConfigDiag->SetFocus();
+		return;
+	}
 	InputPlugin *const pad_plugin = Pad::GetPlugin();
-	bool was_init = false;
-	if (g_controller_interface.IsInit())	// check if game is running
-		was_init = true;
-	else
-	{
 #if defined(HAVE_X11) && HAVE_X11
-		Window win = X11Utils::XWindowFromHandle(GetHandle());
-		Pad::Initialize((void *)win);
+	Window win = X11Utils::XWindowFromHandle(GetHandle());
+	Pad::Initialize((void *)win);
 #else
-		Pad::Initialize(GetHandle());
+	Pad::Initialize(m_RenderParent ? m_RenderParent->GetHandle() : GetHandle());
 #endif
-	}
-	InputConfigDialog m_ConfigFrame(this, *pad_plugin, _trans("Dolphin GCPad Configuration"));
-	m_ConfigFrame.ShowModal();
-	m_ConfigFrame.Destroy();
-	if (!was_init)				// if game isn't running
-	{
-		Pad::Shutdown();
-	}
+	m_PadConfigDiag = new InputConfigDialog(this, *pad_plugin, _("Dolphin GCPad Configuration"));
+	m_PadConfigDiag->Show();
 }
 
 void CFrame::OnConfigWiimote(wxCommandEvent& WXUNUSED (event))
@@ -1673,6 +1667,7 @@ void CFrame::UpdateGUI()
 
 	if (m_ToolBar) m_ToolBar->Refresh();
 
+	if (m_PadConfigDiag) m_PadConfigDiag->UpdateGUI();
 	if (m_WiimoteConfigDiag) m_WiimoteConfigDiag->UpdateGUI();
 
 	// Commit changes to manager

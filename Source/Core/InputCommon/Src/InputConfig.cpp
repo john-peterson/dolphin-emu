@@ -40,16 +40,21 @@ bool InputPlugin::LoadConfig()
 		for (; i!=e; ++i)
 		{
 			// load settings from ini
-			if (gameiniFile.Load(gameini) && (*i)->GetName().find("Wiimote") != (*i)->GetName().npos)
+			if (gameiniFile.Load(gameini))
 			{
-				// copy from baseini
-				if (gameiniFile.GetSection("WiimoteFirstUse"))
+				// first use
+				if (!gameiniFile.GetSection((*i)->GetName().c_str()))
 				{
 					gameiniFile.GetOrCreateSection((*i)->GetName().c_str());
-					gameiniFile.GetSection((*i)->GetName().c_str())->Copy(gameiniFile.GetSection("WiimoteFirstUse"));
+					// copy gameini wiimote config
+					if (gameiniFile.GetSection("WiimoteFirstUse"))
+					{					
+						gameiniFile.GetSection((*i)->GetName().c_str())->Copy(gameiniFile.GetSection("WiimoteFirstUse"));
+						if ((*i)->GetName().find("Wiimote4") != (*i)->GetName().npos) gameiniFile.DeleteSection("WiimoteFirstUse");					
+					}
+					// copy from baseini
 					if (inifile.Load(ini)) gameiniFile.GetSection((*i)->GetName().c_str())->Copy(inifile.GetOrCreateSection((*i)->GetName().c_str()));
-					if ((*i)->GetName().find("Wiimote4") != (*i)->GetName().npos) gameiniFile.DeleteSection("WiimoteFirstUse");
-					gameiniFile.Save(gameini);
+					gameiniFile.Save(gameini);					
 				}
 				(*i)->LoadConfig(gameiniFile.GetOrCreateSection((*i)->GetName().c_str()));
 			}

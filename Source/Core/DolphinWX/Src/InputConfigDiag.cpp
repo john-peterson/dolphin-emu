@@ -164,8 +164,8 @@ void InputConfigDialog::UpdateGUI()
 	for (; i != e; ++i)
 		(*i)->UpdateGUI();
 
-	SetTitle(wxString(std::string("Dolphin Emulated Wiimote Configuration" + (Core::IsRunning() ? (" - " + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strName
-		+ " (" + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strRegion + ")") : "")).c_str(), wxConvUTF8));
+	SetTitle(m_title + WXSTR_FROM_STR(Core::IsRunning() ? (" - " + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strName
+		+ " (" + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strRegion + ")") : ""));
 }
 
 void InputConfigDialog::Save(wxCommandEvent& event)
@@ -706,10 +706,11 @@ GamepadPage::GamepadPage(wxWindow* parent, InputPlugin& plugin, const unsigned i
 	Layout();
 };
 
-InputConfigDialog::InputConfigDialog(wxWindow* const parent, InputPlugin& plugin, const std::string& name, const int tab_num)
-	: wxDialog(parent, wxID_ANY, WXTSTR_FROM_CSTR(name.c_str()), wxPoint(128,-1), wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxMINIMIZE_BOX|wxDIALOG_NO_PARENT)
+InputConfigDialog::InputConfigDialog(wxWindow* const parent, InputPlugin& plugin, const wxString& name, const int tab_num)
+	: wxDialog(parent, wxID_ANY, wxEmptyString, wxPoint(128,-1), wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxMINIMIZE_BOX|wxDIALOG_NO_PARENT)
 	, m_parent(parent)
 	, m_plugin(plugin)
+	, m_title(name)
 {
 	m_pad_notebook = new wxNotebook(this, -1, wxDefaultPosition, wxDefaultSize, wxNB_DEFAULT);
 	for (unsigned int i = 0; i < plugin.controllers.size(); ++i)

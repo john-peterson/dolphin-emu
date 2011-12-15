@@ -7,7 +7,7 @@
 #include "Movie.h"
 
 #include "ControllerInterface/ControllerInterface.h"
-
+#include "../../Core/Src/Host.h"
 #include "../../InputCommon/Src/InputConfig.h"
 
 // Bit shift conversions
@@ -696,6 +696,8 @@ InputPlugin *GetPlugin()
 
 void Shutdown()
 {
+	if (Host_WiimoteConfigOpen()) return;
+
 	std::vector<ControllerEmu*>::const_iterator
 		i = g_plugin.controllers.begin(),
 		e = g_plugin.controllers.end();
