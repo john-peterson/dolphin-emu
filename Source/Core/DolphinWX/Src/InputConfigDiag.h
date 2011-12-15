@@ -187,7 +187,7 @@ private:
 class InputConfigDialog : public wxDialog
 {
 public:
-	InputConfigDialog(wxWindow* const parent, InputPlugin& plugin, const std::string& name, const int tab_num = 0);
+	InputConfigDialog(wxWindow* const parent, InputPlugin& plugin, const wxString& name, const int tab_num = 0);
 	//~InputConfigDialog();
 
 	void OnClose(wxCloseEvent& event);
@@ -205,6 +205,7 @@ public:
 
 private:
 
+	wxString					m_title;
 	wxWindow*					m_parent;
 	wxNotebook*					m_pad_notebook;
 	std::vector<GamepadPage*>	m_padpages;

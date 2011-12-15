@@ -5,6 +5,15 @@
 #include "Frame.h"
 
 #define _connect_macro_(b, f, c, s)	(b)->Connect(wxID_ANY, (c), wxCommandEventHandler(f), (wxObject*)0, (wxEvtHandler*)s)
+#if wxCHECK_VERSION(2, 9, 0)
+	#define WXSTR_FROM_STR(s)	(wxString(s))
+	#define WXTSTR_FROM_CSTR(s)	(wxGetTranslation(wxString(s)))
+	#define STR_FROM_WXSTR(w)	((w).ToStdString())
+#else
+	#define WXSTR_FROM_STR(s)	(wxString::FromUTF8((s).c_str()))
+	#define WXTSTR_FROM_CSTR(s)	(wxGetTranslation(wxString::FromUTF8(s)))
+	#define STR_FROM_WXSTR(w)	(std::string((w).ToUTF8()))
+#endif
 
 const wxString& ConnectedWiimotesString()
 {
@@ -196,7 +205,7 @@ void WiimoteConfigDiag::OnClose(wxCloseEvent& event)
 
 void WiimoteConfigDiag::ConfigEmulatedWiimote(wxCommandEvent& ev)
 {
-	m_emu_config_diag = new InputConfigDialog(this, m_plugin, std::string("Dolphin Emulated Wiimote Configuration"), m_wiimote_index_from_conf_bt_id[ev.GetId()]);
+	m_emu_config_diag = new InputConfigDialog(this, m_plugin, _("Dolphin Emulated Wiimote Configuration"), m_wiimote_index_from_conf_bt_id[ev.GetId()]);
 	m_emu_config_diag->Show();
 }
 
@@ -204,8 +213,8 @@ void WiimoteConfigDiag::UpdateGUI()
 {
 	connected_wiimotes_txt->SetLabel(ConnectedWiimotesString());
 
-	SetTitle(wxString(std::string("Dolphin Wiimote Configuration" + (Core::IsRunning() ? " - " + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strName
-		+ " (" + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strRegion + ")" : "")).c_str(), wxConvUTF8));
+	SetTitle(WXSTR_FROM_STR("Dolphin Wiimote Configuration" + (Core::IsRunning() ? " - " + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strName
+		+ " (" + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strRegion + ")" : "")));
 
 	if(m_emu_config_diag) m_emu_config_diag->UpdateGUI();
 }

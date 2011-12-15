@@ -37,6 +37,7 @@
 // interface.
 
 bool Host_RendererHasFocus();
+bool Host_PadConfigOpen();
 bool Host_WiimoteConfigOpen();
 void Host_ConnectWiimote(int wm_idx, bool connect);
 bool Host_GetKeyState(int keycode);

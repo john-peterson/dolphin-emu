@@ -327,7 +327,7 @@ CFrame::CFrame(wxFrame* parent,
 	, m_GameListCtrl(NULL), m_Panel(NULL)
 	, m_RenderFrame(NULL), m_RenderParent(NULL)
 	, m_LogWindow(NULL), m_LogConfigWindow(NULL)
-	, m_FifoPlayerDlg(NULL), m_WiimoteConfigDiag(NULL), UseDebugger(_UseDebugger)
+	, m_FifoPlayerDlg(NULL), m_PadConfigDiag(NULL), m_WiimoteConfigDiag(NULL), UseDebugger(_UseDebugger)
 	, m_bBatchMode(_BatchMode), m_bEdit(false), m_bTabSplit(false), m_bNoDocking(false)
 	, m_bGameLoading(false)
 {
@@ -467,6 +467,11 @@ CFrame::~CFrame()
 }
 
 void CFrame::Update() {
+	if (m_PadConfigDiag)
+		if (!m_PadConfigDiag->IsShown()) {
+			m_PadConfigDiag->Destroy(); m_PadConfigDiag = NULL;
+			if (!Core::IsRunning()) Pad::Shutdown();
+		}
 	if (m_WiimoteConfigDiag)
 		if (!m_WiimoteConfigDiag->IsShown()) {
 			m_WiimoteConfigDiag->Destroy(); m_WiimoteConfigDiag = NULL;
@@ -526,6 +531,7 @@ void CFrame::OnClose(wxCloseEvent& event)
 		m_LogWindow = NULL;
 	}
 	// Close open dialogs
+	if (m_PadConfigDiag) m_PadConfigDiag->Close();
 	if (m_WiimoteConfigDiag) m_WiimoteConfigDiag->Close();
 
 	// Uninit

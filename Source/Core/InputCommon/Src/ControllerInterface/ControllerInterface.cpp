@@ -20,6 +20,7 @@
 
 #include "MathUtil.h"
 #include "Thread.h"
+#include "../../Core/Src/Host.h"
 
 #define INPUT_DETECT_THRESHOLD			0.85f
 
@@ -68,6 +69,9 @@ void ControllerInterface::Initialize()
 void ControllerInterface::Shutdown()
 {
 	if (false == m_is_init)
+		return;
+
+	if(Host_PadConfigOpen() || Host_WiimoteConfigOpen())
 		return;
 
 	std::vector<Device*>::const_iterator

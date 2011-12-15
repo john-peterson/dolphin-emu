@@ -465,7 +465,7 @@ void EmuThread()
 	HW::Shutdown();
 	INFO_LOG(CONSOLE, "%s", StopMessage(false, "HW shutdown").c_str());
 	Pad::Shutdown();
-	if(!Host_WiimoteConfigOpen()) Wiimote::Shutdown();
+	Wiimote::Shutdown();
 	g_video_backend->Shutdown();
 }
 

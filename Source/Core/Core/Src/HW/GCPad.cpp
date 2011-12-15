@@ -20,11 +20,13 @@
 
 #include "ControllerInterface/ControllerInterface.h"
 #include "GCPadEmu.h"
-
+#include "../../Core/Src/Host.h"
 #include "../../InputCommon/Src/InputConfig.h"
 
 namespace Pad
 {
+
+bool IsInit = false;
 
 static InputPlugin g_plugin("GCPadNew", _trans("Pad"), "GCPad");
 InputPlugin *GetPlugin()
@@ -34,6 +36,8 @@ InputPlugin *GetPlugin()
 
 void Shutdown()
 {
+	if (Host_PadConfigOpen()) return;
+
 	std::vector<ControllerEmu*>::const_iterator
 		i = g_plugin.controllers.begin(),
 		e = g_plugin.controllers.end();
@@ -41,15 +45,19 @@ void Shutdown()
 		delete *i;
 	g_plugin.controllers.clear();
 
-	//if(!main_frame->m_WiimoteConfigDiag)g_controller_interface.Shutdown();
+	g_controller_interface.Shutdown();
+
+	IsInit = false;
 }
 
 // if plugin isn't initialized, init and load config
 void Initialize(void* const hwnd)
 {
 	// add 4 gcpads
-	for (unsigned int i=0; i<4; ++i)
-		g_plugin.controllers.push_back(new GCPad(i));
+	if(!IsInit)
+		for (unsigned int i=0; i<4; ++i)
+			g_plugin.controllers.push_back(new GCPad(i));
+	IsInit = true;
 
 	g_controller_interface.SetHwnd(hwnd);
 	g_controller_interface.Initialize();
