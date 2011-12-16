@@ -276,13 +276,14 @@ EVT_MENU_RANGE(IDM_LOGWINDOW, IDM_VIDEOWINDOW, CFrame::OnToggleWindow)
 
 EVT_MENU(IDM_PURGECACHE, CFrame::GameListChanged)
 
-EVT_MENU(IDM_LOADLASTSTATE, CFrame::OnLoadLastState)
+EVT_MENU(IDM_SAVEFIRSTSTATE, CFrame::OnSaveFirstState)
 EVT_MENU(IDM_UNDOLOADSTATE,     CFrame::OnUndoLoadState)
 EVT_MENU(IDM_UNDOSAVESTATE,     CFrame::OnUndoSaveState)
 EVT_MENU(IDM_LOADSTATEFILE, CFrame::OnLoadStateFromFile)
 EVT_MENU(IDM_SAVESTATEFILE, CFrame::OnSaveStateToFile)
 
 EVT_MENU_RANGE(IDM_LOADSLOT1, IDM_LOADSLOT8, CFrame::OnLoadState)
+EVT_MENU_RANGE(IDM_LOADLAST1, IDM_LOADLAST8, CFrame::OnLoadLastState)
 EVT_MENU_RANGE(IDM_SAVESLOT1, IDM_SAVESLOT8, CFrame::OnSaveState)
 EVT_MENU_RANGE(IDM_FRAMESKIP0, IDM_FRAMESKIP9, CFrame::OnFrameSkip)
 EVT_MENU_RANGE(IDM_DRIVE1, IDM_DRIVE24, CFrame::OnBootDrive)
@@ -801,80 +802,59 @@ bool IsHotkey(wxKeyEvent &event, int Id)
 
 int GetCmdForHotkey(unsigned int key)
 {
-	if (key == HK_OPEN)
-		return wxID_OPEN;
-	if (key == HK_CHANGE_DISC)
-		return IDM_CHANGEDISC;
-	if (key == HK_REFRESH_LIST)
-		return wxID_REFRESH;
+	if (key == HK_OPEN) return wxID_OPEN;
+	if (key == HK_CHANGE_DISC) return IDM_CHANGEDISC;
+	if (key == HK_REFRESH_LIST) return wxID_REFRESH;
 
-	if (key == HK_PLAY_PAUSE)
-		return IDM_PLAY;
-	if (key == HK_STOP)
-		return IDM_STOP;
-	if (key == HK_RESET)
-		return IDM_RESET;
-	if (key == HK_FRAME_ADVANCE)
-		return IDM_FRAMESTEP;
+	if (key == HK_PLAY_PAUSE) return IDM_PLAY;
+	if (key == HK_STOP) return IDM_STOP;
+	if (key == HK_RESET) return IDM_RESET;
+	if (key == HK_FRAME_ADVANCE) return IDM_FRAMESTEP;
 
-	if (key == HK_START_RECORDING)
-		return IDM_RECORD;
-	if (key == HK_PLAY_RECORDING)
-		return IDM_PLAYRECORD;
-	if (key == HK_EXPORT_RECORDING)
-		return IDM_RECORDEXPORT;
-	if (key == HK_READ_ONLY_MODE)
-		return IDM_RECORDREADONLY;
+	if (key == HK_START_RECORDING) return IDM_RECORD;
+	if (key == HK_PLAY_RECORDING) return IDM_PLAYRECORD;
+	if (key == HK_EXPORT_RECORDING) return IDM_RECORDEXPORT;
+	if (key == HK_READ_ONLY_MODE) return IDM_RECORDREADONLY;
 
-	if (key == HK_FULLSCREEN)
-		return IDM_TOGGLE_FULLSCREEN;
-	if (key == HK_CAPTURE_MOUSE)
-		return IDM_CAPTURE_MOUSE;
-	if (key == HK_SCREENSHOT)
-		return IDM_SCREENSHOT;
+	if (key == HK_FULLSCREEN) return IDM_TOGGLE_FULLSCREEN;
+	if (key == HK_CAPTURE_MOUSE) return IDM_CAPTURE_MOUSE;
+	if (key == HK_SCREENSHOT) return IDM_SCREENSHOT;
 
-	if (key == HK_WIIMOTE1_CONNECT)
-		return IDM_CONNECT_WIIMOTE1;
-	if (key == HK_WIIMOTE2_CONNECT)
-		return IDM_CONNECT_WIIMOTE2;
-	if (key == HK_WIIMOTE3_CONNECT)
-		return IDM_CONNECT_WIIMOTE3;
-	if (key == HK_WIIMOTE4_CONNECT)
-		return IDM_CONNECT_WIIMOTE4;
+	if (key == HK_WIIMOTE1_CONNECT) return IDM_CONNECT_WIIMOTE1;
+	if (key == HK_WIIMOTE2_CONNECT) return IDM_CONNECT_WIIMOTE2;
+	if (key == HK_WIIMOTE3_CONNECT)	return IDM_CONNECT_WIIMOTE3;
+	if (key == HK_WIIMOTE4_CONNECT) return IDM_CONNECT_WIIMOTE4;
 
-	if (key == HK_LOAD_STATE_SLOT_1)
-		return IDM_LOADSLOT1;
-	if (key == HK_LOAD_STATE_SLOT_2)
-		return IDM_LOADSLOT2;
-	if (key == HK_LOAD_STATE_SLOT_3)
-		return IDM_LOADSLOT3;
-	if (key == HK_LOAD_STATE_SLOT_4)
-		return IDM_LOADSLOT4;
-	if (key == HK_LOAD_STATE_SLOT_5)
-		return IDM_LOADSLOT5;
-	if (key == HK_LOAD_STATE_SLOT_6)
-		return IDM_LOADSLOT6;
-	if (key == HK_LOAD_STATE_SLOT_7)
-		return IDM_LOADSLOT7;
-	if (key == HK_LOAD_STATE_SLOT_8)
-		return IDM_LOADSLOT8;
+	if (key == HK_LOAD_STATE_SLOT_1) return IDM_LOADSLOT1;
+	if (key == HK_LOAD_STATE_SLOT_2) return IDM_LOADSLOT2;
+	if (key == HK_LOAD_STATE_SLOT_3) return IDM_LOADSLOT3;
+	if (key == HK_LOAD_STATE_SLOT_4) return IDM_LOADSLOT4;
+	if (key == HK_LOAD_STATE_SLOT_5) return IDM_LOADSLOT5;
+	if (key == HK_LOAD_STATE_SLOT_6) return IDM_LOADSLOT6;
+	if (key == HK_LOAD_STATE_SLOT_7) return IDM_LOADSLOT7;
+	if (key == HK_LOAD_STATE_SLOT_8) return IDM_LOADSLOT8;
 
-	if (key == HK_SAVE_STATE_SLOT_1)
-		return IDM_SAVESLOT1;
-	if (key == HK_SAVE_STATE_SLOT_2)
-		return IDM_SAVESLOT2;
-	if (key == HK_SAVE_STATE_SLOT_3)
-		return IDM_SAVESLOT3;
-	if (key == HK_SAVE_STATE_SLOT_4)
-		return IDM_SAVESLOT4;
-	if (key == HK_SAVE_STATE_SLOT_5)
-		return IDM_SAVESLOT5;
-	if (key == HK_SAVE_STATE_SLOT_6)
-		return IDM_SAVESLOT6;
-	if (key == HK_SAVE_STATE_SLOT_7)
-		return IDM_SAVESLOT7;
-	if (key == HK_SAVE_STATE_SLOT_8)	
-		return IDM_SAVESLOT8;
+	if (key == HK_SAVE_STATE_SLOT_1) return IDM_SAVESLOT1;
+	if (key == HK_SAVE_STATE_SLOT_2) return IDM_SAVESLOT2;
+	if (key == HK_SAVE_STATE_SLOT_3) return IDM_SAVESLOT3;
+	if (key == HK_SAVE_STATE_SLOT_4) return IDM_SAVESLOT4;
+	if (key == HK_SAVE_STATE_SLOT_5) return IDM_SAVESLOT5;
+	if (key == HK_SAVE_STATE_SLOT_6) return IDM_SAVESLOT6;
+	if (key == HK_SAVE_STATE_SLOT_7) return IDM_SAVESLOT7;
+	if (key == HK_SAVE_STATE_SLOT_8) return IDM_SAVESLOT8;
+
+	if (key == HK_LOAD_LAST_STATE_1) return IDM_LOADLAST1;
+	if (key == HK_LOAD_LAST_STATE_2) return IDM_LOADLAST2;
+	if (key == HK_LOAD_LAST_STATE_3) return IDM_LOADLAST3;
+	if (key == HK_LOAD_LAST_STATE_4) return IDM_LOADLAST4;
+	if (key == HK_LOAD_LAST_STATE_5) return IDM_LOADLAST5;
+	if (key == HK_LOAD_LAST_STATE_6) return IDM_LOADLAST6;
+	if (key == HK_LOAD_LAST_STATE_7) return IDM_LOADLAST7;
+	if (key == HK_LOAD_LAST_STATE_8) return IDM_LOADLAST8;
+
+	if (key == HK_SAVE_FIRST_STATE)	return IDM_SAVEFIRSTSTATE;
+	if (key == HK_UNDO_LOAD_STATE)	return IDM_UNDOLOADSTATE;
+	if (key == HK_UNDO_SAVE_STATE)	return IDM_UNDOSAVESTATE;	
 
 	return -1;
 }
@@ -918,28 +898,6 @@ void CFrame::OnKeyDown(wxKeyEvent& event)
 			WiimoteId = 2;
 		else if (IsHotkey(event, HK_WIIMOTE4_CONNECT))
 			WiimoteId = 3;
-		// State save and state load hotkeys
-		/*else if (event.GetKeyCode() >= WXK_F1 && event.GetKeyCode() <= WXK_F8)
-		{
-			int slot_number = event.GetKeyCode() - WXK_F1 + 1;
-			if (event.GetModifiers() == wxMOD_NONE)
-				State::Load(slot_number);
-			else if (event.GetModifiers() == wxMOD_SHIFT)
-				State::Save(slot_number);
-			else
-				event.Skip();
-		}*/
-		else if (event.GetKeyCode() == WXK_F11 && event.GetModifiers() == wxMOD_NONE)
-			State::LoadLastSaved();
-		else if (event.GetKeyCode() == WXK_F12)
-		{
-			if (event.GetModifiers() == wxMOD_NONE)
-				State::UndoSaveState();
-			else if (event.GetModifiers() == wxMOD_SHIFT)
-				State::UndoLoadState();
-			else
-				event.Skip();
-		}
 		else
 		{
 			unsigned int i = NUM_HOTKEYS;

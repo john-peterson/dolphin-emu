@@ -311,6 +311,7 @@ private:
 	void OnLoadStateFromFile(wxCommandEvent& event);
 	void OnSaveStateToFile(wxCommandEvent& event);
 	void OnLoadLastState(wxCommandEvent& event);
+	void OnSaveFirstState(wxCommandEvent& event);
 	void OnUndoLoadState(wxCommandEvent& event);
 	void OnUndoSaveState(wxCommandEvent& event);
 		

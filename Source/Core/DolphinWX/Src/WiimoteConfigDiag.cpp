@@ -205,6 +205,11 @@ void WiimoteConfigDiag::OnClose(wxCloseEvent& event)
 
 void WiimoteConfigDiag::ConfigEmulatedWiimote(wxCommandEvent& ev)
 {
+	if (m_emu_config_diag) {
+		m_emu_config_diag->m_pad_notebook->SetSelection(m_wiimote_index_from_conf_bt_id[ev.GetId()]);
+		m_emu_config_diag->SetFocus();
+		return;
+	}
 	m_emu_config_diag = new InputConfigDialog(this, m_plugin, _("Dolphin Emulated Wiimote Configuration"), m_wiimote_index_from_conf_bt_id[ev.GetId()]);
 	m_emu_config_diag->Show();
 }

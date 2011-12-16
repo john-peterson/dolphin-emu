@@ -149,24 +149,23 @@ void CFrame::CreateMenu()
 	emulationMenu->Append(IDM_SAVESTATE, _("Sa&ve State"), saveMenu);
 
 	saveMenu->Append(IDM_SAVESTATEFILE, _("Save State..."));
-	loadMenu->Append(IDM_UNDOSAVESTATE, _("Last Overwritten State") + wxString(wxT("\tShift+F12")));
+	saveMenu->Append(IDM_SAVEFIRSTSTATE, GetMenuLabel(HK_SAVE_FIRST_STATE));
+	loadMenu->Append(IDM_UNDOSAVESTATE, GetMenuLabel(HK_UNDO_SAVE_STATE));
 	saveMenu->AppendSeparator();
 
 	loadMenu->Append(IDM_LOADSTATEFILE, _("Load State..."));
-
-	// Reserve F11 for the "step into" function in the debugger
-	if (g_pCodeWindow)
-		loadMenu->Append(IDM_LOADLASTSTATE, _("Last Saved State"));
-	else
-		loadMenu->Append(IDM_LOADLASTSTATE, _("Last Saved State") + wxString(wxT("\tF11")));
 	
-	loadMenu->Append(IDM_UNDOLOADSTATE, _("Undo Load State") + wxString(wxT("\tF12")));
+	loadMenu->Append(IDM_UNDOLOADSTATE, GetMenuLabel(HK_UNDO_LOAD_STATE));
 	loadMenu->AppendSeparator();
 
 	for (int i = 1; i <= 8; i++) {
 		loadMenu->Append(IDM_LOADSLOT1 + i - 1, GetMenuLabel(HK_LOAD_STATE_SLOT_1 + i - 1));
 		saveMenu->Append(IDM_SAVESLOT1 + i - 1, GetMenuLabel(HK_SAVE_STATE_SLOT_1 + i - 1));
 	}
+	loadMenu->AppendSeparator();
+	for (int i = 1; i <= 8; i++)
+		loadMenu->Append(IDM_LOADLAST1 + i - 1, GetMenuLabel(HK_LOAD_LAST_STATE_1 + i - 1));
+
 	m_MenuBar->Append(emulationMenu, _("&Emulation"));
 
 	// Options menu
@@ -391,6 +390,22 @@ wxString CFrame::GetMenuLabel(int Id)
 			Label = wxString::Format(_("Slot %i"), 
 					Id - HK_SAVE_STATE_SLOT_1 + 1);
 			break;
+		
+		case HK_LOAD_LAST_STATE_1:
+		case HK_LOAD_LAST_STATE_2:
+		case HK_LOAD_LAST_STATE_3:
+		case HK_LOAD_LAST_STATE_4:
+		case HK_LOAD_LAST_STATE_5:
+		case HK_LOAD_LAST_STATE_6:
+		case HK_LOAD_LAST_STATE_7:
+		case HK_LOAD_LAST_STATE_8:
+			Label = wxString::Format(_("Last %i"),
+				Id - HK_LOAD_LAST_STATE_1 + 1);
+			break;
+
+		case HK_SAVE_FIRST_STATE: Label = wxString("Save Oldest State"); break;
+		case HK_UNDO_LOAD_STATE: Label = wxString("Undo Load State"); break;
+		case HK_UNDO_SAVE_STATE: Label = wxString("Undo Save State"); break;
 
 		default:
 			Label = wxString::Format(_("Undefined %i"), Id);
@@ -1462,10 +1477,20 @@ void CFrame::OnSaveStateToFile(wxCommandEvent& WXUNUSED (event))
 		State::SaveAs((const char*)path.mb_str());
 }
 
-void CFrame::OnLoadLastState(wxCommandEvent& WXUNUSED (event))
+void CFrame::OnLoadLastState(wxCommandEvent& event)
 {
 	if (Core::GetState() != Core::CORE_UNINITIALIZED)
-		State::LoadLastSaved();
+	{
+		int id = event.GetId();
+		int slot = id - IDM_LOADLAST1 + 1;
+		State::LoadLastSaved(slot);
+	}
+}
+
+void CFrame::OnSaveFirstState(wxCommandEvent& WXUNUSED(event))
+{
+	if (Core::GetState() != Core::CORE_UNINITIALIZED)
+		State::SaveFirstSaved();
 }
 
 void CFrame::OnUndoLoadState(wxCommandEvent& WXUNUSED (event))
@@ -1508,11 +1533,7 @@ void CFrame::OnFrameSkip(wxCommandEvent& event)
 	Movie::SetFrameSkipping((unsigned int)amount);
 }
 
-
-
-
 // GUI
-// ---------------------
 
 // Update the enabled/disabled status
 void CFrame::UpdateGUI()

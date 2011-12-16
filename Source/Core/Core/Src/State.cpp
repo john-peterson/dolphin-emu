@@ -31,6 +31,7 @@
 #include "VideoBackendBase.h"
 
 #include <lzo/lzo1x.h>
+#include <sys/stat.h>
 #include "HW/Memmap.h"
 #include "HW/VideoInterface.h"
 #include "HW/SystemTimers.h"
@@ -59,7 +60,7 @@ static volatile bool g_op_in_progress = false;
 
 static int ev_FileSave, ev_BufferSave, ev_FileLoad, ev_BufferLoad, ev_FileVerify, ev_BufferVerify;
 
-static std::string g_current_filename, g_last_filename;
+static std::string g_current_filename;
 
 // Temporary undo state buffer
 static std::vector<u8> g_undo_load_buffer;
@@ -163,6 +164,26 @@ void VerifyBufferStateCallback(u64 userdata, int cyclesLate)
 	Core::DisplayMessage("Verified state", 2000);
 
 	g_op_in_progress = false;
+}
+
+int GetEmptySlot()
+{
+	for (int i = 1; i <= 8; i++)
+		if (!File::Exists(MakeStateFilename(i))) return i;
+	return -1;
+}
+
+std::map<double, int> GetSavedStates()
+{
+	struct stat t;
+	std::map<double, int> x;
+	for (int i = 1; i <= 8; i++)
+	{
+		if (File::Exists(MakeStateFilename(i)))
+			if (!stat(MakeStateFilename(i).c_str(), &t))
+				x.insert(std::pair<double,int>(difftime(time(0), t.st_mtime), i));
+	}
+	return x;
 }
 
 void CompressAndDumpState(const std::vector<u8>* save_arg)
@@ -450,7 +471,6 @@ void ScheduleFileEvent(const std::string &filename, int ev, bool immediate)
 
 void SaveAs(const std::string &filename, bool immediate)
 {
-	g_last_filename = filename;
 	ScheduleFileEvent(filename, ev_FileSave, immediate);
 }
 
@@ -535,12 +555,32 @@ void Verify(int slot)
 	VerifyAt(MakeStateFilename(slot));
 }
 
-void LoadLastSaved()
+void LoadLastSaved(int i)
 {
-	if (g_last_filename.empty())
-		Core::DisplayMessage("There is no last saved state", 2000);
+	std::map<double, int> savedStates = GetSavedStates();
+
+	if (i > savedStates.size())
+		Core::DisplayMessage("State doesn't exist", 2000);
 	else
-		LoadAs(g_last_filename);
+	{		
+		std::map<double,int>::iterator it = savedStates.begin();
+		std::advance(it, i-1);
+		Load(it->second);
+	}
+}
+
+void SaveFirstSaved()
+{
+	std::map<double, int> savedStates = GetSavedStates();
+
+	if (savedStates.size() < 8)
+		Save(GetEmptySlot());
+	else
+	{
+		std::map<double,int>::iterator it = savedStates.begin();
+		std::advance(it, savedStates.size()-1);
+		Save(it->second);
+	}
 }
 
 void ScheduleBufferEvent(std::vector<u8>& buffer, int ev)

@@ -49,8 +49,10 @@ void VerifyAt(const std::string &filename);
 void SaveToBuffer(u8 **buffer);
 void LoadFromBuffer(u8 **buffer);
 void VerifyBuffer(u8 **buffer);
+static std::string MakeStateFilename(int number);
 
-void LoadLastSaved();
+void LoadLastSaved(int i = 1);
+void SaveFirstSaved();
 void UndoSaveState();
 void UndoLoadState();
 
