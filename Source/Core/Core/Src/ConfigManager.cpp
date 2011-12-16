@@ -47,6 +47,7 @@ static const struct {
 	{ "Readonlymode",	0,			0 /* wxMOD_NONE */ },
 
 	{ "ToggleFullscreen",	70 /* 'F' */,		8 /* wxMOD_CMD */ },
+	{ "CaptureMouse",	0 /* WXK_F1 */,	0 /* wxMOD_NONE */ },
 	{ "Screenshot",		83 /* 'S' */,		8 /* wxMOD_CMD */ },
 
 	{ "Wiimote1Connect",	49 /* '1' */,		8 /* wxMOD_CMD */ },
@@ -95,6 +96,19 @@ static const struct {
 	{ "SaveStateSlot6",	345 /* WXK_F6 */,	4 /* wxMOD_SHIFT */ },
 	{ "SaveStateSlot7",	346 /* WXK_F7 */,	4 /* wxMOD_SHIFT */ },
 	{ "SaveStateSlot8",	347 /* WXK_F8 */,	4 /* wxMOD_SHIFT */ },
+
+	{ "LoadLastState1",	0,	0 /* wxMOD_NONE */ },
+	{ "LoadLastState2",	0,	0 /* wxMOD_NONE */ },
+	{ "LoadLastState3",	0,	0 /* wxMOD_NONE */ },
+	{ "LoadLastState4",	0,	0 /* wxMOD_NONE */ },
+	{ "LoadLastState5",	0,	0 /* wxMOD_NONE */ },
+	{ "LoadLastState6",	0,	0 /* wxMOD_NONE */ },
+	{ "LoadLastState7",	0,	0 /* wxMOD_NONE */ },
+	{ "LoadLastState8",	0,	0 /* wxMOD_NONE */ },
+
+	{ "SaveFirstState",	0,	0 /* wxMOD_NONE */ },	
+	{ "UndoLoadState",	351 /* WXK_F12 */,	0 /* wxMOD_NONE */ },
+	{ "UndoSaveState",	351 /* WXK_F12 */,	4 /* wxMOD_SHIFT */ },
 };
 
 SConfig::SConfig()

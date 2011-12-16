@@ -203,11 +203,12 @@ public:
 	void UpdateBitmaps(wxTimerEvent&);
 	void UpdateGUI();
 
+	wxNotebook*					m_pad_notebook;
+
 private:
 
 	wxString					m_title;
-	wxWindow*					m_parent;
-	wxNotebook*					m_pad_notebook;
+	wxWindow*					m_parent;	
 	std::vector<GamepadPage*>	m_padpages;
 	InputPlugin&				m_plugin;
 	wxTimer*					m_update_timer;
