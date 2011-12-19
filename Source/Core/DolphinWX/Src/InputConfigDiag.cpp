@@ -592,8 +592,14 @@ ControlGroupBox::ControlGroupBox(ControllerEmu::ControlGroup* const group, wxWin
 				_connect_macro_(setting_cbox->wxcontrol, GamepadPage::AdjustSetting, wxEVT_COMMAND_CHECKBOX_CLICKED, eventsink);
 				options.push_back(setting_cbox);
 
-				Add(setting_cbox->wxcontrol, 0, wxALL|wxLEFT, 5);
+				ControlButton* const control_button = new ControlButton(parent, (*i)->control->control_ref, 40);
+				_connect_macro_(control_button, GamepadPage::DetectControl, wxEVT_COMMAND_BUTTON_CLICKED, eventsink);
+				_connect_macro_(control_button, GamepadPage::ConfigControl, wxEVT_RIGHT_UP, eventsink);
 
+				wxBoxSizer* const sng_szr = new wxBoxSizer(wxHORIZONTAL);
+				sng_szr->Add(control_button, 0);
+				sng_szr->Add(setting_cbox->wxcontrol, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, 3);
+				Add(sng_szr, 0, wxALL, 3);
 			}
 		}
 		break;
@@ -607,7 +613,7 @@ ControlGroupBox::ControlGroupBox(ControllerEmu::ControlGroup* const group, wxWin
 ControlGroupsSizer::ControlGroupsSizer(ControllerEmu* const controller, wxWindow* const parent, wxWindow* const eventsink, std::vector<ControlGroupBox*>* groups)
 	: wxBoxSizer(wxHORIZONTAL)
 {
-	size_t col_size = 0;
+	size_t col_size = 0, max_size = 0;
 
 	wxBoxSizer* stacked_groups = NULL;
 	for (unsigned int i = 0; i < controller->groups.size(); ++i)
@@ -619,7 +625,8 @@ ControlGroupsSizer::ControlGroupsSizer(ControllerEmu* const controller, wxWindow
 
 		const size_t grp_size = controller->groups[i]->controls.size() + controller->groups[i]->settings.size();
 		col_size += grp_size;
-		if (col_size > 8 || NULL == stacked_groups)
+		if (grp_size > max_size) max_size = grp_size;
+		if (col_size >= max_size || NULL == stacked_groups)
 		{
 			if (stacked_groups)
 				Add(stacked_groups, 0, /*wxEXPAND|*/wxBOTTOM|wxRIGHT, 5);
@@ -630,7 +637,10 @@ ControlGroupsSizer::ControlGroupsSizer(ControllerEmu* const controller, wxWindow
 			col_size = grp_size;
 		}
 		else
+		{
 			stacked_groups->Add(control_group, 0, wxEXPAND);
+			col_size++;
+		}
 
 		if (groups)
 			groups->push_back(control_group_box);

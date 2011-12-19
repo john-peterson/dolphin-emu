@@ -866,7 +866,7 @@ int GetCmdForHotkey(unsigned int key)
 
 	if (key == HK_SAVE_FIRST_STATE)	return IDM_SAVEFIRSTSTATE;
 	if (key == HK_UNDO_LOAD_STATE)	return IDM_UNDOLOADSTATE;
-	if (key == HK_UNDO_SAVE_STATE)	return IDM_UNDOSAVESTATE;	
+	if (key == HK_UNDO_SAVE_STATE)	return IDM_UNDOSAVESTATE;
 
 	return -1;
 }

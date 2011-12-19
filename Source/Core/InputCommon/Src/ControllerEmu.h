@@ -54,6 +54,7 @@ enum
 	SETTING_SIDEWAYS_WIIMOTE,
 	SETTING_UPRIGHT_WIIMOTE,
 	SETTING_MOTIONPLUS,
+	SETTING_MOTIONPLUS_FAST,
 	SETTING_IR_OFF,
 };
 enum
@@ -201,17 +202,24 @@ public:
 		public:
 
 			Setting(const char* const _name, const ControlState def_value
-				, const unsigned int _low = 0, const unsigned int _high = 100 )
+				, const unsigned int _low = 0, const unsigned int _high = 100)
 				: name(_name)
 				, value(def_value)
 				, default_value(def_value)
 				, low(_low)
-				, high(_high){}
+				, high(_high)
+				, lastState(false)
+			{
+				control = new Input("");
+			}
+			void GetState();
 
 			const char* const	name;
 			ControlState		value;
 			const ControlState	default_value;
 			const unsigned int	low, high;
+			Control*			control;
+			bool				lastState;
 		};
 
 		ControlGroup(const char* const _name, const unsigned int _type = GROUP_TYPE_OTHER) : name(_name), type(_type) {}
