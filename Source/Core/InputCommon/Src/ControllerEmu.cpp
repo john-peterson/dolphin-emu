@@ -16,6 +16,7 @@
 // http://code.google.com/p/dolphin-emu/
 
 #include "ControllerEmu.h"
+#include "../../Core/Src/Core.h"
 
 #if defined(HAVE_X11) && HAVE_X11
 #include <X11/Xlib.h>
@@ -75,6 +76,12 @@ void ControllerEmu::UpdateReferences(ControllerInterface& devi)
 		for (; ci!=ce; ++ci)
 			devi.UpdateReference((*ci)->control_ref, default_device);
 
+		std::vector<ControlGroup::Setting*>::const_iterator
+			si = (*i)->settings.begin(),
+			se = (*i)->settings.end();
+		for (; si!=se; ++si)
+			devi.UpdateReference((*si)->control->control_ref, default_device);
+
 		// extension
 		if (GROUP_TYPE_EXTENSION == (*i)->type)
 		{
@@ -127,6 +134,7 @@ void ControllerEmu::ControlGroup::LoadConfig(IniFile::Section *sec, const std::s
 	{
 		sec->Get((group+(*si)->name).c_str(), &(*si)->value, (*si)->default_value*100);
 		(*si)->value *= 0.01;
+		sec->Get((group+(*si)->name+"/Input").c_str(), &(*si)->control->control_ref->expression, "");
 	}
 
 	// controls
@@ -191,7 +199,10 @@ void ControllerEmu::ControlGroup::SaveConfig(IniFile::Section *sec, const std::s
 		si = settings.begin(),
 		se = settings.end();
 	for (; si!=se; ++si)
+	{
 		sec->Set((group+(*si)->name).c_str(), (*si)->value*100.0f, (*si)->default_value*100.0f);
+		sec->Set((group+(*si)->name+"/Input").c_str(), (*si)->control->control_ref->expression, "");
+	}
 
 	// controls
 	std::vector<ControlGroup::Control*>::const_iterator
@@ -230,6 +241,19 @@ void ControllerEmu::SaveConfig(IniFile::Section *sec, const std::string& base)
 		e = groups.end();
 	for (; i!=e; ++i)
 		(*i)->SaveConfig(sec, defdev, base);
+}
+
+void ControllerEmu::ControlGroup::Setting::GetState()
+{
+	bool state = control->control_ref->State() ? true : false;
+
+	if (state == lastState) return;
+	lastState = state;
+	if (!state) return;
+
+	value = !value;
+
+	Core::DisplayMessage(StringFromFormat("%s: %s", name, value ? "Enabled" : "Disabled").c_str(), 2000, (value ? 0x00FFFF : 0xABABAB));
 }
 
 ControllerEmu::AnalogStick::AnalogStick(const char* const _name) : ControlGroup(_name, GROUP_TYPE_STICK)

@@ -192,6 +192,7 @@ public:
 	void HidOutputReport(const wm_report* const sr, const bool send_ack = true);
 	void HandleExtensionSwap();
 
+	void GetSettings();
 	void GetCoreData(u8* const data);
 	void GetAccelData(u8* const data, u8* const buttons);
 	void GetIRData(u8* const data, bool use_accel);

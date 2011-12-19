@@ -310,11 +310,12 @@ Wiimote::Wiimote( const unsigned int index )
 		m_dpad->controls.push_back(new ControlGroup::Input(named_directions[i]));
 
 	// options
-	groups.push_back( m_options = new ControlGroup(_trans("Options")));
+	groups.push_back(m_options = new ControlGroup(_trans("Options")));
 	m_options->settings.push_back(new ControlGroup::Setting(_trans("Background Input"), false));
 	m_options->settings.push_back(new ControlGroup::Setting(_trans("Sideways Wiimote"), false));
 	m_options->settings.push_back(new ControlGroup::Setting(_trans("Upright Wiimote"), false));
 	m_options->settings.push_back(new ControlGroup::Setting(_trans("MotionPlus"), true));
+	m_options->settings.push_back(new ControlGroup::Setting(_trans("MotionPlus Fast"), true));
 	m_options->settings.push_back(new ControlGroup::Setting(_trans("IR Off"), false));
 
 	// TODO: This value should probably be re-read if SYSCONF gets changed
@@ -393,6 +394,15 @@ bool Wiimote::Step()
 	}
 
 	return false;
+}
+
+void Wiimote::GetSettings()
+{
+	std::vector<ControlGroup::Setting*>::const_iterator
+			si = m_options->settings.begin(),
+			se = m_options->settings.end();
+		for (; si!=se; ++si)
+			(*si)->GetState();
 }
 
 void Wiimote::GetCoreData(u8* const data)
@@ -671,7 +681,7 @@ void Wiimote::GetExtData(u8* const data)
 			y = -dx	-ry	-sh.x;
 
 			// fast or slow
-			if (!(r_fast || c_fast))
+			if (!(r_fast || c_fast || m_options->settings[SETTING_MOTIONPLUS_FAST]->value != 0))
 			{
 				((wm_motionplus*)data)->pitch_slow = 1;
 				((wm_motionplus*)data)->roll_slow = 1;
@@ -762,7 +772,9 @@ void Wiimote::Update()
 
 		data[0] = 0xA1;
 		data[1] = m_reporting_mode;
-	
+
+		GetSettings();
+
 		// core buttons
 		if (rptf.core)
 			GetCoreData(data + rptf.core);
