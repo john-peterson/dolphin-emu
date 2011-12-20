@@ -38,6 +38,7 @@ static bool is_init = false;
 static bool is_init_done = false;
 
 void Init(std::vector<ControllerInterface::Device*>& devices, HWND hwnd);
+void Shutdown();
 void SetHWND(HWND _hwnd);
 void DetectDevice(int d);
 

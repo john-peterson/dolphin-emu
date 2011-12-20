@@ -328,10 +328,10 @@ ControllerEmu::Rotate::Rotate(const char* const _name, bool gyro)
 	if (gyro)
 	{
 		controls.push_back(new Input(_trans("Fast")));
-		controls.push_back(new Input(_trans("Acc Range")));
+		controls.push_back(new Input(_trans("Acc. Range")));
 		controls.push_back(new Input(_trans("Gyro Range 1")));
 		controls.push_back(new Input(_trans("Gyro Range 2")));
-		settings.push_back(new Setting(_trans("Acc Range"), 1.0f, 0, 500));
+		settings.push_back(new Setting(_trans("Acc. Range"), 1.0f, 0, 500));
 		settings.push_back(new Setting(_trans("Gyro Range"), 1.0f, 0, 500));
 		settings.push_back(new Setting(_trans("Gyro Settle"), 0.25f, 0, 9999));
 	}
