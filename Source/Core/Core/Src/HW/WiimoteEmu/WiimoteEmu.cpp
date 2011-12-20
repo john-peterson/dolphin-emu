@@ -677,8 +677,8 @@ void Wiimote::GetExtData(u8* const data)
 			}
 			// gyro controls
 			p = dy	+rp	+sh.y;
-			r = -dz	-rr	-sh.z;
-			y = -dx	-ry	-sh.x;
+			r = -dx	-rr	-sh.z;
+			y = -dz	-ry	-sh.x;
 
 			// fast or slow
 			if (!(r_fast || c_fast || m_options->settings[SETTING_MOTIONPLUS_FAST]->value != 0))

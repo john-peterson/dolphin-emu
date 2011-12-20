@@ -66,12 +66,12 @@ void ControllerInterface::Initialize()
 //
 // remove all devices/ call library cleanup functions
 //
-void ControllerInterface::Shutdown()
+void ControllerInterface::Shutdown(const bool force)
 {
 	if (false == m_is_init)
 		return;
 
-	if(Host_PadConfigOpen() || Host_WiimoteConfigOpen())
+	if((Host_PadConfigOpen() || Host_WiimoteConfigOpen()) && !force)
 		return;
 
 	std::vector<Device*>::const_iterator
@@ -97,9 +97,11 @@ void ControllerInterface::Shutdown()
 #ifdef CIFACE_USE_XINPUT
 	// nothing needed
 #endif
+#ifdef CIFACE_USE_RINPUT
+	ciface::RInput::Shutdown();
+#endif
 #ifdef CIFACE_USE_DINPUT
-	// nothing needed
-	ciface::DInput::is_init = false; ciface::DInput::is_init_done = false;
+	ciface::DInput::Shutdown();
 #endif
 #ifdef CIFACE_USE_XLIB
 	// nothing needed
@@ -113,6 +115,17 @@ void ControllerInterface::Shutdown()
 #endif
 
 	m_is_init = false; m_is_init_done = false;
+}
+
+//
+//		ReInit
+//
+// shutdown and initialize
+//
+void ControllerInterface::ReInit()
+{
+	g_controller_interface.Shutdown(true);
+	g_controller_interface.Initialize();
 }
 
 //

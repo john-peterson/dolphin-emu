@@ -402,8 +402,7 @@ void GamepadPage::RefreshDevices(wxCommandEvent&)
 	std::lock_guard<std::recursive_mutex> lk(m_plugin.controls_lock);
 
 	// refresh devices
-	g_controller_interface.Shutdown();
-	g_controller_interface.Initialize();
+	g_controller_interface.ReInit();
 
 	// update all control references
 	m_config_dialog->UpdateControlReferences();

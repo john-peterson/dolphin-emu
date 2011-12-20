@@ -89,6 +89,11 @@ void Init(std::vector<ControllerInterface::Device*>& devices, HWND _hwnd)
 	is_init_done = true;
 }
 
+void Shutdown()
+{
+	is_init = false; is_init_done = false;
+}
+
 void SetHWND(HWND _hwnd)
 {
 	hwnd = _hwnd;
