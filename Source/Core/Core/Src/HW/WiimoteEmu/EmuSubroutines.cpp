@@ -641,13 +641,18 @@ void Wiimote::SendReadDataReply(ReadRequest& _request)
 
 void Wiimote::DoState(PointerWrap& p)
 {
-	// not working :(
-	//if (p.MODE_READ == p.GetMode())
-	//{
-	//	// LOAD
-	//	Reset();	// should cause a status report to be sent, then wii should re-setup wiimote
-	//}
-	//p.Do(m_reporting_channel);
+	//if (p.MODE_READ == p.GetMode()) Reset();
+	p.Do(m_reporting_channel);
+	p.Do(m_reporting_mode);
+	p.Do(m_reporting_auto);
+	p.Do(mp_last_write_reg);
+	p.Do(mp_passthrough);
+	p.Do(m_ext_key);
+	p.DoArray(m_eeprom, sizeof(m_eeprom));
+	p.Do(m_reg_ir);
+	p.Do(m_reg_speaker);
+	p.Do(m_reg_ext);
+	p.Do(m_reg_motion_plus);
 }
 
 }

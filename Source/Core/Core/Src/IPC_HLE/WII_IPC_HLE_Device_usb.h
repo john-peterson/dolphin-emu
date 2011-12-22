@@ -30,6 +30,7 @@ struct SQueuedEvent
 	u32 m_size;
 	u16 m_connectionHandle;
 
+	SQueuedEvent() {}
 	SQueuedEvent(u32 size, u16 connectionHandle)
 		: m_size(size)
 		, m_connectionHandle(connectionHandle)

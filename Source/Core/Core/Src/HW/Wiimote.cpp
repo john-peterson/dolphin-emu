@@ -29,7 +29,7 @@ bool g_DebugSoundData = false;
 
 void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 {
-/*
+#if 0
 	std::string Name, TmpData;
 	int size = Size;
 	static int c;
@@ -59,7 +59,7 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 	if(!keyDown[VK_DELETE] && GetAsyncKeyState(VK_DELETE)) { wm->m_options->settings[SETTING_IR_OFF]->value = wm->m_options->settings[SETTING_IR_OFF]->value != 1 ? 1 : 0; keyDown[VK_DELETE] = true;
 		WARN_LOG(CONSOLE, "IR: %d", wm->m_options->settings[SETTING_IR_OFF]->value); } if(!GetAsyncKeyState(VK_DELETE)) keyDown[VK_DELETE] = false;
 
-	//INFO_LOG(CONSOLE, "Data: %s", ArrayToString((const u8*)_pData, Size, 0, 30).c_str()); 
+	//SWARN_LOG(CONSOLE, "Data: %s", ArrayToString((const u8*)_pData, Size, 0, 30).c_str()); 
 
 	// print data
 	//DEBUG_LOG(CONSOLE, "DATA: %s", ArrayToString((u8*)_pData, Size, 0, 30).c_str());
@@ -526,7 +526,7 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 	if (DataReport && wm->GetMotionPlusActive()) {
 	//if (data[1] == WM_REPORT_CORE_ACCEL_IR10_EXT6)
 		static bool extension = false;
-		if (extension != (bool)(data[17+4]&1)) INFO_LOG(CONSOLE, "Datareport extension %d", data[17+4]&1);
+		if (extension != (bool)(data[17+4]&1)) SERROR_LOG(CONSOLE, "Datareport extension %d", data[17+4]&1);
 		extension = data[17+4]&1;
 	}
 
@@ -685,7 +685,7 @@ void Eavesdrop(WiimoteEmu::Wiimote* wm, const void* _pData, int Size)
 
 		SWARN_LOG(CONSOLE, "%s", SData.c_str());
 	}
-	*/
+#endif
 }
 
 static InputPlugin g_plugin(WIIMOTE_INI_NAME, _trans("Wiimote"), "Wiimote");
@@ -815,11 +815,9 @@ unsigned int GetAttached()
 //
 void DoState(unsigned char **ptr, int mode)
 {
-	// TODO:
-
-	//PointerWrap p(ptr, mode);
-	//for (unsigned int i=0; i<4; ++i)
-	//	((WiimoteEmu::Wiimote*)g_plugin.controllers[i])->DoState(p);
+	PointerWrap p(ptr, mode);
+	for (unsigned int i=0; i<4; ++i)
+		((WiimoteEmu::Wiimote*)g_plugin.controllers[i])->DoState(p);
 }
 
 // ___________________________________________________________________________
