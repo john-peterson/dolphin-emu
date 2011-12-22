@@ -625,8 +625,6 @@ void Wiimote::GetExtData(u8* const data)
 				((wm_nc_mp*)data)->is_mp_data = 0;
 				((wm_nc_mp*)data)->extension_connected = 1;
 				((wm_nc_mp*)data)->dummy = 0;
-				//memcpy(data, _data, 6);
-				//SERROR_LOG(CONSOLE, "Ext: %s", ArrayToString(data, 6).c_str());
 				break;
 			// classic controller/musical instrument pass-through mode
 			// Bit 0 of Byte 4 is overwritten
@@ -667,19 +665,11 @@ void Wiimote::GetExtData(u8* const data)
 				m_ir->GetState(&dx, &dy, &dz, m_ir->settings[C_GYRO_SENSITIVITY]->value, false, true, false);
 				c_fast = m_ir->controls[C_FAST_MODIFIER]->control_ref->State() ? true : false;
 			}
-			// TODO: use m+ calibration?
-			//accel_cal* calib = (accel_cal*)&m_eeprom[0x16];
-			//double y,r,p;
-			//r=trim(m_accel.x); //*(calib->one_g.x-calib->zero_g.x)+calib->zero_g.x);
-			//p=trim(m_accel.y); //*(calib->one_g.y-calib->zero_g.y)+calib->zero_g.y);
-			//y=trim(m_accel.z); //*(calib->one_g.z-calib->zero_g.z)+calib->zero_g.z);
-
 			// gyro controls
 			p = dy	+rp	+sh.y;
 			r = -dz	-rr	-sh.z;
 			y = -dx	-ry	-sh.x;
 
-			//SWARN_LOG(CONSOLE, "1 %5.2f %5.2f %5.2f", p, r, y);
 			// fast or slow
 			if (!(r_fast || c_fast))
 			{
@@ -687,10 +677,6 @@ void Wiimote::GetExtData(u8* const data)
 				((wm_motionplus*)data)->roll_slow = 1;
 				((wm_motionplus*)data)->yaw_slow = 1;
 			}
-			//if (!(r_fast_p || c_fast_p || sh.y)) ((wm_motionplus*)data)->pitch_slow = 1;
-			//if (!(r_fast_r || c_fast_r || sh.z)) ((wm_motionplus*)data)->roll_slow = 1;
-			//if (!(r_fast_y || c_fast_y || sh.x)) ((wm_motionplus*)data)->yaw_slow = 1;
-			//SWARN_LOG(CONSOLE, "2 %5.2f %5.2f %5.2f", p, r, y);
 
 			// report	
 			_p = trim14(p * 0x1fff + 0x1f7f);
@@ -711,31 +697,33 @@ void Wiimote::GetExtData(u8* const data)
 			memset(&n_accel, 0, sizeof(n_accel));
 			if(m_extension->active_extension > 0) n_accel = ((WiimoteEmu::Nunchuk*)m_extension->attachments[m_extension->active_extension])->m_accel;
 			accel_cal* n_calib = (accel_cal*)&((WiimoteEmu::Nunchuk*)m_extension->attachments[m_extension->active_extension])->reg[0x20];			
-			//SNOTICE_LOG(CONSOLE, ""
-			//"%5.2f %5.2f%s"
-			//" | %5.2f %5.2f"			
-			////" | %02x %02x %02x"
+#if 0
+			SNOTICE_LOG(CONSOLE, ""
+			"%5.2f %5.2f%s"
+			" | %5.2f %5.2f"			
+			//" | %02x %02x %02x"
+			" | %5.2f %5.2f %5.2f"
+			//" | %02x %02x %02x"
+			" | %5.2f %5.2f %5.2f"
 			//" | %5.2f %5.2f %5.2f"
-			////" | %02x %02x %02x"
-			//" | %5.2f %5.2f %5.2f"
-			////" | %5.2f %5.2f %5.2f"
-			//" | %5.2f %5.2f %5.2f"
-			////" | %4x %4x %4x"
-			//" %s%s%s"
-			////" (%02x %02x %02x %02x %02x %02x)",
-			//	,mx, my, (m_options->settings[SETTING_IR_OFF]->value != 0 ? "*" : " ")
-			//	,dx, dy				
-			//	,m_accel.x, m_accel.y, m_accel.z
-			//	//,(u8)trim(m_accel.x*(calib->one_g.x-calib->zero_g.x)+calib->zero_g.x), (u8)trim(m_accel.y*(calib->one_g.y-calib->zero_g.y)+calib->zero_g.y), (u8)trim(m_accel.z*(calib->one_g.z-calib->zero_g.z)+calib->zero_g.z)
-			//	,n_accel.x, n_accel.y, n_accel.z
-			//	//,(u8)trim(n_accel.x*(n_calib->one_g.x-n_calib->zero_g.x)+n_calib->zero_g.x), (u8)trim(n_accel.y*(n_calib->one_g.y-n_calib->zero_g.y)+n_calib->zero_g.y), (u8)trim(n_accel.z*(n_calib->one_g.z-n_calib->zero_g.z)+n_calib->zero_g.z)
-			//	//sh.y, sh.z, sh.x
-			//	//,rp, rr, ry
-			//	,p, r, y
-			//	//,_p, _r, _y
-			//	//,((wm_motionplus*)data)->yaw1, ((wm_motionplus*)data)->yaw2, ((wm_motionplus*)data)->pitch1, ((wm_motionplus*)data)->pitch2, ((wm_motionplus*)data)->roll1, ((wm_motionplus*)data)->roll2
-			//	,((wm_motionplus*)data)->pitch_slow?"*":" ", ((wm_motionplus*)data)->roll_slow?"*":" ", ((wm_motionplus*)data)->yaw_slow?"*":" "
-			//	);
+			" | %5.2f %5.2f %5.2f"
+			//" | %4x %4x %4x"
+			" %s%s%s"
+			//" (%02x %02x %02x %02x %02x %02x)",
+				,mx, my, (m_options->settings[SETTING_IR_OFF]->value != 0 ? "*" : " ")
+				,dx, dy				
+				,m_accel.x, m_accel.y, m_accel.z
+				//,(u8)trim(m_accel.x*(calib->one_g.x-calib->zero_g.x)+calib->zero_g.x), (u8)trim(m_accel.y*(calib->one_g.y-calib->zero_g.y)+calib->zero_g.y), (u8)trim(m_accel.z*(calib->one_g.z-calib->zero_g.z)+calib->zero_g.z)
+				,n_accel.x, n_accel.y, n_accel.z
+				//,(u8)trim(n_accel.x*(n_calib->one_g.x-n_calib->zero_g.x)+n_calib->zero_g.x), (u8)trim(n_accel.y*(n_calib->one_g.y-n_calib->zero_g.y)+n_calib->zero_g.y), (u8)trim(n_accel.z*(n_calib->one_g.z-n_calib->zero_g.z)+n_calib->zero_g.z)
+				//sh.y, sh.z, sh.x
+				//,rp, rr, ry
+				,p, r, y
+				//,_p, _r, _y
+				//,((wm_motionplus*)data)->yaw1, ((wm_motionplus*)data)->yaw2, ((wm_motionplus*)data)->pitch1, ((wm_motionplus*)data)->pitch2, ((wm_motionplus*)data)->roll1, ((wm_motionplus*)data)->roll2
+				,((wm_motionplus*)data)->pitch_slow?"*":" ", ((wm_motionplus*)data)->roll_slow?"*":" ", ((wm_motionplus*)data)->yaw_slow?"*":" "
+				);
+#endif
 		}
 		mp_passthrough = !mp_passthrough;
 	}
