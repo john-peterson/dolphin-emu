@@ -403,9 +403,9 @@ wxString CFrame::GetMenuLabel(int Id)
 				Id - HK_LOAD_LAST_STATE_1 + 1);
 			break;
 
-		case HK_SAVE_FIRST_STATE: Label = wxString("Save Oldest State"); break;
-		case HK_UNDO_LOAD_STATE: Label = wxString("Undo Load State"); break;
-		case HK_UNDO_SAVE_STATE: Label = wxString("Undo Save State"); break;
+		case HK_SAVE_FIRST_STATE: Label = wxString("Save Oldest State", *wxConvCurrent); break;
+		case HK_UNDO_LOAD_STATE: Label = wxString("Undo Load State", *wxConvCurrent); break;
+		case HK_UNDO_SAVE_STATE: Label = wxString("Undo Save State", *wxConvCurrent); break;
 
 		default:
 			Label = wxString::Format(_("Undefined %i"), Id);
@@ -638,23 +638,11 @@ void CFrame::BootGame(const std::string& filename)
 			if (m_GameListCtrl->GetSelectedISO()->IsValid())
 				bootfile = m_GameListCtrl->GetSelectedISO()->GetFileName();
 		}
-		else if (!StartUp.m_strDefaultGCM.empty()
-				&&	wxFileExists(wxString(StartUp.m_strDefaultGCM.c_str(), wxConvUTF8)))
-			bootfile = StartUp.m_strDefaultGCM;
-		else
-		{
-			if (!SConfig::GetInstance().m_LastFilename.empty()
-					&& wxFileExists(wxString(SConfig::GetInstance().m_LastFilename.c_str(), wxConvUTF8)))
-				bootfile = SConfig::GetInstance().m_LastFilename;
-			else
-			{
-				m_GameListCtrl->BrowseForDirectory();
-				return;
-			}
-		}
+		else if ((StartUp.m_strDefaultGCM.empty() || !wxFileExists(wxString(StartUp.m_strDefaultGCM.c_str(), wxConvUTF8)))
+				|| SConfig::GetInstance().m_LastFilename.empty() || !wxFileExists(wxString(SConfig::GetInstance().m_LastFilename.c_str(), wxConvUTF8)))
+			m_GameListCtrl->BrowseForDirectory();
 	}
-	if (!bootfile.empty())
-		StartGame(bootfile);
+	StartGame(bootfile);
 }
 
 // Open file to boot
@@ -670,8 +658,8 @@ void CFrame::DoOpen(bool Boot)
 	wxString path = wxFileSelector(
 			_("Select the file to load"),
 			wxEmptyString, wxEmptyString, wxEmptyString,
-			_("All GC/Wii files (elf, dol, gcm, iso, ciso, gcz, wad)") +
-			wxString::Format(wxT("|*.elf;*.dol;*.gcm;*.iso;*.ciso;*.gcz;*.wad;*.dff;*.tmd|%s"),
+			_("All GC/Wii files (elf, dol, gcm, iso, ciso, gcz, wad, dtm)") +
+			wxString::Format(wxT("|*.elf;*.dol;*.gcm;*.iso;*.ciso;*.gcz;*.wad;*.dff;*.tmd;*.dtm|%s"),
 				wxGetTranslation(wxALL_FILES)),
 			wxFD_OPEN | wxFD_FILE_MUST_EXIST,
 			this);
@@ -754,8 +742,7 @@ void CFrame::OnPlayRecording(wxCommandEvent& WXUNUSED (event))
 	if(path.IsEmpty())
 		return;
 
-	if(Movie::PlayInput(path.mb_str()))
-		BootGame(std::string(""));
+	BootGame(STR_FROM_WXSTR(path));
 }
 
 void CFrame::OnRecordExport(wxCommandEvent& WXUNUSED (event))

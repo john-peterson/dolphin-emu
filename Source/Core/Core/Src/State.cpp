@@ -389,6 +389,8 @@ void LoadFileStateCallback(u64 userdata, int cyclesLate)
 
 	g_op_in_progress = false;
 
+	Movie::SetStartTime();
+
 	// resume dat core
 	CCPU::EnableStepping(false);
 }

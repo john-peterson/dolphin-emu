@@ -15,10 +15,18 @@
 // Official SVN repository and contact information can be found at
 // http://code.google.com/p/dolphin-emu/
 
+#ifdef _WIN32
+#define __STDC__ 1
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#ifdef _WIN32
+#include "getopt.h"
+#else
 #include <getopt.h>
+#endif
 
 #include "Common.h"
 #include "FileUtil.h"
@@ -282,47 +290,66 @@ int main(int argc, char* argv[])
 	[NSApp activateIgnoringOtherApps: YES];
 	[NSApp finishLaunching];
 #endif
-	int ch, help = 0;
+	int c, help = 0;
+	std::string exec = "";
 	struct option longopts[] = {
-		{ "exec",	no_argument,	NULL,	'e' },
+		{ "bench",	no_argument,	NULL,	'b' },
+		{ "exec",	optional_argument,	NULL,	'e' },
 		{ "help",	no_argument,	NULL,	'h' },
-		{ "version",	no_argument,	NULL,	'v' },
+		{ "version",	no_argument,	NULL,	53 },
+		{ "video",	required_argument,	NULL,	'v' },
 		{ NULL,		0,		NULL,	0 }
 	};
+	
+	SConfig::Init();
+	SConfig::GetInstance().m_LocalCoreStartupParameter.bBenchmark = false;
 
-	while ((ch = getopt_long(argc, argv, "eh?v", longopts, 0)) != -1) {
-		switch (ch) {
-		case 'e':
+	while ((c = getopt_long(argc, argv, "be::h?v:", longopts, 0)) != -1) {
+		switch (c) {
+		case 'b':
+			SConfig::GetInstance().m_LocalCoreStartupParameter.bBenchmark = true;
+			SConfig::GetInstance().m_Framelimit = 0;
 			break;
+		case 'e':
+			if (optarg) exec = std::string(optarg);
+			break;
+		case -1:
+		case 0:
 		case 'h':
 		case '?':
 			help = 1;
 			break;
-		case 'v':
+		case 53:
 			fprintf(stderr, "%s\n", scm_rev_str);
 			return 1;
+		case 'v':
+			SConfig::GetInstance().m_LocalCoreStartupParameter.m_strVideoBackend = std::string(optarg);
+			break;
+		 default:
+            printf ("?? getopt returned character code 0%o ??\n", c);
 		}
 	}
 
-	if (help == 1 || argc == optind) {
+	if (help || argc == 1) {
 		fprintf(stderr, "%s\n\n", scm_rev_str);
 		fprintf(stderr, "A multi-platform Gamecube/Wii emulator\n\n");
-		fprintf(stderr, "Usage: %s [-e <file>] [-h] [-v]\n", argv[0]);
-		fprintf(stderr, "  -e, --exec	Load the specified file\n");
+		fprintf(stderr, "Usage: %s [-b] [-h] [-v <video backend>] [-e[<file>]]\n", argv[0]);
+		fprintf(stderr, "  -b, --bench	Benchmark mode\n");	
+		fprintf(stderr, "  -e, --exec	Load the specified file\n");		
 		fprintf(stderr, "  -h, --help	Show this help message\n");
-		fprintf(stderr, "  -v, --help	Print version and exit\n");
+		fprintf(stderr, "  -v, --exec	Use the specified video backend\n");
+		fprintf(stderr, "  --version	Print version and exit\n");
 		return 1;
 	}
 
-	LogManager::Init();
-	SConfig::Init();
+	LogManager::Init();	
 	VideoBackend::PopulateList();
 	VideoBackend::ActivateBackend(SConfig::GetInstance().
 		m_LocalCoreStartupParameter.m_strVideoBackend);
 	WiimoteReal::LoadSettings();
 
 	// No use running the loop when booting fails
-	if (BootManager::BootCore(argv[optind]))
+	if (BootManager::BootCore(exec))
 	{
 #ifdef __APPLE__
 		while (running)

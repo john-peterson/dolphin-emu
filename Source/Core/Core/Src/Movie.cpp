@@ -17,6 +17,7 @@
 
 #include "Movie.h"
 
+#include "BootManager.h"
 #include "Core.h"
 #include "ConfigManager.h"
 #include "Thread.h"
@@ -52,6 +53,8 @@ u64 inputOffset = 0, tmpLength = 0;
 u64 g_frameCounter = 0, g_lagCounter = 0, g_totalFrameCount = 0, g_InputCounter = 0;
 bool g_bRecordingFromSaveState = false;
 bool g_bPolled = false;
+unsigned long g_startTime;
+std::vector<double> g_FPS;
 
 std::string tmpStateFilename = "dtm.sav";
 
@@ -126,6 +129,11 @@ void SetFrameStopping(bool bEnabled)
 void SetReadOnly(bool bEnabled)
 {
 	g_bReadOnly = bEnabled;
+}
+
+void SetStartTime()
+{
+	g_startTime = Common::Timer::GetTimeMs();
 }
 
 void FrameSkipping()
@@ -612,6 +620,20 @@ void EndPlayInput(bool cont)
 		delete tmpInput;
 		tmpInput = NULL;
 		Core::DisplayMessage("Movie End", 2000);
+		if (SConfig::GetInstance().m_LocalCoreStartupParameter.bBenchmark)
+		{
+			double totalTime = double(Common::Timer::GetTimeMs() - g_startTime) * 0.001;
+			// state loading and recompilation makes the first frames unfairly low
+			for(int i=0; i<3; i++) if (!g_FPS.empty()) g_FPS.erase(g_FPS.begin(),g_FPS.begin()+1);
+			fprintf(stderr, "Frames:  %10llu\n", g_totalFrameCount);
+			fprintf(stderr, "Seconds: %10.2f\n", totalTime);
+			fprintf(stderr, "FPS:     %10.2f\n", g_totalFrameCount/totalTime);
+			//BootManager::Stop();	// deadlocks
+			if (!g_FPS.empty()) fprintf(stderr, "Min FPS: %10.2f\n", *std::min_element(g_FPS.begin(),g_FPS.end())); else fprintf(stderr, "Min FPS: %10s\n", "N/A");
+			if (!g_FPS.empty()) fprintf(stderr, "Max FPS: %10.2f\n", *std::max_element(g_FPS.begin(),g_FPS.end())); else fprintf(stderr, "Max FPS: %10s\n", "N/A");
+			//BootManager::Stop(); // deadlocks
+			exit(0);
+		}
 	}
 }
 

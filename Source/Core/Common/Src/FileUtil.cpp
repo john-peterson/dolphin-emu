@@ -469,6 +469,33 @@ u32 ScanDirectoryTree(const std::string &directory, FSTEntry& parentEntry)
 	// Return number of entries found.
 	return foundEntries;
 }
+void ScanDirectoryTreeRecursive(std::vector<std::string> &directories, FSTEntry& parentEntry)
+{
+	for (u32 i = 0; i < directories.size(); i++)
+	{
+		File::FSTEntry FST_Temp;
+		File::ScanDirectoryTree(directories[i], FST_Temp);
+		for (u32 j = 0; j < FST_Temp.children.size(); j++)
+		{
+			if (FST_Temp.children[j].isDirectory)
+			{
+				bool duplicate = false;
+				for (u32 k = 0; k < directories.size(); k++)
+				{
+					if (strcmp(directories[k].c_str(),
+								FST_Temp.children[j].physicalName.c_str()) == 0)
+					{
+						duplicate = true;
+						break;
+					}
+				}
+				if (!duplicate)
+					directories.push_back(
+							FST_Temp.children[j].physicalName.c_str());
+			}
+		}
+	}
+}
 
 	
 // Deletes the given directory and anything under it. Returns true on success.

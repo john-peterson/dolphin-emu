@@ -40,6 +40,17 @@
 #include "X11Utils.h"
 #endif
 
+#define _connect_macro_(b, f, c, s)	(b)->Connect(wxID_ANY, (c), wxCommandEventHandler(f), (wxObject*)0, (wxEvtHandler*)s)
+#if wxCHECK_VERSION(2, 9, 0)
+	#define WXSTR_FROM_STR(s)	(wxString(s))
+	#define WXTSTR_FROM_CSTR(s)	(wxGetTranslation(wxString(s)))
+	#define STR_FROM_WXSTR(w)	((w).ToStdString())
+#else
+	#define WXSTR_FROM_STR(s)	(wxString::FromUTF8((s).c_str()))
+	#define WXTSTR_FROM_CSTR(s)	(wxGetTranslation(wxString::FromUTF8(s)))
+	#define STR_FROM_WXSTR(w)	(std::string((w).ToUTF8()))
+#endif
+
 // A shortcut to access the bitmaps
 #define wxGetBitmapFromMemory(name) _wxGetBitmapFromMemory(name, sizeof(name))
 static inline wxBitmap _wxGetBitmapFromMemory(const unsigned char* data, int length)

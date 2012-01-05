@@ -565,6 +565,7 @@ void VideoThrottle()
 	{
 		SCoreStartupParameter& _CoreParameter = SConfig::GetInstance().m_LocalCoreStartupParameter;
 
+		double dFPS = Common::AtomicLoad(DrawnFrame) / (ElapseTime * 0.001);
 		u32 FPS = Common::AtomicLoad(DrawnFrame) * 1000 / ElapseTime;
 		u32 VPS = DrawnVideo * 1000 / ElapseTime;
 		u32 Speed = VPS * 100 / VideoInterface::TargetRefreshRate;
@@ -600,7 +601,10 @@ void VideoThrottle()
 		#else	// Summary information
 		std::string SFPS;
 		if (Movie::IsPlayingInput() || Movie::IsRecordingInput())
+		{
 			SFPS = StringFromFormat("VI: %u - Frame: %u - FPS: %u - VPS: %u - SPEED: %u%%", Movie::g_frameCounter, Movie::g_InputCounter, FPS, VPS, Speed);
+			if (SConfig::GetInstance().m_LocalCoreStartupParameter.bBenchmark) Movie::g_FPS.push_back(dFPS);
+		}		
 		else
 			SFPS = StringFromFormat("FPS: %u - VPS: %u - SPEED: %u%%", FPS, VPS, Speed);
 		#endif

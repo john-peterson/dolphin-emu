@@ -88,6 +88,7 @@ struct SCoreStartupParameter
 	bool bEnableDebugging;
 	bool bAutomaticStart;
 	bool bBootToPause;
+	bool bBenchmark;
 
 	// 0 = Interpreter
 	// 1 = Jit

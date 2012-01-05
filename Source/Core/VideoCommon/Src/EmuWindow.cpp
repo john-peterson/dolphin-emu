@@ -231,8 +231,8 @@ HWND OpenWindow(HWND parent, HINSTANCE hInstance, int width, int height, const T
 
 	m_hParent = parent;
 
-	m_hWnd = CreateWindow(m_szClassName, title, (g_ActiveConfig.backend_info.bSupports3DVision && g_ActiveConfig.b3DVision) ? WS_EX_TOPMOST | WS_POPUP : WS_CHILD,
-		0, 0, width, height, m_hParent, NULL, hInstance, NULL);
+	m_hWnd = CreateWindow(m_szClassName, title, (g_ActiveConfig.backend_info.bSupports3DVision && g_ActiveConfig.b3DVision) ? WS_EX_TOPMOST | WS_POPUP : (m_hParent ? WS_CHILD : WS_OVERLAPPED),
+		m_hParent ? 0 : CW_USEDEFAULT, 0, width, height, m_hParent, NULL, hInstance, NULL);
 
 	return m_hWnd;
 }

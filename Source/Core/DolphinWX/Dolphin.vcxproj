@@ -1,6 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Console Application|Win32">
+      <Configuration>Console Application</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Console Application|x64">
+      <Configuration>Console Application</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="DebugFast|Win32">
       <Configuration>DebugFast</Configuration>
       <Platform>Win32</Platform>
@@ -47,12 +55,23 @@
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugFast|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
@@ -89,6 +108,14 @@
     <Import Project="..\..\VSProps\Dolphin.props" />
     <Import Project="..\..\VSProps\Dolphin.Win32.props" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\VSProps\Base.props" />
+    <Import Project="..\..\VSProps\CodeGen.Release.props" />
+    <Import Project="..\..\VSProps\Dolphin.props" />
+    <Import Project="..\..\VSProps\Dolphin.Win32.props" />
+    <Import Project="..\..\VSProps\NoWX.props" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugFast|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\VSProps\Base.props" />
@@ -104,6 +131,14 @@
     <Import Project="..\..\VSProps\PrecompiledHeader.props" />
     <Import Project="..\..\VSProps\Dolphin.props" />
     <Import Project="..\..\VSProps\Dolphin.x64.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\VSProps\Base.props" />
+    <Import Project="..\..\VSProps\CodeGen.Release.props" />
+    <Import Project="..\..\VSProps\Dolphin.props" />
+    <Import Project="..\..\VSProps\Dolphin.x64.props" />
+    <Import Project="..\..\VSProps\NoWX.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugFast|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -125,11 +160,17 @@
     <PostBuildEventUseInBuild />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugFast|Win32'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugFast|x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PostBuildEventUseInBuild />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">
+    <PostBuildEventUseInBuild />
+    <TargetName>$(ProjectName)NG</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugFast|Win32'">
     <TargetName>$(ProjectName)DF</TargetName>
@@ -137,6 +178,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PostBuildEventUseInBuild />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">
+    <PostBuildEventUseInBuild />
+    <TargetName>$(ProjectName)NG</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugFast|x64'">
     <TargetName>$(ProjectName)DF</TargetName>
@@ -161,6 +206,14 @@
     <Link />
     <PostBuildEvent />
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">
+    <ClCompile>
+      <OpenMPSupport>
+      </OpenMPSupport>
+    </ClCompile>
+    <Link />
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugFast|Win32'">
     <ClCompile />
     <Link />
@@ -174,43 +227,160 @@
     <Link />
     <PostBuildEvent />
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">
+    <ClCompile>
+      <OpenMPSupport>
+      </OpenMPSupport>
+    </ClCompile>
+    <Link />
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugFast|x64'">
     <ClCompile />
     <Link />
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Src\AboutDolphin.cpp" />
-    <ClCompile Include="Src\ARCodeAddEdit.cpp" />
-    <ClCompile Include="Src\ControlDiag.cpp" />
-    <ClCompile Include="Src\Debugger\BreakpointDlg.cpp" />
-    <ClCompile Include="Src\Debugger\BreakpointView.cpp" />
-    <ClCompile Include="Src\Debugger\BreakpointWindow.cpp" />
-    <ClCompile Include="Src\CheatsWindow.cpp" />
-    <ClCompile Include="Src\Debugger\CodeView.cpp" />
-    <ClCompile Include="Src\Debugger\CodeWindow.cpp" />
-    <ClCompile Include="Src\Debugger\CodeWindowFunctions.cpp" />
-    <ClCompile Include="Src\ConfigMain.cpp" />
-    <ClCompile Include="Src\Debugger\DebuggerPanel.cpp" />
-    <ClCompile Include="Src\Debugger\DebuggerUIUtil.cpp" />
-    <ClCompile Include="Src\Debugger\DSPDebugWindow.cpp" />
-    <ClCompile Include="Src\Debugger\DSPRegisterView.cpp" />
-    <ClCompile Include="Src\FifoPlayerDlg.cpp" />
-    <ClCompile Include="Src\Frame.cpp" />
-    <ClCompile Include="Src\FrameAui.cpp" />
-    <ClCompile Include="Src\FrameTools.cpp" />
-    <ClCompile Include="Src\GameListCtrl.cpp" />
-    <ClCompile Include="Src\GCMicDlg.cpp" />
-    <ClCompile Include="Src\GeckoCodeDiag.cpp" />
-    <ClCompile Include="Src\HotkeyDlg.cpp" />
-    <ClCompile Include="Src\InputConfigDiag.cpp" />
-    <ClCompile Include="Src\InputConfigDiagBitmaps.cpp" />
-    <ClCompile Include="Src\ISOFile.cpp" />
-    <ClCompile Include="Src\ISOProperties.cpp" />
-    <ClCompile Include="Src\Debugger\JitWindow.cpp" />
-    <ClCompile Include="Src\LogConfigWindow.cpp" />
-    <ClCompile Include="Src\LogWindow.cpp" />
-    <ClCompile Include="Src\Main.cpp" />
+    <ClCompile Include="Src\AboutDolphin.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\ARCodeAddEdit.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\ControlDiag.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Debugger\BreakpointDlg.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Debugger\BreakpointView.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Debugger\BreakpointWindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\CheatsWindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Debugger\CodeView.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Debugger\CodeWindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Debugger\CodeWindowFunctions.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\ConfigMain.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Debugger\DebuggerPanel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Debugger\DebuggerUIUtil.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Debugger\DSPDebugWindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Debugger\DSPRegisterView.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\FifoPlayerDlg.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Frame.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\FrameAui.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\FrameTools.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\GameListCtrl.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\GCMicDlg.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\GeckoCodeDiag.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\getopt.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugFast|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugFast|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\getopt1.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugFast|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugFast|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\HotkeyDlg.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\InputConfigDiag.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\InputConfigDiagBitmaps.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\ISOFile.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\ISOProperties.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Debugger\JitWindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\LogConfigWindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\LogWindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Src\MainNoGUI.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -219,76 +389,233 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugFast|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Src\MemcardManager.cpp" />
-    <ClCompile Include="Src\MemoryCards\WiiSaveCrypted.cpp" />
-    <ClCompile Include="Src\Debugger\MemoryCheckDlg.cpp" />
-    <ClCompile Include="Src\Debugger\MemoryView.cpp" />
-    <ClCompile Include="Src\Debugger\MemoryWindow.cpp" />
-    <ClCompile Include="Src\NetWindow.cpp" />
-    <ClCompile Include="Src\PatchAddEdit.cpp" />
-    <ClCompile Include="Src\PHackSettings.cpp" />
-    <ClCompile Include="Src\Debugger\RegisterView.cpp" />
-    <ClCompile Include="Src\Debugger\RegisterWindow.cpp" />
+    <ClCompile Include="Src\MemcardManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\MemoryCards\WiiSaveCrypted.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Debugger\MemoryCheckDlg.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Debugger\MemoryView.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Debugger\MemoryWindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\NetWindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\PatchAddEdit.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\PHackSettings.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Debugger\RegisterView.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Debugger\RegisterWindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugFast|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugFast|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Src\TASInputDlg.cpp" />
-    <ClCompile Include="Src\UDPConfigDiag.cpp" />
-    <ClCompile Include="Src\VideoConfigDiag.cpp" />
-    <ClCompile Include="Src\WiimoteConfigDiag.cpp" />
-    <ClCompile Include="Src\WXInputBase.cpp" />
-    <ClCompile Include="Src\WxUtils.cpp" />
+    <ClCompile Include="Src\TASInputDlg.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UDPConfigDiag.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\VideoConfigDiag.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\WiimoteConfigDiag.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\WXInputBase.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\WxUtils.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Src\AboutDolphin.h" />
-    <ClInclude Include="Src\ARCodeAddEdit.h" />
+    <ClInclude Include="Src\AboutDolphin.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\ARCodeAddEdit.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Src\ControlDiag.h" />
-    <ClInclude Include="Src\Debugger\BreakpointDlg.h" />
-    <ClInclude Include="Src\Debugger\BreakpointView.h" />
-    <ClInclude Include="Src\Debugger\BreakpointWindow.h" />
-    <ClInclude Include="Src\CheatsWindow.h" />
-    <ClInclude Include="Src\Debugger\CodeView.h" />
-    <ClInclude Include="Src\Debugger\CodeWindow.h" />
-    <ClInclude Include="Src\ConfigMain.h" />
-    <ClInclude Include="Src\Debugger\DebuggerPanel.h" />
-    <ClInclude Include="Src\Debugger\DebuggerUIUtil.h" />
-    <ClInclude Include="Src\Debugger\DSPDebugWindow.h" />
-    <ClInclude Include="Src\Debugger\DSPRegisterView.h" />
-    <ClInclude Include="Src\FifoPlayerDlg.h" />
-    <ClInclude Include="Src\Frame.h" />
-    <ClInclude Include="Src\GameListCtrl.h" />
-    <ClInclude Include="Src\GCMicDlg.h" />
-    <ClInclude Include="Src\GeckoCodeDiag.h" />
-    <ClInclude Include="Src\Globals.h" />
-    <ClInclude Include="Src\HotkeyDlg.h" />
+    <ClInclude Include="Src\Debugger\BreakpointDlg.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\Debugger\BreakpointView.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\Debugger\BreakpointWindow.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\CheatsWindow.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\Debugger\CodeView.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\Debugger\CodeWindow.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\ConfigMain.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\Debugger\DebuggerPanel.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\Debugger\DebuggerUIUtil.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\Debugger\DSPDebugWindow.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\Debugger\DSPRegisterView.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\FifoPlayerDlg.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\Frame.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\GameListCtrl.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\GCMicDlg.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\GeckoCodeDiag.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\getopt.h" />
+    <ClInclude Include="Src\Globals.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\HotkeyDlg.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Src\InputConfigDiag.h" />
     <ClInclude Include="Src\ISOFile.h" />
-    <ClInclude Include="Src\ISOProperties.h" />
-    <ClInclude Include="Src\Debugger\JitWindow.h" />
-    <ClInclude Include="Src\LogConfigWindow.h" />
-    <ClInclude Include="Src\LogWindow.h" />
+    <ClInclude Include="Src\ISOProperties.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\Debugger\JitWindow.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\LogConfigWindow.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\LogWindow.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Src\Main.h" />
-    <ClInclude Include="Src\MemcardManager.h" />
+    <ClInclude Include="Src\MemcardManager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Src\MemoryCards\WiiSaveCrypted.h" />
-    <ClInclude Include="Src\Debugger\MemoryCheckDlg.h" />
-    <ClInclude Include="Src\Debugger\MemoryView.h" />
-    <ClInclude Include="Src\Debugger\MemoryWindow.h" />
+    <ClInclude Include="Src\Debugger\MemoryCheckDlg.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\Debugger\MemoryView.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\Debugger\MemoryWindow.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Src\NetWindow.h" />
-    <ClInclude Include="Src\PatchAddEdit.h" />
-    <ClInclude Include="Src\PHackSettings.h" />
-    <ClInclude Include="Src\Debugger\RegisterView.h" />
-    <ClInclude Include="Src\Debugger\RegisterWindow.h" />
+    <ClInclude Include="Src\PatchAddEdit.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\PHackSettings.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\Debugger\RegisterView.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\Debugger\RegisterWindow.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Src\stdafx.h" />
-    <ClInclude Include="Src\TASInputDlg.h" />
-    <ClInclude Include="Src\UDPConfigDiag.h" />
-    <ClInclude Include="Src\VideoConfigDiag.h" />
-    <ClInclude Include="Src\WiimoteConfigDiag.h" />
+    <ClInclude Include="Src\TASInputDlg.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UDPConfigDiag.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\VideoConfigDiag.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\WiimoteConfigDiag.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Src\WXInputBase.h" />
     <ClInclude Include="Src\WxUtils.h" />
   </ItemGroup>

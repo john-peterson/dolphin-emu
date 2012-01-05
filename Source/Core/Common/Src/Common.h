@@ -86,8 +86,9 @@ private:
 	#define GC_ALIGNED16_DECL(x) __declspec(align(16)) x
 	#define GC_ALIGNED64_DECL(x) __declspec(align(64)) x
 
-// Since it is always around on windows
-	#define HAVE_WX 1
+	#ifndef NO_WX
+		#define HAVE_WX 1
+	#endif
 
 	#define HAVE_PORTAUDIO 1
 

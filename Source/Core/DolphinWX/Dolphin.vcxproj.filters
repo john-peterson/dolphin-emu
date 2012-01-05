@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Src\Main.cpp" />
     <ClCompile Include="Src\MainNoGUI.cpp" />
     <ClCompile Include="Src\stdafx.cpp" />
     <ClCompile Include="Src\WXInputBase.cpp" />
@@ -138,6 +137,9 @@
     <ClCompile Include="Src\ControlDiag.cpp">
       <Filter>GUI\InputConfig</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Main.cpp" />
+    <ClCompile Include="Src\getopt.c" />
+    <ClCompile Include="Src\getopt1.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Main.h" />
@@ -270,6 +272,7 @@
     <ClInclude Include="Src\ControlDiag.h">
       <Filter>GUI\InputConfig</Filter>
     </ClInclude>
+    <ClInclude Include="Src\getopt.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\SConscript" />

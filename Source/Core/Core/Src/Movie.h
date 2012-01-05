@@ -63,6 +63,8 @@ extern char g_playingFile[256];
 extern std::string g_recordFile;
 
 extern u64 g_frameCounter, g_lagCounter, g_InputCounter;
+extern unsigned long g_startTime;
+extern std::vector<double> g_FPS;
 
 extern u32 g_rerecords;
 
@@ -114,6 +116,7 @@ void ChangeWiiPads(bool instantly = false);
 void SetFrameStepping(bool bEnabled);
 void SetFrameStopping(bool bEnabled);
 void SetReadOnly(bool bEnabled);
+void SetStartTime();
 
 void SetFrameSkipping(unsigned int framesToSkip);
 void FrameSkipping();

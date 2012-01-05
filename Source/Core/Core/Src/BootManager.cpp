@@ -33,10 +33,12 @@
 #include <vector>
 
 #include "Common.h"
+#include "FileSearch.h"
 #include "IniFile.h"
 #include "BootManager.h"
 #include "Volume.h"
 #include "VolumeCreator.h"
+#include "Movie.h"
 #include "ConfigManager.h"
 #include "SysConf.h"
 #include "Core.h"
@@ -67,7 +69,14 @@ bool BootCore(const std::string& _rFilename)
 
 	StartUp.m_BootType = SCoreStartupParameter::BOOT_ISO;
 	StartUp.m_strFilename = _rFilename;
-	SConfig::GetInstance().m_LastFilename = _rFilename;
+	if (StartUp.m_strFilename.empty())
+	{
+		if (!StartUp.m_strDefaultGCM.empty() && File::Exists(StartUp.m_strDefaultGCM))
+			StartUp.m_strFilename = StartUp.m_strDefaultGCM;
+		else if (!SConfig::GetInstance().m_LastFilename.empty() && File::Exists(SConfig::GetInstance().m_LastFilename))
+			StartUp.m_strFilename = SConfig::GetInstance().m_LastFilename;
+	}
+	if (!StartUp.m_strFilename.empty()) SConfig::GetInstance().m_LastFilename = StartUp.m_strFilename;
 	StartUp.bRunCompareClient = false;
 	StartUp.bRunCompareServer = false;
 
@@ -75,6 +84,57 @@ bool BootCore(const std::string& _rFilename)
 	#if defined(_WIN32) && defined(_M_X64)
 		StartUp.bUseFastMem = true;
 	#endif
+
+	// Demo file
+	std::string Extension;
+	SplitPath(_rFilename, NULL, NULL, &Extension);
+	if (!strcasecmp(Extension.c_str(), ".dtm"))
+	{
+		if (!File::Exists(_rFilename)) StartUp.m_strFilename = File::GetUserPath(D_STATESAVES_IDX) + _rFilename;
+
+		if (!Movie::PlayInput(StartUp.m_strFilename.c_str())) return false;
+
+		File::IOFile g_recordfd;	
+		if (!g_recordfd.Open(StartUp.m_strFilename + ".sav", "rb"))
+			return false;
+	
+		char tmpGameID[7];
+		g_recordfd.ReadArray(&tmpGameID, 1);
+		tmpGameID[6] = '\0';
+		std::string gameID(tmpGameID);
+
+		CFileSearch::XStringVector Directories(SConfig::GetInstance().m_ISOFolder);
+
+		if (SConfig::GetInstance().m_RecursiveISOFolder)
+		{
+			File::FSTEntry FST_Temp;
+			File::ScanDirectoryTreeRecursive(Directories, FST_Temp);
+		}
+
+		CFileSearch::XStringVector Extensions;
+		Extensions.push_back("*.gcm");
+		Extensions.push_back("*.iso");
+		Extensions.push_back("*.ciso");
+		Extensions.push_back("*.gcz");
+		Extensions.push_back("*.wad");
+
+		CFileSearch FileSearch(Extensions, Directories);
+		const CFileSearch::XStringVector& rFilenames = FileSearch.GetFileNames();
+
+		if (rFilenames.size() > 0)
+		{
+			for (u32 i = 0; i < rFilenames.size(); i++)
+			{
+				DiscIO::IVolume* pVolume = DiscIO::CreateVolumeFromFilename(rFilenames[i]);
+				if (pVolume->GetUniqueID().find(gameID) != std::string::npos)
+				{
+					StartUp.m_strFilename = rFilenames[i];
+					break;
+				}
+				if (i == rFilenames.size()-1) return false;
+			}
+		}
+	}
 
 	// If for example the ISO file is bad we return here
 	if (!StartUp.AutoSetup(SCoreStartupParameter::BOOT_DEFAULT)) return false;

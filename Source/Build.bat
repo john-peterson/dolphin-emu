@@ -1,9 +1,15 @@
-set build_type=%1
+set BUILDCONFIG=%~1
+set build_type=%2
+set PLATFORM=%3
+set PROJECT=%4
 set BUILDTYPE=Build
-set BUILDCONFIG=Release
-set PLATFORM=%2
-set PROJECT=%3
 
 call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat" %build_type%
 
 devenv /nologo Dolphin_2010.sln /Project %PROJECT% /%BUILDTYPE% "%BUILDCONFIG%|%PLATFORM%"
+
+if %ERRORLEVEL% neq 0 (
+@echo %~1 %3 %4 failed
+pause
+exit
+)
