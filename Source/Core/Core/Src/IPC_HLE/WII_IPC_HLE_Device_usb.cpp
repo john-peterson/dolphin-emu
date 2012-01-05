@@ -103,9 +103,7 @@ CWII_IPC_HLE_Device_usb_oh1_57e_305::~CWII_IPC_HLE_Device_usb_oh1_57e_305()
 
 void CWII_IPC_HLE_Device_usb_oh1_57e_305::DoState(PointerWrap &p)
 {
-//things that do not get saved:
-//std::vector<CWII_IPC_HLE_WiiMote> m_WiiMotes;
-
+	p.Do(m_Active);
 	p.Do(m_CtrlSetup);
 	p.Do(m_ACLSetup);
 	p.Do(m_HCIEndpoint);
@@ -116,16 +114,25 @@ void CWII_IPC_HLE_Device_usb_oh1_57e_305::DoState(PointerWrap &p)
 	p.Do(m_EventQueue);
 	m_acl_pool.DoState(p);
 
+	for (unsigned int i = 0; i < 4; i++)
+	{
+		if (p.GetMode() == PointerWrap::MODE_READ &&
+			!(WIIMOTE_SRC_EMU == g_wiimote_sources[i] || WIIMOTE_SRC_NONE == g_wiimote_sources[i])) continue;
+		m_WiiMotes[i].DoState(p);
+	}
+
+	// Reset the connection of real and hybrid wiimotes
 	if (p.GetMode() == PointerWrap::MODE_READ &&
 		SConfig::GetInstance().m_WiimoteReconnectOnLoad)
 	{
 		// Reset the connection of real and hybrid wiimotes
         for (unsigned int i = 0; i < 4; i++)
 	    {
-			if (WIIMOTE_SRC_EMU&g_wiimote_sources[i] || WIIMOTE_SRC_NONE&g_wiimote_sources[i]) continue;
-			// TODO: Selectively clear real wiimote messages if possible
-			if (p.GetMode() == PointerWrap::MODE_READ) m_EventQueue.clear();
-        	if (m_WiiMotes[i].IsConnected())
+			if (WIIMOTE_SRC_EMU == g_wiimote_sources[i] || WIIMOTE_SRC_NONE == g_wiimote_sources[i]) continue;
+			// TODO: Selectively clear real wiimote messages if possible. Or create a real wiimote
+			// channel and reporting mode pre-setup to vacate the need for m_WiimoteReconnectOnLoad.
+			m_EventQueue.clear();
+        	if (!m_WiiMotes[i].IsConnected())
             {
 				m_WiiMotes[i].Activate(false);
 				m_WiiMotes[i].Activate(true);

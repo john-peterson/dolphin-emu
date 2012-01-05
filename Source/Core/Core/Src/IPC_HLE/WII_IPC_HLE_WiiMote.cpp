@@ -85,6 +85,7 @@ CWII_IPC_HLE_WiiMote::CWII_IPC_HLE_WiiMote(CWII_IPC_HLE_Device_usb_oh1_57e_305* 
 void CWII_IPC_HLE_WiiMote::DoState(PointerWrap &p)
 {
 	p.Do(m_ConnectionState);
+	p.Do(m_Channel);
 }
 
 //
