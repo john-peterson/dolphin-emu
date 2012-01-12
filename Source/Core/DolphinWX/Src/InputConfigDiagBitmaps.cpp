@@ -153,7 +153,7 @@ void InputConfigDialog::UpdateBitmaps(wxTimerEvent& WXUNUSED(event))
 					//dc.DrawRectangle( xx-1, 64-yy-4, 2, 8 );
 					//dc.DrawRectangle( xx-4, 64-yy-1, 8, 2 );
 
-					if (current_page->control_groups.back()->control_group->settings.size() > SETTING_IR_OFF) if ((*g)->control_group->type == GROUP_TYPE_CURSOR && current_page->control_groups.back()->control_group->settings[SETTING_IR_OFF]->value != 0) break;	
+					if (current_page->control_groups.back()->control_group->settings.size() > SETTING_IR_HIDE) if ((*g)->control_group->type == GROUP_TYPE_CURSOR && current_page->control_groups.back()->control_group->settings[SETTING_IR_HIDE]->value != 0) break;	
 
 					// adjusted dot
 					if (x!=32 || y!=32)

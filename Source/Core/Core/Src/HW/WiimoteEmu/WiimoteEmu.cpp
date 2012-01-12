@@ -316,7 +316,7 @@ Wiimote::Wiimote( const unsigned int index )
 	m_options->settings.push_back(new ControlGroup::Setting(_trans("Upright Wiimote"), false));
 	m_options->settings.push_back(new ControlGroup::Setting(_trans("MotionPlus"), true));
 	m_options->settings.push_back(new ControlGroup::Setting(_trans("MotionPlus Fast"), true));
-	m_options->settings.push_back(new ControlGroup::Setting(_trans("IR Off"), false));
+	m_options->settings.push_back(new ControlGroup::Setting(_trans("Hide IR"), false));
 
 	// TODO: This value should probably be re-read if SYSCONF gets changed
 	m_sensor_bar_on_top = (bool)SConfig::GetInstance().m_SYSCONF->GetData<u8>("BT.BAR");
@@ -416,7 +416,7 @@ void Wiimote::GetAccelData(u8* const data, u8* const buttons)
 	const bool is_sideways = m_options->settings[SETTING_SIDEWAYS_WIIMOTE]->value != 0;
 	const bool is_upright = m_options->settings[SETTING_UPRIGHT_WIIMOTE]->value != 0;
 
-	EmulateRotate(&m_accel, m_rotate, has_focus, is_sideways, is_upright, m_ir, GetMotionPlusActive(), m_options->settings[SETTING_IR_OFF]->value != 0);
+	EmulateRotate(&m_accel, m_rotate, has_focus, is_sideways, is_upright, m_ir, GetMotionPlusActive(), m_options->settings[SETTING_IR_HIDE]->value != 0);
 
 	if (has_focus)
 	{
@@ -451,7 +451,7 @@ inline void LowPassFilter(double & var, double newval, double period)
 
 void Wiimote::GetIRData(u8* const data, bool use_accel)
 {
-	if (m_options->settings[SETTING_IR_OFF]->value != 0 && !m_ir->controls[C_SHOW]->control_ref->State()) { memset(data, 0xFF, 10); return; }
+	if (m_options->settings[SETTING_IR_HIDE]->value != 0 && !m_ir->controls[C_SHOW]->control_ref->State()) { memset(data, 0xFF, 10); return; }
 
 	const bool has_focus = HAS_FOCUS;
 
@@ -720,7 +720,7 @@ void Wiimote::GetExtData(u8* const data)
 			//" | %4x %4x %4x"
 			" %s%s%s"
 			//" (%02x %02x %02x %02x %02x %02x)",
-				,mx, my, (m_options->settings[SETTING_IR_OFF]->value != 0 ? "*" : " ")
+				,mx, my, (m_options->settings[SETTING_IR_HIDE]->value != 0 ? "*" : " ")
 				,dx, dy				
 				,m_accel.x, m_accel.y, m_accel.z
 				//,(u8)trim(m_accel.x*(calib->one_g.x-calib->zero_g.x)+calib->zero_g.x), (u8)trim(m_accel.y*(calib->one_g.y-calib->zero_g.y)+calib->zero_g.y), (u8)trim(m_accel.z*(calib->one_g.z-calib->zero_g.z)+calib->zero_g.z)
