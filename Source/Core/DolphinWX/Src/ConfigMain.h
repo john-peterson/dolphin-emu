@@ -65,6 +65,7 @@ private:
 		ID_CPUTHREAD = 1010,
 		ID_IDLESKIP,
 		ID_ENABLECHEATS,
+		ID_INPUTSETTINGSISO,
 		ID_FRAMELIMIT,
 		ID_FRAMELIMIT_USEFPSFORLIMITING,
 
@@ -136,6 +137,7 @@ private:
 	wxCheckBox* CPUThread;
 	wxCheckBox* SkipIdle;
 	wxCheckBox* EnableCheats;
+	wxCheckBox* InputSettingsISO;
 	wxChoice* Framelimit;
 	wxCheckBox* UseFPSForLimiting;
 	
