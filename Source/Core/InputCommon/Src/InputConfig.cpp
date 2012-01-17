@@ -40,7 +40,7 @@ bool InputPlugin::LoadConfig()
 		for (; i!=e; ++i)
 		{
 			// load settings from ini
-			if (gameiniFile.Load(gameini))
+			if (gameiniFile.Load(gameini) && SConfig::GetInstance().m_LocalCoreStartupParameter.bInputSettingsISO)
 			{
 				// first use
 				if (!gameiniFile.GetSection((*i)->GetName().c_str()))
@@ -59,7 +59,13 @@ bool InputPlugin::LoadConfig()
 				(*i)->LoadConfig(gameiniFile.GetOrCreateSection((*i)->GetName().c_str()));
 			}
 			else if (inifile.Load(ini))
-				(*i)->LoadConfig(inifile.GetOrCreateSection((*i)->GetName().c_str()));
+			{
+				// copy gameini wiimote config
+				if (gameiniFile.Load(gameini))
+					if (gameiniFile.GetSection("WiimoteFirstUse"))			
+						inifile.GetSection((*i)->GetName().c_str())->Copy(gameiniFile.GetSection("WiimoteFirstUse"));	
+				(*i)->LoadConfig(inifile.GetOrCreateSection((*i)->GetName().c_str()));			
+			}
 
 			// update refs
 			(*i)->UpdateReferences(g_controller_interface);

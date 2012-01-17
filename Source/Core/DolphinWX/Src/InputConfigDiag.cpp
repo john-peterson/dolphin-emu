@@ -164,7 +164,8 @@ void InputConfigDialog::UpdateGUI()
 	for (; i != e; ++i)
 		(*i)->UpdateGUI();
 
-	SetTitle(m_title + WXSTR_FROM_STR(Core::IsRunning() ? (" - " + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strName
+	SetTitle(m_title + WXSTR_FROM_STR(Core::IsRunning() && SConfig::GetInstance().m_LocalCoreStartupParameter.bInputSettingsISO
+		? (" - " + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strName
 		+ " (" + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strRegion + ")") : ""));
 }
 

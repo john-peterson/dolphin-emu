@@ -218,8 +218,9 @@ void WiimoteConfigDiag::UpdateGUI()
 {
 	connected_wiimotes_txt->SetLabel(ConnectedWiimotesString());
 
-	SetTitle(WXSTR_FROM_STR("Dolphin Wiimote Configuration" + (Core::IsRunning() ? " - " + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strName
-		+ " (" + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strRegion + ")" : "")));
+	if (SConfig::GetInstance().m_LocalCoreStartupParameter.bInputSettingsISO)
+		SetTitle(WXSTR_FROM_STR("Dolphin Wiimote Configuration" + (Core::IsRunning() ? " - " + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strName
+			+ " (" + SConfig::GetInstance().m_LocalCoreStartupParameter.m_strRegion + ")" : "")));
 
 	if(m_emu_config_diag) m_emu_config_diag->UpdateGUI();
 }

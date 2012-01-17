@@ -235,6 +235,7 @@ void SConfig::SaveSettings()
 	ini.Set("Core", "DVDRoot",			m_LocalCoreStartupParameter.m_strDVDRoot);
 	ini.Set("Core", "Apploader",		m_LocalCoreStartupParameter.m_strApploader);
 	ini.Set("Core", "EnableCheats",		m_LocalCoreStartupParameter.bEnableCheats);
+	ini.Set("Core", "InputSettingsISO",	m_LocalCoreStartupParameter.bInputSettingsISO);
 	ini.Set("Core", "SelectedLanguage",	m_LocalCoreStartupParameter.SelectedLanguage);
 	ini.Set("Core", "MemcardA",			m_strMemoryCardA);
 	ini.Set("Core", "MemcardB",			m_strMemoryCardB);
@@ -366,6 +367,7 @@ void SConfig::LoadSettings()
 		ini.Get("Core", "DVDRoot",		&m_LocalCoreStartupParameter.m_strDVDRoot);
 		ini.Get("Core", "Apploader",	&m_LocalCoreStartupParameter.m_strApploader);
 		ini.Get("Core", "EnableCheats",	&m_LocalCoreStartupParameter.bEnableCheats,				false);
+		ini.Get("Core", "InputSettingsISO",	&m_LocalCoreStartupParameter.bInputSettingsISO,		true);
 		ini.Get("Core", "SelectedLanguage", &m_LocalCoreStartupParameter.SelectedLanguage,		0);
 		ini.Get("Core", "MemcardA",		&m_strMemoryCardA);
 		ini.Get("Core", "MemcardB",		&m_strMemoryCardB);

@@ -314,8 +314,8 @@ Wiimote::Wiimote( const unsigned int index )
 	m_options->settings.push_back(new ControlGroup::Setting(_trans("Background Input"), false));
 	m_options->settings.push_back(new ControlGroup::Setting(_trans("Sideways Wiimote"), false));
 	m_options->settings.push_back(new ControlGroup::Setting(_trans("Upright Wiimote"), false));
-	m_options->settings.push_back(new ControlGroup::Setting(_trans("MotionPlus"), true));
-	m_options->settings.push_back(new ControlGroup::Setting(_trans("MotionPlus Fast"), true));
+	m_options->settings.push_back(new ControlGroup::Setting(_trans("MotionPlus"), false));
+	m_options->settings.push_back(new ControlGroup::Setting(_trans("MotionPlus Fast"), false));
 	m_options->settings.push_back(new ControlGroup::Setting(_trans("Hide IR"), false));
 
 	// TODO: This value should probably be re-read if SYSCONF gets changed
