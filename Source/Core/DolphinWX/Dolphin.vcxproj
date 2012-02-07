@@ -170,7 +170,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Console Application|Win32'">
     <PostBuildEventUseInBuild />
-    <TargetName>$(ProjectName)NG</TargetName>
+    <TargetName>$(ProjectName)CL</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugFast|Win32'">
     <TargetName>$(ProjectName)DF</TargetName>
@@ -181,7 +181,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Console Application|x64'">
     <PostBuildEventUseInBuild />
-    <TargetName>$(ProjectName)NG</TargetName>
+    <TargetName>$(ProjectName)CL</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugFast|x64'">
     <TargetName>$(ProjectName)DF</TargetName>
