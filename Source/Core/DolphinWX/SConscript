@@ -5,7 +5,7 @@ import os
 import sys
 
 if env['nowx']:
-	files = ['Src/MainNoGUI.cpp']
+	files = ['Src/MainCLI.cpp']
 else:
 	files = [
 		'Src/ARCodeAddEdit.cpp',
@@ -72,7 +72,7 @@ elif sys.platform == 'darwin':
 
 	exe = '#' + env['prefix'] + '/Dolphin.app/Contents/MacOS/Dolphin'
 	if env['nowx']:
-		exe += 'NoGUI'
+		exe += 'CLI'
 
 	env.Install('#' + env['prefix'] + '/Dolphin.app/Contents/' +
 		'Frameworks/Cg.framework', source = [
@@ -131,7 +131,7 @@ else:
 	files += ['Src/X11Utils.cpp']
 	exe = env['binary_dir'] + '/dolphin-emu'
 	if env['nowx']:
-		exe += '-nogui'
+		exe += '-cli'
 	env.InstallAs(env['data_dir'] + '/sys', '#Data/Sys')
 	env.InstallAs(env['data_dir'] + '/user', '#Data/User')
 

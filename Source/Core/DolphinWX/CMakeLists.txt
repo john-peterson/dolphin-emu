@@ -67,7 +67,7 @@ if(wxWidgets_FOUND)
 	set(WXLIBS ${wxWidgets_LIBRARIES}
 				${GTK2_LIBRARIES})
 else()
-	set(SRCS	Src/MainNoGUI.cpp)
+	set(SRCS	Src/MainCLI.cpp)
 endif()
 
 if(WIN32)
@@ -88,7 +88,7 @@ endif()
 if(wxWidgets_FOUND)
 	set(DOLPHIN_EXE dolphin-emu)
 else()
-	set(DOLPHIN_EXE dolphin-emu-nogui)
+	set(DOLPHIN_EXE dolphin-emu-cli)
 endif()
 
 add_executable(${DOLPHIN_EXE} ${SRCS})

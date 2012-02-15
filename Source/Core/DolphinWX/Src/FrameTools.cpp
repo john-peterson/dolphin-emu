@@ -403,9 +403,9 @@ wxString CFrame::GetMenuLabel(int Id)
 				Id - HK_LOAD_LAST_STATE_1 + 1);
 			break;
 
-		case HK_SAVE_FIRST_STATE: Label = wxString("Save Oldest State", *wxConvCurrent); break;
-		case HK_UNDO_LOAD_STATE: Label = wxString("Undo Load State", *wxConvCurrent); break;
-		case HK_UNDO_SAVE_STATE: Label = wxString("Undo Save State", *wxConvCurrent); break;
+		case HK_SAVE_FIRST_STATE: Label = _("Save Oldest State"); break;
+		case HK_UNDO_LOAD_STATE: Label = _("Undo Load State"); break;
+		case HK_UNDO_SAVE_STATE: Label = _("Undo Save State"); break;
 
 		default:
 			Label = wxString::Format(_("Undefined %i"), Id);

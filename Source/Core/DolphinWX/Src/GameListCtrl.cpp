@@ -304,7 +304,12 @@ void CGameListCtrl::Update()
 		for (int i = 0; i < (int)m_ISOFiles.size(); i++)
 		{
 			InsertItemInReportView(i);
-			if (m_ISOFiles[i]->IsCompressed())
+			if (m_ISOFiles[i]->IsCompressed()
+#ifdef _WIN32
+				|| GetFileAttributesA(m_ISOFiles[i]->GetFileName().c_str())&FILE_ATTRIBUTE_SPARSE_FILE
+				|| GetFileAttributesA(m_ISOFiles[i]->GetFileName().c_str())&FILE_ATTRIBUTE_COMPRESSED
+#endif
+				)
 				SetItemTextColour(i, wxColour(0xFF0000));
 		}
 		SetBackgroundColor();
