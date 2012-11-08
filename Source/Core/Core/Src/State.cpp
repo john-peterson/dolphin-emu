@@ -18,6 +18,7 @@
 #include "VideoBackendBase.h"
 
 #include <lzo/lzo1x.h>
+#include <sys/stat.h>
 #include "HW/Memmap.h"
 #include "HW/VideoInterface.h"
 #include "HW/SystemTimers.h"
@@ -157,6 +158,31 @@ void VerifyBuffer(std::vector<u8>& buffer)
 	DoState(p);
 
 	Core::PauseAndLock(false, wasUnpaused);
+}
+
+int GetEmptySlot()
+{
+	for (int i = 1; i <= 8; i++)
+		if (!File::Exists(MakeStateFilename(i))) return i;
+	return -1;
+}
+
+std::map<double, int> GetSavedStates()
+{
+	struct stat t;
+	std::map<double, int> x;
+	for (int i = 1; i <= 8; i++)
+	{
+		if (File::Exists(MakeStateFilename(i))) {
+			if (!stat(MakeStateFilename(i).c_str(), &t)) {
+				double d = difftime(time(0), t.st_mtime);
+				// increase time until unique value is obtained
+				while (x.find(d) != x.end()) d++;
+				x.insert(std::pair<double,int>(d, i));
+			}
+		}
+	}
+	return x;
 }
 
 struct CompressAndDumpState_args
@@ -511,12 +537,32 @@ void Verify(int slot)
 	VerifyAt(MakeStateFilename(slot));
 }
 
-void LoadLastSaved()
+void LoadLastSaved(int i)
 {
-	if (g_last_filename.empty())
-		Core::DisplayMessage("There is no last saved state", 2000);
+	std::map<double, int> savedStates = GetSavedStates();
+
+	if (i > savedStates.size())
+		Core::DisplayMessage("State doesn't exist", 2000);
 	else
-		LoadAs(g_last_filename);
+	{		
+		std::map<double,int>::iterator it = savedStates.begin();
+		std::advance(it, i-1);
+		Load(it->second);
+	}
+}
+
+void SaveFirstSaved()
+{
+	std::map<double, int> savedStates = GetSavedStates();
+
+	if (savedStates.size() < 8)
+		Save(GetEmptySlot());
+	else
+	{
+		std::map<double,int>::iterator it = savedStates.begin();
+		std::advance(it, savedStates.size()-1);
+		Save(it->second);
+	}
 }
 
 void Flush()
