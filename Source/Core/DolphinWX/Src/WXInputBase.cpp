@@ -131,7 +131,7 @@ const wxString WXKeyToString(int keycode)
 		case WXK_WINDOWS_LEFT:			return _("Windows Left");
 		case WXK_WINDOWS_RIGHT:			return _("Windows Right");
 		case WXK_WINDOWS_MENU:			return _("Windows Menu");
-		case WXK_COMMAND:			return _("Command");
+		//case WXK_COMMAND:			return _("Command");
 	}
 
 	if (keycode > WXK_SPACE && keycode < WXK_DELETE) {
