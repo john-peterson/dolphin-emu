@@ -59,7 +59,7 @@ static Common::Event g_compressAndDumpStateSyncEvent;
 static std::thread g_save_thread;
 
 // Don't forget to increase this after doing changes on the savestate system
-static const u32 STATE_VERSION = 17;
+static const u32 STATE_VERSION = 18;
 
 enum
 {
@@ -249,6 +249,7 @@ void CompressAndDumpState(CompressAndDumpState_args save_args)
 	memcpy(header.gameID, SConfig::GetInstance().m_LocalCoreStartupParameter.GetUniqueID().c_str(), 6);
 	header.size = g_use_compression ? buffer_size : 0;
 	header.time = Common::Timer::GetDoubleTime();
+	memcpy(header.end, "EOH", 3);
 
 	f.WriteArray(&header, 1);
 

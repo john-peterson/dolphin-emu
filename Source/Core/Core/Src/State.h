@@ -17,12 +17,21 @@ namespace State
 // number of states
 static const u32 NUM_STATES = 8;
 
+#ifdef _WIN32
+#pragma pack(push,1)
+#endif
 struct StateHeader
 {
 	u8 gameID[6];
 	u32 size;
 	double time;
+	u8 end[3];
+#ifdef _WIN32
 };
+#pragma pack(pop)
+#else
+} __attribute__((packed));
+#endif
 
 void Init();
 
