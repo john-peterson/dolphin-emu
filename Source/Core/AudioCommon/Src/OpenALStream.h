@@ -11,9 +11,9 @@
 
 #if defined HAVE_OPENAL && HAVE_OPENAL
 #ifdef _WIN32
-#include <OpenAL/include/al.h>
-#include <OpenAL/include/alc.h>
-#include <OpenAL/include/alext.h>
+#include <openal-soft/include/AL/al.h>
+#include <openal-soft/include/AL/alc.h>
+#include <openal-soft/include/AL/alext.h>
 #elif defined __APPLE__
 #include <OpenAL/al.h>
 #include <OpenAL/alc.h>

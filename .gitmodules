@@ -1,0 +1,3 @@
+[submodule "Externals/openal-soft"]
+	path = Externals/openal-soft
+	url = git://github.com/mirror/openal-soft.git

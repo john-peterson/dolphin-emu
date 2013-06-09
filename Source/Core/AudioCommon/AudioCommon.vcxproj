@@ -115,8 +115,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>SoundTouchD.lib;OpenAL32.lib;dsound.lib;dxerr.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\..\Externals\OpenAL\Win32;..\..\..\Externals\SoundTouch\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SoundTouchD.lib;dsound.lib;dxerr.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\Externals\SoundTouch\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -127,7 +127,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>SoundTouchD.lib;OpenAL32.lib;dsound.lib;dxerr.lib</AdditionalDependencies>
+      <AdditionalDependencies>SoundTouchD.lib;dsound.lib;dxerr.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\Externals\OpenAL\Win64;..\..\..\Externals\SoundTouch\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -141,8 +141,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>SoundTouch.lib;OpenAL32.lib;dsound.lib;dxerr.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\..\Externals\OpenAL\Win32;..\..\..\Externals\SoundTouch\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SoundTouch.lib;dsound.lib;dxerr.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\Externals\SoundTouch\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugFast|Win32'">
@@ -155,8 +155,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>SoundTouch.lib;OpenAL32.lib;dsound.lib;dxerr.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\..\Externals\OpenAL\Win32;..\..\..\Externals\SoundTouch\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SoundTouch.lib;dsound.lib;dxerr.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\Externals\SoundTouch\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -169,7 +169,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>SoundTouch.lib;OpenAL32.lib;dsound.lib;dxerr.lib</AdditionalDependencies>
+      <AdditionalDependencies>SoundTouch.lib;dsound.lib;dxerr.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\Externals\OpenAL\Win64;..\..\..\Externals\SoundTouch\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -183,7 +183,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>SoundTouch.lib;OpenAL32.lib;dsound.lib;dxerr.lib</AdditionalDependencies>
+      <AdditionalDependencies>SoundTouch.lib;dsound.lib;dxerr.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\Externals\OpenAL\Win64;..\..\..\Externals\SoundTouch\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -216,6 +216,9 @@
     <None Include="CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Externals\openal-soft\64\OpenAL32.vcxproj">
+      <Project>{ed94e00e-c740-44a6-a767-2a0f037bf64c}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Externals\SoundTouch\SoundTouch.vcxproj">
       <Project>{68a5dd20-7057-448b-8fe0-b6ac8d205509}</Project>
       <Private>true</Private>

@@ -112,6 +112,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoundTouch", "..\Externals\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTests", "UnitTests\UnitTests.vcxproj", "{40C636FA-B5BF-4D67-ABC8-376B524A7551}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenAL32", "..\Externals\openal-soft\64\OpenAL32.vcxproj", "{ED94E00E-C740-44A6-A767-2A0F037BF64C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -409,6 +411,15 @@ Global
 		{40C636FA-B5BF-4D67-ABC8-376B524A7551}.Release|Win32.Build.0 = Release|Win32
 		{40C636FA-B5BF-4D67-ABC8-376B524A7551}.Release|x64.ActiveCfg = Release|x64
 		{40C636FA-B5BF-4D67-ABC8-376B524A7551}.Release|x64.Build.0 = Release|x64
+		{ED94E00E-C740-44A6-A767-2A0F037BF64C}.Debug|Win32.ActiveCfg = Debug|x64
+		{ED94E00E-C740-44A6-A767-2A0F037BF64C}.Debug|x64.ActiveCfg = Debug|x64
+		{ED94E00E-C740-44A6-A767-2A0F037BF64C}.Debug|x64.Build.0 = Debug|x64
+		{ED94E00E-C740-44A6-A767-2A0F037BF64C}.DebugFast|Win32.ActiveCfg = Debug|x64
+		{ED94E00E-C740-44A6-A767-2A0F037BF64C}.DebugFast|x64.ActiveCfg = Debug|x64
+		{ED94E00E-C740-44A6-A767-2A0F037BF64C}.DebugFast|x64.Build.0 = Debug|x64
+		{ED94E00E-C740-44A6-A767-2A0F037BF64C}.Release|Win32.ActiveCfg = Release|x64
+		{ED94E00E-C740-44A6-A767-2A0F037BF64C}.Release|x64.ActiveCfg = Release|x64
+		{ED94E00E-C740-44A6-A767-2A0F037BF64C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

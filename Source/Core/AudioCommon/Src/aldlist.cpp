@@ -25,8 +25,8 @@
 #include "Common.h"
 #include "aldlist.h"
 #ifdef _WIN32
-#include "../../../../Externals/OpenAL/include/al.h"
-#include "../../../../Externals/OpenAL/include/alc.h"
+#include "../../../../Externals/openal-soft/include/AL/al.h"
+#include "../../../../Externals/openal-soft/include/AL/alc.h"
 #elif defined(__APPLE__)
 #include <al.h>
 #include <alc.h>
