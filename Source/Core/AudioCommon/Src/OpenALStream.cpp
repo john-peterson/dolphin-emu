@@ -309,19 +309,10 @@ void OpenALStream::SoundLoop()
 			}
 			iBuffersFilled++;
 
-			if (iBuffersFilled == numBuffers)
-			{
-				alSourcePlay(uiSource);
-				err = alGetError();
-				if (err != 0)
-				{
-					ERROR_LOG(AUDIO, "Error occurred during playback: %08x", err);
-				}
-			}
-
 			alGetSourcei(uiSource, AL_SOURCE_STATE, &iState);
 			if (iState != AL_PLAYING)
 			{
+				WARN_LOG(AUDIO, "Buffer underrun");
 				// Buffer underrun occurred, resume playback
 				alSourcePlay(uiSource);
 				err = alGetError();
