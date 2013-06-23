@@ -188,8 +188,9 @@ void OpenALStream::SoundLoop()
 		u64 audio_dma_period = SystemTimers::GetTicksPerSecond() / (AudioInterface::GetAIDSampleRate() * stereo_16_bit_size / dma_length);
 		u64 num_samples_to_render = (audio_dma_period * ais_samples_per_second) / SystemTimers::GetTicksPerSecond();
 
+		static unsigned int numSamples_ = 0;
 		unsigned int numSamples = (unsigned int)num_samples_to_render;
-		unsigned int minSamples = surround_capable ? 240 : 0; // DPL2 accepts 240 samples minimum (FWRDURATION)
+		unsigned int minSamples = surround_capable ? 239 : 0; // DPL2 accepts 240 samples minimum (FWRDURATION)
 
 		numSamples = (numSamples > OAL_MAX_SAMPLES) ? OAL_MAX_SAMPLES : numSamples;
 		numSamples = m_mixer->Mix(realtimeBuffer, numSamples);
@@ -200,6 +201,13 @@ void OpenALStream::SoundLoop()
 			dest[i] = (float)realtimeBuffer[i] / (1 << 16);
 
 		soundTouch.putSamples(dest, numSamples);
+
+		numSamples_ += numSamples;
+		if (numSamples_ <= minSamples)
+		{
+			continue;
+		}
+		numSamples_ = 0;
 
 		if (iBuffersProcessed == iBuffersFilled)
 		{
@@ -230,9 +238,6 @@ void OpenALStream::SoundLoop()
 			}
 
 			unsigned int nSamples = soundTouch.receiveSamples(sampleBuffer, OAL_MAX_SAMPLES * numBuffers);
-
-			if (nSamples <= minSamples)
-				continue;
 
 			// Remove the Buffer from the Queue.  (uiBuffer contains the Buffer ID for the unqueued Buffer)
 			if (iBuffersFilled == 0)
