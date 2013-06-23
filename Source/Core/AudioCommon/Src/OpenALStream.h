@@ -31,7 +31,6 @@
 
 // 16 bit Stereo
 #define SFX_MAX_SOURCE			1
-#define OAL_MAX_BUFFERS			32
 #define OAL_MAX_SAMPLES			256
 #define STEREO_CHANNELS			2
 #define SURROUND_CHANNELS		6	// number of channels in surround mode
@@ -51,7 +50,10 @@ public:
 		, uiSource(0)
 	{};
 
-	virtual ~OpenALStream() {};
+	virtual ~OpenALStream() {
+		delete dpl2;
+		delete stereo;
+	};
 
 	virtual bool Start();
 	virtual void SoundLoop();
@@ -65,6 +67,8 @@ public:
 private:
 	std::thread thread;
 	Common::Event soundSyncEvent;
+	float *dpl2;
+	short *stereo;
 
 	short realtimeBuffer[OAL_MAX_SAMPLES * STEREO_CHANNELS];
 	soundtouch::SAMPLETYPE sampleBuffer[OAL_MAX_SAMPLES * SURROUND_CHANNELS * OAL_MAX_BUFFERS];
@@ -72,7 +76,7 @@ private:
 	ALuint uiSource;
 	ALfloat fVolume;
 
-	u8 numBuffers;
+	u16 numBuffers;
 #else
 public:
 	OpenALStream(CMixer *mixer, void *hWnd = NULL): SoundStream(mixer) {}

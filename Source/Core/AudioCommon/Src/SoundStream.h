@@ -9,6 +9,8 @@
 #include "Mixer.h"
 #include "WaveFile.h"
 
+#define OAL_MAX_BUFFERS			512
+
 class SoundStream
 {
 protected:

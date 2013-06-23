@@ -3,6 +3,7 @@
 // Refer to the license.txt file included.
 
 #include "aldlist.h"
+#include "MathUtil.h"
 #include "OpenALStream.h"
 #include "DPL2Decoder.h"
 
@@ -135,14 +136,26 @@ void OpenALStream::SoundLoop()
 	bool float32_capable = true;
 #endif
 
+	if (surround_capable)
+		dpl2 = new float[OAL_MAX_SAMPLES * OAL_MAX_BUFFERS * SURROUND_CHANNELS];
+	stereo = new short[OAL_MAX_SAMPLES * STEREO_CHANNELS * OAL_MAX_BUFFERS];
+
 	u32 ulFrequency = m_mixer->GetSampleRate();
-	numBuffers = Core::g_CoreStartupParameter.iLatency + 2; // OpenAL requires a minimum of two buffers
+	numBuffers = Core::g_CoreStartupParameter.iLatency;
+	// OpenAL requires a minimum of two buffers
+	numBuffers = MathUtil::Trim(numBuffers, 2, OAL_MAX_BUFFERS);
 
 	memset(uiBuffers, 0, numBuffers * sizeof(ALuint));
 	uiSource = 0;
 
 	// Generate some AL Buffers for streaming
 	alGenBuffers(numBuffers, (ALuint *)uiBuffers);
+	ALenum err = alGetError();
+	if (err != 0)
+	{
+		ERROR_LOG(AUDIO, "Error creating buffers: %08x", err);
+		return;
+	}
 	// Generate a Source to playback the Buffers
 	alGenSources(1, &uiSource);
 
@@ -247,7 +260,6 @@ void OpenALStream::SoundLoop()
 
 			if (surround_capable)
 			{
-				float dpl2[OAL_MAX_SAMPLES * OAL_MAX_BUFFERS * SURROUND_CHANNELS];
 				dpl2decode(sampleBuffer, nSamples, dpl2);
 				alBufferData(uiBufferTemp[iBuffersFilled], AL_FORMAT_51CHN32, dpl2, nSamples * FRAME_SURROUND_FLOAT, ulFrequency);
 				ALenum err = alGetError();
@@ -282,7 +294,6 @@ void OpenALStream::SoundLoop()
 				else
 				{
 					// Convert the samples from float to short
-					short stereo[OAL_MAX_SAMPLES * STEREO_CHANNELS * OAL_MAX_BUFFERS];
 					for (u32 i = 0; i < nSamples * STEREO_CHANNELS; ++i)
 						stereo[i] = (short)((float)sampleBuffer[i] * (1 << 16));
 
