@@ -135,7 +135,9 @@ void LogConfigWindow::LoadSettings()
 	for (int i = 0; i < LogTypes::NUMBER_OF_LOGS; ++i)
 	{
 		bool log_enabled;
-		ini.Get("Logs", m_LogManager->GetShortName((LogTypes::LOG_TYPE)i), &log_enabled, true);
+		ini.Get("Logs", m_LogManager->GetShortName((LogTypes::LOG_TYPE)i), &log_enabled, LogManager::GetInstance()->IsEnabled((LogTypes::LOG_TYPE)i));
+
+		LogManager::GetInstance()->SetEnable((LogTypes::LOG_TYPE)i, log_enabled);
 		
 		if (log_enabled)
 			enableAll = false;

@@ -54,7 +54,7 @@ public:
 class LogContainer
 {
 public:
-	LogContainer(const char* shortName, const char* fullName, bool enable = false);
+	LogContainer(const char* shortName, const char* fullName, bool enable = true);
 	
 	const char* GetShortName() const { return m_shortName; }
 	const char* GetFullName() const { return m_fullName; }

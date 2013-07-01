@@ -33,7 +33,7 @@ LogManager::LogManager()
 	m_Log[LogTypes::BOOT]				= new LogContainer("BOOT",			"Boot");
 	m_Log[LogTypes::COMMON]				= new LogContainer("COMMON",		"Common");
 	m_Log[LogTypes::DISCIO]				= new LogContainer("DIO",			"Disc IO");
-	m_Log[LogTypes::FILEMON]			= new LogContainer("FileMon",		"File Monitor");
+	m_Log[LogTypes::FILEMON]			= new LogContainer("FileMon",		"File Monitor",		false);
 	m_Log[LogTypes::PAD]				= new LogContainer("PAD",			"Pad");
 	m_Log[LogTypes::PIXELENGINE]		= new LogContainer("PE",			"PixelEngine");
 	m_Log[LogTypes::COMMANDPROCESSOR]	= new LogContainer("CP",			"CommandProc");
@@ -79,7 +79,6 @@ LogManager::LogManager()
 
 	for (int i = 0; i < LogTypes::NUMBER_OF_LOGS; ++i)
 	{
-		m_Log[i]->SetEnable(true);
 		m_Log[i]->AddListener(m_fileLog);
 		m_Log[i]->AddListener(m_consoleLog);
 #ifdef _MSC_VER
