@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-
+#include <map>
 
 #include "Common.h"
 #include "IniFile.h"
@@ -17,6 +17,8 @@
 #include "FileSystemGCWii.h"
 #include "VolumeCreator.h"
 
+using namespace std;
+
 namespace FileMon
 {
 
@@ -25,6 +27,7 @@ DiscIO::IFileSystem *pFileSystem = NULL;
 std::vector<const DiscIO::SFileInfo *> GCFiles;
 std::string ISOFile = "", CurrentFile = "";
 bool FileAccess = true;
+map<string, u64> m_size;
 
 // Filtered files
 bool ShowSound(std::string FileName)
@@ -134,8 +137,18 @@ void FindFilename(u64 offset)
 	// There's something wrong with the paths
 	if (!fname || (strlen(fname) == 512))
 		return;
-	
-	CheckFile(fname, pFileSystem->GetFileSize(fname));
+
+	// file size
+	u64 size;
+	if (m_size.find(fname) == m_size.end())
+	{
+		size = pFileSystem->GetFileSize(fname);
+		m_size.insert(pair<string, u64>(fname, size));
+	}
+	else
+		size = m_size.find(fname)->second;
+
+	CheckFile(fname, size);
 }
 
 void Close()
