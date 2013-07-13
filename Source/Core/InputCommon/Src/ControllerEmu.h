@@ -182,7 +182,9 @@ public:
 			*x = C(xx * range + base);
 		}
 
-		AnalogStick(const char* const _name);
+		AnalogStick(const char* const _name
+			, ControlState _radius = 1.0f
+			, ControlState _square = 0.0f);
 
 	};
 

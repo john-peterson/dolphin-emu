@@ -219,16 +219,19 @@ void ControllerEmu::SaveConfig(IniFile::Section *sec, const std::string& base)
 		(*i)->SaveConfig(sec, defdev, base);
 }
 
-ControllerEmu::AnalogStick::AnalogStick(const char* const _name) : ControlGroup(_name, GROUP_TYPE_STICK)
+ControllerEmu::AnalogStick::AnalogStick(const char* const _name
+										, ControlState _radius
+										, ControlState _square)
+	: ControlGroup(_name, GROUP_TYPE_STICK)
 {
 	for (unsigned int i = 0; i < 4; ++i)
 		controls.push_back(new Input(named_directions[i]));
 
 	controls.push_back(new Input(_trans("Modifier")));
 
-	settings.push_back(new Setting(_trans("Radius"), 0.7f, 0, 100));
+	settings.push_back(new Setting(_trans("Radius"), _radius, 0, 100));
 	settings.push_back(new Setting(_trans("Dead Zone"), 0, 0, 50));
-	settings.push_back(new Setting(_trans("Square Stick"), 0));
+	settings.push_back(new Setting(_trans("Square Stick"), _square));
 
 }
 
