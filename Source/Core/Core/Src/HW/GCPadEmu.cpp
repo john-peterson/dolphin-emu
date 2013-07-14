@@ -60,8 +60,8 @@ GCPad::GCPad(const unsigned int index) : m_index(index)
 		m_buttons->controls.push_back(new ControlGroup::Input(named_buttons[i]));
 
 	// sticks
-	groups.push_back(m_main_stick = new AnalogStick(_trans("Main Stick")));
-	groups.push_back(m_c_stick = new AnalogStick(_trans("C-Stick")));
+	groups.push_back(m_main_stick = new AnalogStick(_trans("Main Stick"), 0.75f, 0.5f));
+	groups.push_back(m_c_stick = new AnalogStick(_trans("C-Stick"), 0.64f, 0.5f));
 
 	// triggers
 	groups.push_back(m_triggers = new MixedTriggers(_trans("Triggers")));
